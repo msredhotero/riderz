@@ -34,7 +34,7 @@ function login($usuario,$pass) {
 
 
 		$idUsua = mysql_result($respusu,0,0);
-		$sqlpass = "select nombrecompleto,email,usuario,r.descripcion, r.idrol, u.refcontactos
+		$sqlpass = "select nombrecompleto,email,usuario,r.descripcion, r.idrol, u.refclientes
 				from dbusuarios u
 				inner join tbroles r on r.idrol = u.refroles
 				where password = '".$pass."' and u.activo = 1 and idusuario = ".$idUsua;
@@ -64,7 +64,6 @@ function login($usuario,$pass) {
 			$_SESSION['email_sahilices'] = mysql_result($resppass,0,1);
 			$_SESSION['idroll_sahilices'] = mysql_result($resppass,0,4);
 			$_SESSION['refroll_sahilices'] = mysql_result($resppass,0,3);
-			$_SESSION['idcontacto_sahilices'] = mysql_result($resppass,0,'refcontactos');
 
 
 			return 1;

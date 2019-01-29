@@ -5,9 +5,9 @@ date_default_timezone_set('America/Buenos_Aires');
 class appconfig {
 
 function conexion() {
-	
+
 		$hostname = "localhost";
-		$database = "sahilices";
+		$database = "riderz";
 		$username = "root";
 		$password = "";
 

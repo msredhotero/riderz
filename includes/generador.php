@@ -129,7 +129,7 @@ $ajaxFuncionesController = '';
 
 $servicios	= "Referencias";
 
-$sqlMapaer	= "SHOW FULL TABLES FROM sahilices";
+$sqlMapaer	= "SHOW FULL TABLES FROM riderz";
 $resMapeo 	=	query($sqlMapaer,0);
 
 $aliasTablaMadre = '';
