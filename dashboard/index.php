@@ -55,7 +55,7 @@ if ($_SESSION['idroll_sahilices'] == 2) {
 					<th>Categoria</th>
 					<th>Año</th>
 					<th>Mes</th>";
-	$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerArchivosGrid(),89);
+	//$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerArchivosGrid(),89);
 }
 
 
@@ -96,7 +96,7 @@ if ($_SESSION['idroll_sahilices'] == 2) {
 
 </head>
 
-<body class="theme-red">
+<body class="theme-indigo">
 
     <!-- Page Loader -->
     <div class="page-loader-wrapper">
@@ -136,20 +136,78 @@ if ($_SESSION['idroll_sahilices'] == 2) {
     <main id="app">
     <section class="content" style="margin-top:-35px;">
 
-        <div class="container-fluid">
-			  <!-- Widgets -->
-			  <div class="row clearfix">
+		<div class="container-fluid">
+			<!-- Widgets -->
+			<div class="row clearfix">
+				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<?php if ($_SESSION['idroll_predio'] == 1) { ?>
+						<h3>Buscar Clientes</h3>
+						<?php } else { ?>
+						<h3>Cliente</h3>
 
+						<?php } ?>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<?php if ($_SESSION['idroll_predio'] == 1) { ?>
+	        	<div class="form-group col-md-12">
+                     <h4>Busqueda por Nombre Completo o CUIT</h4>
+
+
+					<input id="lstjugadores" style="width:75%;">
+
+
+					<div id="selction-ajax" style="margin-top: 10px;"></div>
+                </div>
+
+                <div class="form-group col-md-12">
+                    <div class="cuerpoBox" id="resultadosJuagadores">
+
+                    </div>
+
+                    <div class="cuerpoBox" id="resultadosArchivos">
+
+                    </div>
+                </div>
+
+                <div class="form-group col-md-12">
+                	<div class="panel panel-primary">
+					  <div class="panel-heading">Archivos</div>
+					  <div class="panel-body"><?php echo $lstCargados; ?></div>
 					</div>
 
+                </div>
+                <?php } else { ?>
+                <ul class="list-group">
+	              <li class="list-group-item list-group-item-info"><span class="glyphicon glyphicon-user"></span> Cliente - (<span style="color:#F00;">*</span> Datos No editables)</li>
+	              <li class="list-group-item list-group-item-default">Apellido: <input type="text" class="form-control sinborde" name="apellido" id="apellido" value="<?php echo mysql_result($resCliente,0,'apellido'); ?>" /></li>
+	              <li class="list-group-item list-group-item-default">Nombre: <input type="text" class="form-control sinborde" name="nombre" id="nombre" value="<?php echo mysql_result($resCliente,0,'nombre'); ?>" /></li>
+	              <li class="list-group-item list-group-item-default">CUIT: <input type="text" class="form-control sinborde" name="cuit" id="cuit" value="<?php echo mysql_result($resCliente,0,'cuit'); ?>" /></li>
+	              <li class="list-group-item list-group-item-default">Dirección: <input type="text" style="width:100%;" class="form-control sinborde" name="direccion" id="direccion" value="<?php echo mysql_result($resCliente,0,'direccion'); ?>" /></li>
+	              <li class="list-group-item list-group-item-default">Tel. Fijo: <input type="text" class="form-control sinborde" name="telefono" id="telefono" value="<?php echo mysql_result($resCliente,0,'telefono'); ?>" /></li>
+	              <li class="list-group-item list-group-item-default">Tel. Movil: <input type="text" class="form-control sinborde" name="celular" id="celular" value="<?php echo mysql_result($resCliente,0,'celular'); ?>" /></li>
+	              <li class="list-group-item list-group-item-default"><span style="color:#F00;">*</span> Email: <?php echo mysql_result($resCliente,0,'email'); ?></li>
+	              <li class="list-group-item list-group-item-default">
+	                <ul class="list-inline">
+	                    <li>Modificar Cliente:</li>
+	                    <li><button type="button" class="btn btn-warning" id="modificarCliente" style="margin-left:0px;">Modificar</button></li>
+	                    <li id="mensaje"></li>
+	                </ul>
+	              </li>
+	            </ul>
 
-			  </div>
-			  <!-- #END# Widgets -->
+	            <div class="cuerpoBox" id="resultadosArchivos">
 
-					<!-- #END# Browser Usage -->
+                </div>
 
-        </div>
+                <?php } ?>
+					</div>
+				</div>
+
+			</div>
+		</div>
 
 
     </section>
