@@ -430,6 +430,21 @@ return $res;
 
 /* PARA Clientes */
 
+function existeCliente($cuit, $modifica = 0, $id = 0) {
+   if ($modifica == 1) {
+      $sql = "select * from dbclientes where cuit = '".cuit."' and idcliente <> ".$id;
+   } else {
+      $sql = "select * from dbclientes where cuit = '".cuit."'";
+   }
+
+	$res = $this->query($sql,0);
+	if (mysql_num_rows($res)>0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function insertarClientes($apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion) {
 $sql = "insert into dbclientes(idcliente,apellido,nombre,cuit,telefono,celular,email,aceptaterminos,subscripcion)
 values ('','".($apellido)."','".($nombre)."','".($cuit)."','".($telefono)."','".($celular)."','".($email)."',".$aceptaterminos.",".$subscripcion.")";

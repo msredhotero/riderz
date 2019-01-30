@@ -115,7 +115,7 @@ $respusu = $this->query($sqlusu,0);
 
 function loginUsuario($usuario,$pass) {
 
-	$sqlusu = "select * from dbusuarios where email = '".$usuario."'";
+	$sqlusu = "select * from dbusuarios where email = '".$usuario."' activo = 1";
 
 
 

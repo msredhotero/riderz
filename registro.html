@@ -96,7 +96,7 @@
                             <i class="material-icons">phone</i>
                         </span>
                         <div class="form-line">
-                            <input type="text" class="form-control" name="telefono" id="telefono" placeholder="Tel. Fijo" required>
+                            <input type="text" class="form-control" name="telefono" id="telefono" placeholder="Tel. Fijo" >
 
                         </div>
 
@@ -107,7 +107,7 @@
                             <i class="material-icons">phone_android</i>
                         </span>
                         <div class="form-line">
-                            <input type="text" class="form-control" name="celular" id="celular" placeholder="Tel. Movil" required autofocus>
+                            <input type="text" class="form-control" name="celular" id="celular" placeholder="Tel. Movil" >
 
                         </div>
 
@@ -116,12 +116,12 @@
                      <div class="input-group">
 
                         <div class="demo-checkbox">
-                           <input type="checkbox" id="aceptaterminos" name="aceptaterminos" class="filled-in" checked />
+                           <input type="checkbox" id="aceptaterminos" name="aceptaterminos" class="filled-in" required/>
                            <label for="aceptaterminos">Acepto las condiciones legales de riderzapp.es</label>
                         </div>
 
                         <div class="demo-checkbox">
-                           <input type="checkbox" id="subscripcion" name="subscripcion" class="filled-in" checked />
+                           <input type="checkbox" id="subscripcion" name="subscripcion" class="filled-in" />
                            <label for="subscripcion">Acepto subscribirme a riderzapp.es</label>
                         </div>
 
@@ -187,13 +187,20 @@
 
 
             $("#sign_in").submit(function(e){
-
-                e.preventDefault();
-
-                $.ajax({
+               var form = document.getElementById('form');
+               e.preventDefault();
+               if (!form.checkValidity()) {
+               $.ajax({
                     data:  {email:		$("#email").val(),
                             pass:		$("#pass").val(),
-                            accion:		'login'},
+                            apellido:		$("#apellido").val(),
+                            nombre:		$("#nombre").val(),
+                            telefono:		$("#telefono").val(),
+                            cuit:		$("#cuit").val(),
+                            celular:		$("#celular").val(),
+                            aceptaterminos:		$("#aceptaterminos").prop('checked') == true ? 1 : 0,
+                            subscripcion:		$("#subscripcion").prop('checked') == true ? 1 : 0,
+                            accion:		'registrarme'},
                     url:   'ajax/ajax.php',
                     type:  'post',
                     beforeSend: function () {
@@ -201,32 +208,30 @@
                     },
                     success:  function (response) {
 
-                            if (isNaN(response)) {
+                            if ((response == '')) {
 
                                 swal({
                                     title: "Respuesta",
-                                    text: "Usuario o Password Incorrectos",
-                                    type: "error",
-                                    timer: 2000,
+                                    text: "El usuario fue creado correctamente, le enviamos un email a su casilla de correo para ACTIVAR la cuenta",
+                                    type: "success",
+                                    timer: 3000,
                                     showConfirmButton: false
                                 });
 
                             } else {
                                 swal({
                                     title: "Respuesta",
-                                    text: "Acceso Correcto",
-                                    type: "success",
-                                    timer: 1500,
+                                    text: response,
+                                    type: "error",
+                                    timer: 2000,
                                     showConfirmButton: false
                                 });
 
-                                url = "dashboard/";
-                                $(location).attr('href',url);
                             }
 
                     }
                 });
-
+             }
 
             });
 

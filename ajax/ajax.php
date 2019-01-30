@@ -39,6 +39,9 @@ switch ($accion) {
 	case 'registrar':
 		registrar($serviciosUsuarios);
 		break;
+   case 'registrarme':
+      registrarme($serviciosUsuarios, $serviciosReferencias, $serviciosValidador);
+   break;
 
    case 'insertarOportunidades':
       insertarOportunidades($serviciosReferencias);
@@ -2185,6 +2188,47 @@ function enviarMail($serviciosUsuarios) {
 	//$idempresa  =	$_POST['idempresa'];
 
 	echo $serviciosUsuarios->login($email,$pass);
+}
+
+function registrarme($serviciosUsuarios, $serviciosReferencias, $serviciosValidador) {
+   $error = '';
+
+   $email      = trim($_POST['email']);
+   $pass       = trim($_POST['pass']);
+   $apellido   = trim($_POST['apellido']);
+   $nombre     = trim($_POST['nombre']);
+   $telefono   = trim($_POST['telefono']);
+   $celular    = trim($_POST['celular']);
+   $cuit       = trim($_POST['cuit']);
+
+   $aceptaterminos   = $_POST['aceptaterminos'];
+   $subscripcion     = $_POST['subscripcion'];
+
+   $existeEmail = $serviciosUsuarios->existeUsuario($email);
+   $existeCliente = $serviciosReferencias->existeCliente($cuit);
+
+   if ($existeEmail == 1) {
+      $error .= 'El Email ingresado ya existe!
+      ';
+   }
+
+   if ($existeCliente == 1) {
+      $error .= 'El DNI ingresado ya existe!
+      ';
+   }
+
+   if ($aceptaterminos == 0) {
+      $error .= 'Debe Aceptar los Terminos y Condiciones
+      ';
+   }
+
+   if ($error != '') {
+      // todo ok
+      $res = $serviciosReferencias->insertarClientes($apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion);
+   } else {
+      // error
+      echo $error;
+   }
 }
 
 
