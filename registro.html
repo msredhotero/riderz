@@ -30,15 +30,15 @@
 
 <body class="login-page">
     <div class="login-box">
-        <div class="logo" style="background-color:#F00; padding:10px 10px;">
-            <a href="javascript:void(0);" style="color:#000;">Acceso <b>RIDERZ</b></a>
+        <div class="logo" style="background-color:#0F0; padding:10px 10px;">
+            <a href="javascript:void(0);" style="color:#000;">Registro <b>RIDERZ</b></a>
             <small style="color:#000;">Administración Sistema de Clientes</small>
         </div>
         <div class="card">
             <div class="body">
                 <form id="sign_in" method="POST">
-                    <div class="msg">Acceda para iniciar su sessión</div>
-                    <div class="input-group">
+                     <div class="msg">Finalizado el registro se le enviara un email para activar la cuenta</div>
+                     <div class="input-group">
                         <span class="input-group-addon">
                             <i class="material-icons">person</i>
                         </span>
@@ -47,34 +47,107 @@
 
                         </div>
 
-                    </div>
-                    <div class="input-group">
+                     </div>
+                     <div class="input-group">
                         <span class="input-group-addon">
-                            <i class="material-icons">lock</i>
+                           <i class="material-icons">lock</i>
                         </span>
                         <div class="form-line passInput">
-                            <input type="password" class="form-control" name="pass" id="pass" placeholder="Password" required>
+                           <input type="password" class="form-control" name="pass" id="pass" placeholder="Password" required>
 
                         </div>
 
-                    </div>
-                    <div class="row js-sweetalert">
-                        <div class="col-xs-8 p-t-5">
+                     </div>
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">account_circle</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="apellido" id="apellido" placeholder="Apellido" required>
 
                         </div>
-                        <div class="col-xs-4">
-                            <button class="btn btn-block bg-pink waves-effect" data-type="" type="submit" id="login">INGRESAR</button>
+
+                     </div>
+
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">account_circle</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre" required>
+
                         </div>
-                    </div>
-                    <div class="row m-t-15 m-b--20">
+
+                     </div>
+
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">fingerprint</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="number" class="form-control" name="cuit" id="cuit" placeholder="DNI" required>
+
+                        </div>
+
+                     </div>
+
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">phone</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="telefono" id="telefono" placeholder="Tel. Fijo" required>
+
+                        </div>
+
+                     </div>
+
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">phone_android</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="celular" id="celular" placeholder="Tel. Movil" required autofocus>
+
+                        </div>
+
+                     </div>
+
+                     <div class="input-group">
+
+                        <div class="demo-checkbox">
+                           <input type="checkbox" id="aceptaterminos" name="aceptaterminos" class="filled-in" checked />
+                           <label for="aceptaterminos">Acepto las condiciones legales de riderzapp.es</label>
+                        </div>
+
+                        <div class="demo-checkbox">
+                           <input type="checkbox" id="subscripcion" name="subscripcion" class="filled-in" checked />
+                           <label for="subscripcion">Acepto subscribirme a riderzapp.es</label>
+                        </div>
+
+                     </div>
+
+
+
+
+
+                     <div class="row js-sweetalert">
+                        <div class="col-xs-7 p-t-5">
+
+                        </div>
+                        <div class="col-xs-5">
+                           <button class="btn btn-block bg-orange waves-effect" data-type="" type="submit" id="login">REGISTRARSE</button>
+                        </div>
+                     </div>
+                     <div class="row m-t-15 m-b--20">
                         <div class="col-xs-6">
-                            <a href="registro.html">Registrese!!</a>
+                           <a href="index.html">Iniciar Sessión!!</a>
                         </div>
                         <div class="col-xs-6 align-right">
-                            <a href="forgot-password.html">Olvido su Password?</a>
+
                         </div>
-                    </div>
-                </form>
+                     </div>
+               </form>
             </div>
         </div>
     </div>

@@ -430,18 +430,18 @@ return $res;
 
 /* PARA Clientes */
 
-function insertarClientes($cuit,$apellido,$nombre,$direccion,$telefono,$celular,$email) {
-$sql = "insert into dbclientes(idcliente,cuit,apellido,nombre,direccion,telefono,celular,email)
-values ('','".($cuit)."','".($apellido)."','".($nombre)."','".($direccion)."','".($telefono)."','".($celular)."','".($email)."')";
+function insertarClientes($apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion) {
+$sql = "insert into dbclientes(idcliente,apellido,nombre,cuit,telefono,celular,email,aceptaterminos,subscripcion)
+values ('','".($apellido)."','".($nombre)."','".($cuit)."','".($telefono)."','".($celular)."','".($email)."',".$aceptaterminos.",".$subscripcion.")";
 $res = $this->query($sql,1);
 return $res;
 }
 
 
-function modificarClientes($id,$cuit,$apellido,$nombre,$direccion,$telefono,$celular,$email) {
+function modificarClientes($id,$apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion) {
 $sql = "update dbclientes
 set
-cuit = '".($cuit)."',apellido = '".($apellido)."',nombre = '".($nombre)."',direccion = '".($direccion)."',telefono = '".($telefono)."',celular = '".($celular)."',email = '".($email)."'
+apellido = '".($apellido)."',nombre = '".($nombre)."',cuit = '".($cuit)."',telefono = '".($telefono)."',celular = '".($celular)."',email = '".($email)."',aceptaterminos = ".$aceptaterminos.",subscripcion = ".$subscripcion."
 where idcliente =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -451,7 +451,7 @@ return $res;
 function modificarClientePorCliente($id,$cuit,$apellido,$nombre,$direccion,$telefono,$celular) {
 $sql = "update dbclientes
 set
-cuit = '".($cuit)."',apellido = '".($apellido)."',nombre = '".($nombre)."',direccion = '".($direccion)."',telefono = '".($telefono)."',celular = '".($celular)."'
+apellido = '".($apellido)."',nombre = '".($nombre)."',cuit = '".($cuit)."',telefono = '".($telefono)."',celular = '".($celular)."',email = '".($email)."',aceptaterminos = ".$aceptaterminos.",subscripcion = ".$subscripcion."
 where idcliente =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -468,13 +468,14 @@ return $res;
 function traerClientes() {
 $sql = "select
 c.idcliente,
-c.cuit,
 c.apellido,
 c.nombre,
-c.direccion,
+c.cuit,
 c.telefono,
 c.celular,
-c.email
+c.email,
+c.aceptaterminos,
+c.subscripcion
 from dbclientes c
 order by 1";
 $res = $this->query($sql,0);
@@ -483,7 +484,7 @@ return $res;
 
 
 function traerClientesPorId($id) {
-$sql = "select idcliente,cuit,apellido,nombre,direccion,telefono,celular,email from dbclientes where idcliente =".$id;
+$sql = "select idcliente,apellido,nombre,cuit,telefono,celular,email,aceptaterminos,subscripcion from dbclientes where idcliente =".$id;
 $res = $this->query($sql,0);
 return $res;
 }

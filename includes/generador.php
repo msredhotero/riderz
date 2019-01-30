@@ -35,71 +35,14 @@ function query($sql,$accion) {
 
 
 
-$tablasAr	= array('clientes' => 'dbclientes',
-'conceptos' => 'dbconceptos',
-'conceptosviaticos' => 'dbconceptosviaticos',
-'contactos' => 'dbcontactos',
-'empleados' => 'dbempleados',
-'listasprecios' => 'dblistasprecios',
-'plantas' => 'dbplantas',
-'sectores' => 'dbsectores',
-'estados' => 'tbestados',
-'formularios' => 'tbformularios',
-'motivosoportunidades' => 'tbmotivosoportunidades',
-'recursosnecesarios' => 'tbrecursosnecesarios',
-'semaforos' => 'tbsemaforos',
-'tipoclientes' => 'tbtipoclientes',
-'tipoconceptos' => 'tbtipoconceptos',
-'tipomonedas' => 'tbtipomonedas',
-'tipostrabajos' => 'tbtipostrabajos',
-'unidadesnegocios' => 'tbunidadesnegocios',
-'oportunidades' => 'dboportunidades',
-'estadocotizacion' => 'tbestadocotizacion');
+$tablasAr	= array('clientes' => 'dbclientes');
 
 
 function recursiveTablas($ar, $tabla, $aliasTablaMadre) {
 
-	$tablasArAux2	= array('clientes' => 'dbclientes',
-'conceptos' => 'dbconceptos',
-'conceptosviaticos' => 'dbconceptosviaticos',
-'contactos' => 'dbcontactos',
-'empleados' => 'dbempleados',
-'listasprecios' => 'dblistasprecios',
-'plantas' => 'dbplantas',
-'sectores' => 'dbsectores',
-'estados' => 'tbestados',
-'formularios' => 'tbformularios',
-'motivosoportunidades' => 'tbmotivosoportunidades',
-'recursosnecesarios' => 'tbrecursosnecesarios',
-'semaforos' => 'tbsemaforos',
-'tipoclientes' => 'tbtipoclientes',
-'tipoconceptos' => 'tbtipoconceptos',
-'tipomonedas' => 'tbtipomonedas',
-'tipostrabajos' => 'tbtipostrabajos',
-'unidadesnegocios' => 'tbunidadesnegocios',
-'oportunidades' => 'dboportunidades',
-'estadocotizacion' => 'tbestadocotizacion');
+	$tablasArAux2	= array('clientes' => 'dbclientes');
 
-	$tablasArAux	= array('clientes' => 1,
-'conceptos' => 1,
-'conceptosviaticos' => 2,
-'contactos' => 2,
-'empleados' => 1,
-'listasprecios' => 2,
-'plantas' => 2,
-'sectores' => 2,
-'estados' => 1,
-'formularios' => 1,
-'motivosoportunidades' => 1,
-'recursosnecesarios' => 1,
-'semaforos' => 1,
-'tipoclientes' => 1,
-'tipoconceptos' => 1,
-'tipomonedas' => 1,
-'tipostrabajos' => 1,
-'unidadesnegocios' => 1,
-'oportunidades' => 6,
-'estadocotizacion'=>1);
+	$tablasArAux	= array('clientes' => 1);
 
 	$inner= '';
 	$sql	=	"show columns from ".$tabla;
