@@ -445,18 +445,18 @@ function existeCliente($cuit, $modifica = 0, $id = 0) {
 	}
 }
 
-function insertarClientes($apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion) {
-$sql = "insert into dbclientes(idcliente,apellido,nombre,cuit,telefono,celular,email,aceptaterminos,subscripcion)
-values ('','".($apellido)."','".($nombre)."','".($cuit)."','".($telefono)."','".($celular)."','".($email)."',".$aceptaterminos.",".$subscripcion.")";
+function insertarClientes($apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion,$activo) {
+$sql = "insert into dbclientes(idcliente,apellido,nombre,cuit,telefono,celular,email,aceptaterminos,subscripcion, activo)
+values ('','".($apellido)."','".($nombre)."','".($cuit)."','".($telefono)."','".($celular)."','".($email)."',".$aceptaterminos.",".$subscripcion.",".$activo.")";
 $res = $this->query($sql,1);
 return $res;
 }
 
 
-function modificarClientes($id,$apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion) {
+function modificarClientes($id,$apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion, $activo) {
 $sql = "update dbclientes
 set
-apellido = '".($apellido)."',nombre = '".($nombre)."',cuit = '".($cuit)."',telefono = '".($telefono)."',celular = '".($celular)."',email = '".($email)."',aceptaterminos = ".$aceptaterminos.",subscripcion = ".$subscripcion."
+apellido = '".($apellido)."',nombre = '".($nombre)."',cuit = '".($cuit)."',telefono = '".($telefono)."',celular = '".($celular)."',email = '".($email)."',aceptaterminos = ".$aceptaterminos.",subscripcion = ".$subscripcion.",activo = ".$activo."
 where idcliente =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -490,8 +490,28 @@ c.telefono,
 c.celular,
 c.email,
 c.aceptaterminos,
-c.subscripcion
+c.subscripcion,
+(case when c.activo = 1 then 'Si' else 'No' end) as activo
 from dbclientes c
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+function traerClientesActivos() {
+$sql = "select
+c.idcliente,
+c.apellido,
+c.nombre,
+c.cuit,
+c.telefono,
+c.celular,
+c.email,
+c.aceptaterminos,
+c.subscripcion,
+(case when c.activo = 1 then 'Si' else 'No' end) as activo
+from dbclientes c
+where c.activo = 1
 order by 1";
 $res = $this->query($sql,0);
 return $res;
@@ -499,7 +519,7 @@ return $res;
 
 
 function traerClientesPorId($id) {
-$sql = "select idcliente,apellido,nombre,cuit,telefono,celular,email,aceptaterminos,subscripcion from dbclientes where idcliente =".$id;
+$sql = "select idcliente,apellido,nombre,cuit,telefono,celular,email,aceptaterminos,subscripcion,(case when activo = 1 then 'Si' else 'No' end) as activo from dbclientes where idcliente =".$id;
 $res = $this->query($sql,0);
 return $res;
 }
