@@ -64,6 +64,7 @@ function login($usuario,$pass) {
 			$_SESSION['email_sahilices'] = mysql_result($resppass,0,1);
 			$_SESSION['idroll_sahilices'] = mysql_result($resppass,0,4);
 			$_SESSION['refroll_sahilices'] = mysql_result($resppass,0,3);
+         $_SESSION['idcliente'] = mysql_result($resppass,0,5);
 
 
 			return 1;
@@ -127,7 +128,7 @@ if (trim($usuario) != '' and trim($pass) != '') {
 		$error = '';
 
 		$idUsua = mysql_result($respusu,0,0);
-		$sqlpass = "select concat(apellido,' ',nombre),email,refroles from dbusuarios where password = '".$pass."' and IdUsuario = ".$idUsua;
+		$sqlpass = "select concat(apellido,' ',nombre),email,refroles, refclientes from dbusuarios where password = '".$pass."' and IdUsuario = ".$idUsua;
 
 		$resppass = $this->query($sqlpass,0);
 
@@ -156,6 +157,7 @@ if (trim($usuario) != '' and trim($pass) != '') {
 			$_SESSION['nombre_sahilices'] = mysql_result($resppass,0,0);
 			$_SESSION['email_sahilices'] = mysql_result($resppass,0,1);
 			$_SESSION['refroll_sahilices'] = mysql_result($resppass,0,2);
+         $_SESSION['idcliente'] = mysql_result($resppass,0,3);
 		}
 
 
