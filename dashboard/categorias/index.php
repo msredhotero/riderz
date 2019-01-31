@@ -24,13 +24,13 @@ $baseHTML = new BaseHTML();
 //*** SEGURIDAD ****/
 include ('../../includes/funcionesSeguridad.php');
 $serviciosSeguridad = new ServiciosSeguridad();
-$serviciosSeguridad->seguridadRuta($_SESSION['refroll_sahilices'], '../unidadesnegocios/');
+$serviciosSeguridad->seguridadRuta($_SESSION['refroll_sahilices'], '../categorias/');
 //*** FIN  ****/
 
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu($_SESSION['nombre_sahilices'],"Unidad de Negocios",$_SESSION['refroll_sahilices'],$_SESSION['email_sahilices']);
+$resMenu = $serviciosHTML->menu($_SESSION['nombre_sahilices'],"Conceptos",$_SESSION['refroll_sahilices'],$_SESSION['email_sahilices']);
 
 $configuracion = $serviciosReferencias->traerConfiguracion();
 
@@ -39,22 +39,24 @@ $tituloWeb = mysql_result($configuracion,0,'sistema');
 $breadCumbs = '<a class="navbar-brand" href="../index.php">Dashboard</a>';
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Unidad de Negocio";
+$singular = "Categoria";
 
-$plural = "Unidades de Negocios";
+$plural = "Categorias";
 
-$eliminar = "eliminarUnidadesnegocios";
+$eliminar = "eliminarCategorias";
 
-$insertar = "insertarUnidadesnegocios";
+$insertar = "insertarCategorias";
+
+$modificar = "modificarCategorias";
 
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "tbunidadesnegocios";
+$tabla 			= "tbcategorias";
 
-$lblCambio	 	= array("unidadnegocio");
-$lblreemplazo	= array("Unidad de Negocio");
+$lblCambio	 	= array();
+$lblreemplazo	= array();
 
 
 $cadRef 	= '';
@@ -64,11 +66,6 @@ $refCampo 	=  array();
 
 $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
-
-
-
-
-
 
 ?>
 
@@ -170,7 +167,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 					<div class="card ">
 						<div class="header bg-blue">
 							<h2>
-								Unidades de Negocios
+								<?php echo strtoupper($plural); ?>
 							</h2>
 							<ul class="header-dropdown m-r--5">
 								<li class="dropdown">
@@ -203,15 +200,13 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 									<table id="example" class="display table " style="width:100%">
 										<thead>
 											<tr>
-												<th>Unidad de Negocio</th>
-												<th>Activo</th>
+												<th>Categoria</th>
 												<th>Acciones</th>
 											</tr>
 										</thead>
 										<tfoot>
 											<tr>
-												<th>Unidad de Negocio</th>
-												<th>Activo</th>
+												<th>Categoria</th>
 												<th>Acciones</th>
 											</tr>
 										</tfoot>
@@ -234,10 +229,16 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 	       <div class="modal-dialog modal-lg" role="document">
 	           <div class="modal-content">
 	               <div class="modal-header">
-	                   <h4 class="modal-title" id="largeModalLabel">NUEVA UNIDAD DE NEGOCIO</h4>
+	                   <h4 class="modal-title" id="largeModalLabel">CREAR <?php echo strtoupper($singular); ?></h4>
 	               </div>
 	               <div class="modal-body">
-	                  <?php echo $frmUnidadNegocios; ?>
+							<div class="">
+								<div class="row">
+									<?php echo $frmUnidadNegocios; ?>
+								</div>
+
+							</div>
+
 	               </div>
 	               <div class="modal-footer">
 	                   <button type="submit" class="btn btn-primary waves-effect nuevo">GUARDAR</button>
@@ -246,7 +247,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 	           </div>
 	       </div>
 	   </div>
-		<input type="hidden" id="accion" name="accion" value="insertarUnidadesnegocios"/>
+		<input type="hidden" id="accion" name="accion" value="<?php echo $insertar; ?>"/>
 	</form>
 
 	<!-- MODIFICAR -->
@@ -255,10 +256,15 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 		       <div class="modal-dialog modal-lg" role="document">
 		           <div class="modal-content">
 		               <div class="modal-header">
-		                   <h4 class="modal-title" id="largeModalLabel">MODIFICAR UNIDAD DE NEGOCIO</h4>
+		                   <h4 class="modal-title" id="largeModalLabel">MODIFICAR <?php echo strtoupper($singular); ?></h4>
 		               </div>
-		               <div class="modal-body frmAjaxModificar">
+		               <div class="modal-body">
+								<div class="row">
+									<div class="frmAjaxModificar">
 
+									</div>
+
+								</div>
 		               </div>
 		               <div class="modal-footer">
 		                   <button type="button" class="btn btn-warning waves-effect modificar">MODIFICAR</button>
@@ -267,7 +273,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 		           </div>
 		       </div>
 		   </div>
-			<input type="hidden" id="accion" name="accion" value="modificarUnidadesnegocios"/>
+			<input type="hidden" id="accion" name="accion" value="<?php echo $modificar; ?>"/>
 		</form>
 
 
@@ -277,7 +283,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 		       <div class="modal-dialog modal-lg" role="document">
 		           <div class="modal-content">
 		               <div class="modal-header">
-		                   <h4 class="modal-title" id="largeModalLabel">ELIMINAR UNIDAD DE NEGOCIO</h4>
+		                   <h4 class="modal-title" id="largeModalLabel">ELIMINAR <?php echo strtoupper($singular); ?></h4>
 		               </div>
 		               <div class="modal-body">
 										 <p>¿Esta seguro que desea eliminar el registro?</p>
@@ -290,7 +296,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 		           </div>
 		       </div>
 		   </div>
-			<input type="hidden" id="accion" name="accion" value="eliminarUnidadesnegocios"/>
+			<input type="hidden" id="accion" name="accion" value="<?php echo $eliminar; ?>"/>
 			<input type="hidden" name="ideliminar" id="ideliminar" value="0">
 		</form>
 
@@ -317,7 +323,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 		var table = $('#example').DataTable({
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "../../json/jstablasajax.php?tabla=unidadnegocio",
+			"sAjaxSource": "../../json/jstablasajax.php?tabla=categorias",
 			"language": {
 				"emptyTable":     "No hay datos cargados",
 				"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
@@ -341,18 +347,6 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 					"sortDescending": ": activate to sort column descending"
 				}
 			}
-			/* para cambiarle el color a las filas
-			,
-			"rowCallback": function( row, data, index ) {
-				if ( data[1] == "Si" )
-				{
-					$('td', row).css('background-color', 'Red');
-				}
-				else
-				{
-					$('td', row).css('background-color', 'Orange');
-				}
-			}*/
 		});
 
 		$("#sign_in").submit(function(e){
@@ -367,7 +361,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 				type: 'POST',
 				// Form data
 				//datos del formulario
-				data: {accion: 'frmAjaxModificar',tabla: 'tbunidadesnegocios', id: id},
+				data: {accion: 'frmAjaxModificar',tabla: '<?php echo $tabla; ?>', id: id},
 				//mientras enviamos el archivo
 				beforeSend: function(){
 					$('.frmAjaxModificar').html('');
@@ -399,7 +393,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 				type: 'POST',
 				// Form data
 				//datos del formulario
-				data: {accion: 'eliminarUnidadesnegocios', id: id},
+				data: {accion: '<?php echo $eliminar; ?>', id: id},
 				//mientras enviamos el archivo
 				beforeSend: function(){
 

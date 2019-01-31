@@ -116,43 +116,45 @@
             $("#sign_in").submit(function(e){
 
                 e.preventDefault();
+                if ($('#sign_in')[0].checkValidity()) {
 
-                $.ajax({
-                    data:  {email:		$("#email").val(),
-                            pass:		$("#pass").val(),
-                            accion:		'login'},
-                    url:   'ajax/ajax.php',
-                    type:  'post',
-                    beforeSend: function () {
-                            $("#load").html('<img src="imagenes/load13.gif" width="50" height="50" />');
-                    },
-                    success:  function (response) {
+                   $.ajax({
+                       data:  {email:		$("#email").val(),
+                               pass:		$("#pass").val(),
+                               accion:		'login'},
+                       url:   'ajax/ajax.php',
+                       type:  'post',
+                       beforeSend: function () {
+                               $("#load").html('<img src="imagenes/load13.gif" width="50" height="50" />');
+                       },
+                       success:  function (response) {
 
-                            if (isNaN(response)) {
+                               if (isNaN(response)) {
 
-                                swal({
-                                    title: "Respuesta",
-                                    text: "Usuario o Password Incorrectos",
-                                    type: "error",
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                });
+                                   swal({
+                                       title: "Respuesta",
+                                       text: "Usuario o Password Incorrectos",
+                                       type: "error",
+                                       timer: 2000,
+                                       showConfirmButton: false
+                                   });
 
-                            } else {
-                                swal({
-                                    title: "Respuesta",
-                                    text: "Acceso Correcto",
-                                    type: "success",
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
+                               } else {
+                                   swal({
+                                       title: "Respuesta",
+                                       text: "Acceso Correcto",
+                                       type: "success",
+                                       timer: 1500,
+                                       showConfirmButton: false
+                                   });
 
-                                url = "dashboard/";
-                                $(location).attr('href',url);
-                            }
+                                   url = "dashboard/";
+                                   $(location).attr('href',url);
+                               }
 
-                    }
-                });
+                       }
+                   });
+                }
 
 
             });

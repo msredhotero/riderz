@@ -3,9 +3,11 @@
 
 include ('../includes/funciones.php');
 include ('../includes/funcionesReferencias.php');
+include ('../includes/funcionesUsuarios.php');
 
 $serviciosFunciones = new Servicios();
 $serviciosReferencias 	= new ServiciosReferencias();
+$serviciosUsuarios  		= new ServiciosUsuarios();
 
 $tabla = $_GET['tabla'];
 $draw = $_GET['sEcho'];
@@ -34,15 +36,15 @@ function armarAcciones($id,$label='',$class,$icon) {
 }
 
 switch ($tabla) {
-	case 'unidadnegocio':
-		$resAjax = $serviciosReferencias->traerUnidadesnegociosajax($length, $start, $busqueda);
-		$res = $serviciosReferencias->traerUnidadesnegocios();
+	case 'categorias':
+		$resAjax = $serviciosReferencias->traerCategoriasajax($length, $start, $busqueda);
+		$res = $serviciosReferencias->traerCategorias();
 		$label = array('btnModificar','btnEliminar');
 		$class = array('bg-amber','bg-red');
 		$icon = array('create','delete');
 		$indiceID = 0;
 		$empieza = 1;
-		$termina = 2;
+		$termina = 1;
 
 		break;
 	case 'tipostrabajos':
@@ -138,32 +140,32 @@ switch ($tabla) {
 		$res = $serviciosReferencias->traerClientes();
 		$label = array('btnModificar','btnEliminar','btnVer');
 		$class = array('bg-amber','bg-red','bg-blue');
-		$icon = array('create','delete','search');
+		$icon = array('create','delete','backup');
+		$indiceID = 0;
+		$empieza = 1;
+		$termina = 9;
+
+		break;
+	case 'archivos':
+		$resAjax = $serviciosReferencias->traerArchivosajax($length, $start, $busqueda);
+		$res = $serviciosReferencias->traerArchivosGrid();
+		$label = array('btnEliminar','btnDescargar');
+		$class = array('bg-red','bg-green');
+		$icon = array('delete','archive');
+		$indiceID = 0;
+		$empieza = 1;
+		$termina = 4;
+
+		break;
+	case 'usuarios':
+		$resAjax = $serviciosUsuarios->traerUsuariosajax($length, $start, $busqueda, $referencia1);
+		$res = $serviciosUsuarios->traerUsuarios();
+		$label = array('btnModificar','btnEliminar');
+		$class = array('bg-amber','bg-red');
+		$icon = array('create','delete');
 		$indiceID = 0;
 		$empieza = 1;
 		$termina = 5;
-
-		break;
-	case 'plantas':
-		$resAjax = $serviciosReferencias->traerPlantasajaxPorCliente($length, $start, $busqueda, $referencia1);
-		$res = $serviciosReferencias->traerPlantas();
-		$label = array('btnModificar','btnEliminar');
-		$class = array('bg-amber','bg-red');
-		$icon = array('create','delete');
-		$indiceID = 0;
-		$empieza = 1;
-		$termina = 1;
-
-		break;
-	case 'sectores':
-		$resAjax = $serviciosReferencias->traerSectoresajaxPorCliente($length, $start, $busqueda, $referencia1);
-		$res = $serviciosReferencias->traerSectores();
-		$label = array('btnModificar','btnEliminar');
-		$class = array('bg-amber','bg-red');
-		$icon = array('create','delete');
-		$indiceID = 0;
-		$empieza = 1;
-		$termina = 2;
 		break;
 	case 'contactos':
 		$resAjax = $serviciosReferencias->traerContactosajaxPorCliente($length, $start, $busqueda, $referencia1);

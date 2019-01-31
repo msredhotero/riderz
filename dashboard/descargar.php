@@ -15,7 +15,7 @@ $fecha = date('Y-m-d');
 
 session_start();
 
-if (!isset($_SESSION['usua_predio']))
+if (!isset($_SESSION['usua_sahilices']))
 {
 	$cadError = 'No tienes permiso para la descarga';
 } else {
@@ -24,7 +24,7 @@ if (!isset($_SESSION['usua_predio']))
 		$res = $serviciosReferencias->traerArchivosPorToken($_GET['token']);
 
 		if (mysql_num_rows($res)>0) {
-		    $file = '../archivos/'.mysql_result($res, 0,'refclientes').'/'.mysql_result($res, 0,'idarchivo').'/'.'descargar.zip';
+		    $file = '../archivos/'.mysql_result($res, 0,'refclientes').'/'.mysql_result($res, 0,'idarchivo').'/'.'descarga.zip';
 		    //die(var_dump($file));
 		    header('Content-type: application/zip');
 		    header('Content-length: ' . filesize($file));
@@ -41,7 +41,7 @@ if (!isset($_SESSION['usua_predio']))
 
 }
 
-$resMenu = $serviciosHTML->menu($_SESSION['nombre_predio'],"Dashboard",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu($_SESSION['nombre_sahilices'],"Dashboard",$_SESSION['refroll_sahilices'],'');
 ?>
 
 
@@ -61,14 +61,14 @@ $resMenu = $serviciosHTML->menu($_SESSION['nombre_predio'],"Dashboard",$_SESSION
 
 
 <link href="../css/estiloDash.css" rel="stylesheet" type="text/css">
-    
 
-    
+
+
     <script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
     <link rel="stylesheet" href="../css/jquery-ui.css">
 
     <script src="../js/jquery-ui.js"></script>
-    
+
 	<!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css"/>
 	171
@@ -78,8 +78,8 @@ $resMenu = $serviciosHTML->menu($_SESSION['nombre_predio'],"Dashboard",$_SESSION
 	<link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css">
 
 
-    
-   
+
+
    <link href="../css/perfect-scrollbar.css" rel="stylesheet">
    <link rel="stylesheet" href="../css/sb-admin-2.css"/>
       <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
@@ -91,7 +91,7 @@ $resMenu = $serviciosHTML->menu($_SESSION['nombre_predio'],"Dashboard",$_SESSION
         $('#navigation').perfectScrollbar();
       });
     </script>
-    
+
     <style>
     	.valor {
     		color: #922B21;
@@ -132,21 +132,21 @@ $resMenu = $serviciosHTML->menu($_SESSION['nombre_predio'],"Dashboard",$_SESSION
 		    -webkit-font-smoothing: antialiased;
 		}
 
-		
+
 
     </style>
-    
+
     <script src="../js/jquery.color.min.js"></script>
 	<script src="../js/jquery.animateNumber.min.js"></script>
-    
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 
-    
+
 </head>
 
 <body>
 
- 
+
 <?php echo str_replace('..','../dashboard',$resMenu); ?>
 
 <div id="content">
@@ -155,7 +155,7 @@ $resMenu = $serviciosHTML->menu($_SESSION['nombre_predio'],"Dashboard",$_SESSION
     <div class="boxInfoLargo">
         <div id="headBoxInfo">
         	<p style="color: #fff; font-size:18px; height:16px;">Descarga de archivos</p>
-        	
+
         </div>
     	<div class="cuerpoBox">
         	<form class="form-inline formulario" role="form">
@@ -164,13 +164,13 @@ $resMenu = $serviciosHTML->menu($_SESSION['nombre_predio'],"Dashboard",$_SESSION
 					<h4><?php echo $cadError; ?></h4>
 				</div>
             </div>
-            
+
 
             </form>
     	</div>
     </div>
-    
-   
+
+
 </div>
 
 
@@ -189,8 +189,8 @@ $resMenu = $serviciosHTML->menu($_SESSION['nombre_predio'],"Dashboard",$_SESSION
 <script type="text/javascript">
 $(document).ready(function(){
 	var months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-    
-	
+
+
 	$('table.table').dataTable({
 		"order": [[ 0, "asc" ]],
 		"language": {
@@ -217,10 +217,10 @@ $(document).ready(function(){
 			}
 		  }
 	} );
-	
-	
 
-	
+
+
+
 
 
 });
@@ -228,7 +228,7 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 
-		
+
 $('.form_date').datetimepicker({
 	language:  'es',
 	weekStart: 1,
@@ -241,7 +241,7 @@ $('.form_date').datetimepicker({
 	format: 'dd/mm/yyyy'
 });
 </script>
-   
+
     <script src="../js/chosen.jquery.js" type="text/javascript"></script>
 <script type="text/javascript">
     var config = {

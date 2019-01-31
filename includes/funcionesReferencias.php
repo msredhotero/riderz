@@ -114,7 +114,7 @@ function crearDirectorioPrincipal($dir) {
 	function obtenerNuevoId($tabla) {
         //u235498999_aif
         $sql = "SELECT AUTO_INCREMENT FROM information_schema.TABLES
-                WHERE TABLE_SCHEMA = 'estudiocontable'
+                WHERE TABLE_SCHEMA = 'riderz'
                 AND TABLE_NAME = '".$tabla."'";
         $res = $this->query($sql,0);
         return mysql_result($res, 0,0);
@@ -333,7 +333,7 @@ return $res;
 
 
 function eliminarArchivos($id) {
-$sql = "delete from dbarchivos where idarchivo =".$id;
+$sql = "delete from dbarchivos where token = '".$id."'";
 $res = $this->query($sql,0);
 return $res;
 }
@@ -351,6 +351,39 @@ from dbarchivos a
 order by 1";
 $res = $this->query($sql,0);
 return $res;
+}
+
+
+
+function traerArchivosajax($length, $start, $busqueda) {
+
+	$where = '';
+
+	$busqueda = str_replace("'","",$busqueda);
+	if ($busqueda != '') {
+		$where = "where concat(c.apellido, ' ', c.nombre) like '%".$busqueda."%' or cat.categoria like '%".$busqueda."%' or a.anio like '%".$busqueda."%' or a.mes like '%".$busqueda."%'";
+	}
+
+	$sql = "select
+   a.token,
+   concat(c.apellido, ' ', c.nombre) as apyn,
+   cat.categoria,
+   a.anio,
+   a.mes,
+   a.refclientes,
+   a.token,
+   a.imagen,
+   a.type,
+   a.observacion
+   from dbarchivos a
+   inner join dbclientes c on c.idcliente = a.refclientes
+   inner join tbcategorias cat on cat.idcategoria = a.refcategorias
+	".$where."
+	order by a.anio, a.mes
+	limit ".$start.",".$length;
+
+	$res = $this->query($sql,0);
+	return $res;
 }
 
 
@@ -432,9 +465,9 @@ return $res;
 
 function existeCliente($cuit, $modifica = 0, $id = 0) {
    if ($modifica == 1) {
-      $sql = "select * from dbclientes where cuit = '".cuit."' and idcliente <> ".$id;
+      $sql = "select * from dbclientes where cuit = '".$cuit."' and idcliente <> ".$id;
    } else {
-      $sql = "select * from dbclientes where cuit = '".cuit."'";
+      $sql = "select * from dbclientes where cuit = '".$cuit."'";
    }
 
 	$res = $this->query($sql,0);
@@ -480,6 +513,36 @@ return $res;
 }
 
 
+function traerClientesajax($length, $start, $busqueda) {
+
+	$where = '';
+
+	$busqueda = str_replace("'","",$busqueda);
+	if ($busqueda != '') {
+		$where = "where c.apellido like '%".$busqueda."%' or c.nombre like '%".$busqueda."%' or c.cuit like '%".$busqueda."%' or c.telefono like '%".$busqueda."%' or c.celular like '%".$busqueda."%' or c.email like '%".$busqueda."%'";
+	}
+
+	$sql = "select
+   c.idcliente,
+   c.apellido,
+   c.nombre,
+   c.cuit,
+   c.telefono,
+   c.celular,
+   c.email,
+   (case when c.aceptaterminos = 1 then 'Si' else 'No' end) as aceptaterminos,
+   (case when c.subscripcion = 1 then 'Si' else 'No' end) as subscripcion,
+   (case when c.activo = 1 then 'Si' else 'No' end) as activo
+   from dbclientes c
+	".$where."
+	order by c.apellido, c.nombre
+	limit ".$start.",".$length;
+
+	$res = $this->query($sql,0);
+	return $res;
+}
+
+
 function traerClientes() {
 $sql = "select
 c.idcliente,
@@ -493,7 +556,7 @@ c.aceptaterminos,
 c.subscripcion,
 (case when c.activo = 1 then 'Si' else 'No' end) as activo
 from dbclientes c
-order by 1";
+order by c.apellido, c.nombre";
 $res = $this->query($sql,0);
 return $res;
 }
@@ -619,7 +682,7 @@ return $res;
 
 
 function eliminarUsuarios($id) {
-$sql = "update dbusuarios set activo = '0' where idusuario =".$id;
+$sql = "update dbusuarios set activo = 0 where idusuario =".$id;
 $res = $this->query($sql,0);
 return $res;
 }
@@ -785,12 +848,34 @@ return $res;
 }
 
 
+function traerCategoriasajax($length, $start, $busqueda) {
+
+	$where = '';
+
+	$busqueda = str_replace("'","",$busqueda);
+	if ($busqueda != '') {
+		$where = "where c.categoria like '%".$busqueda."%'";
+	}
+
+	$sql = "select
+   c.idcategoria,
+   c.categoria
+   from tbcategorias c
+	".$where."
+	order by c.categoria
+	limit ".$start.",".$length;
+
+	$res = $this->query($sql,0);
+	return $res;
+}
+
+
 function traerCategorias() {
 $sql = "select
 c.idcategoria,
 c.categoria
 from tbcategorias c
-order by 1";
+order by c.categoria";
 $res = $this->query($sql,0);
 return $res;
 }

@@ -29,6 +29,8 @@ $serviciosSeguridad->seguridadRuta($_SESSION['refroll_sahilices'], '../clientes/
 
 $fecha = date('Y-m-d');
 
+$id = $_GET['id'];
+
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
 $resMenu = $serviciosHTML->menu($_SESSION['nombre_sahilices'],"Clientes",$_SESSION['refroll_sahilices'],$_SESSION['email_sahilices']);
 
@@ -51,6 +53,7 @@ $modificar = "modificarClientes";
 
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
+$resultado = $serviciosReferencias->traerClientesPorId($id);
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
 $tabla 			= "dbclientes";
@@ -64,8 +67,12 @@ $cadRef 	= '';
 $refdescripcion = array();
 $refCampo 	=  array();
 
-$frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
+$idTabla = 'idcliente';
+
+$frm 	= $serviciosFunciones->camposTablaModificar($id, $idTabla, $modificar,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
+
+
 
 ?>
 
@@ -87,14 +94,6 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 	<link href="../../plugins/waitme/waitMe.css" rel="stylesheet" />
 	<link href="../../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
-
-	<!-- VUE JS -->
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
-	<!-- axios -->
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-	<script src="https://unpkg.com/vue-swal"></script>
 
 	<!-- Bootstrap Material Datetime Picker Css -->
 	<link href="../../plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
@@ -159,15 +158,12 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 	<div class="container-fluid">
 		<div class="row clearfix">
-
 			<div class="row">
-
-
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="card ">
 						<div class="header bg-blue">
 							<h2>
-								<?php echo strtoupper($plural); ?>
+								<?php echo strtoupper($singular); ?>: <?php echo strtoupper(mysql_result($resultado,0,'apellido')); ?> <?php echo strtoupper(mysql_result($resultado,0,'nombre')); ?>
 							</h2>
 							<ul class="header-dropdown m-r--5">
 								<li class="dropdown">
@@ -180,127 +176,44 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 								</li>
 							</ul>
 						</div>
-						<div class="body table-responsive">
-							<form class="form" id="frmView">
+						<div class="body">
 
+							<form class="form" id="sign_in">
 								<div class="row">
+									<?php echo $frm; ?>
+								</div>
+								<div class="row" style="margin-left:2%;">
 									<div class="col-lg-12 col-md-12">
 										<div class="button-demo">
-											<button type="button" class="btn bg-light-green waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevo">
-												<i class="material-icons">add</i>
-												<span>NUEVO</span>
+											<button type="submit" class="btn bg-orange waves-effect btnModificar">
+												<i class="material-icons">create</i>
+												<span>MODIFICAR</span>
 											</button>
 
 										</div>
 									</div>
 								</div>
 
-								<div class="row" style="padding: 5px 20px;">
-
-									<table id="example" class="display table " style="width:100%">
-										<thead>
-											<tr>
-												<th>Apellido</th>
-												<th>Nombre</th>
-												<th>DNI</th>
-												<th>Tel. Fijo</th>
-												<th>Tel. Movil</th>
-												<th>Email</th>
-												<th>Acepta Ter.</th>
-												<th>Subscripcion</th>
-												<th>Activo</th>
-												<th>Acciones</th>
-											</tr>
-										</thead>
-										<tfoot>
-											<tr>
-												<th>Apellido</th>
-												<th>Nombre</th>
-												<th>DNI</th>
-												<th>Tel. Fijo</th>
-												<th>Tel. Movil</th>
-												<th>Email</th>
-												<th>Acepta Ter.</th>
-												<th>Subscripcion</th>
-												<th>Activo</th>
-												<th>Acciones</th>
-											</tr>
-										</tfoot>
-									</table>
-								</div>
 							</form>
-							</div>
 						</div>
+
 					</div>
+
 				</div>
+
+
 			</div>
 		</div>
+
+
 	</div>
 </section>
 
 
-<!-- NUEVO -->
-	<form class="formulario" role="form" id="sign_in">
-	   <div class="modal fade" id="lgmNuevo" tabindex="-1" role="dialog">
-	       <div class="modal-dialog modal-lg" role="document">
-	           <div class="modal-content">
-	               <div class="modal-header">
-	                   <h4 class="modal-title" id="largeModalLabel">CREAR <?php echo strtoupper($singular); ?></h4>
-	               </div>
-	               <div class="modal-body demo-masked-input">
-							<div class="row">
-	                  <?php echo $frmUnidadNegocios; ?>
-							</div>
-							<div class="row">
-								<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-									<label class="form-label">Password</label>
-									<div class="form-group">
-										<div class="form-line">
-											<input type="text" class="form-control" id="pass" name="pass" required/>
-
-										</div>
-									</div>
-								</div>
-							</div>
-	               </div>
-	               <div class="modal-footer">
-	                   <button type="submit" class="btn btn-primary waves-effect">GUARDAR</button>
-	                   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
-	               </div>
-	           </div>
-	       </div>
-	   </div>
-		<input type="hidden" id="accion" name="accion" value="<?php echo $insertar; ?>"/>
-	</form>
-
-	<!-- MODIFICAR -->
-		<form class="formulario" role="form" id="sign_inModificar">
-		   <div class="modal fade" id="lgmModificar" tabindex="-1" role="dialog">
-		       <div class="modal-dialog modal-lg" role="document">
-		           <div class="modal-content">
-		               <div class="modal-header">
-		                   <h4 class="modal-title" id="largeModalLabel">MODIFICAR <?php echo strtoupper($singular); ?></h4>
-		               </div>
-		               <div class="modal-body">
-								<div class="row">
-									<div class="frmAjaxModificar demo-masked-input">
-
-									</div>
-								</div>
-		               </div>
-		               <div class="modal-footer">
-		                   <button type="button" class="btn btn-warning waves-effect modificar">MODIFICAR</button>
-		                   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
-		               </div>
-		           </div>
-		       </div>
-		   </div>
-			<input type="hidden" id="accion" name="accion" value="<?php echo $modificar; ?>"/>
-		</form>
 
 
 	<!-- ELIMINAR -->
-		<form class="formulario" role="form" id="sign_inEliminar">
+		<form class="formulario" role="form" id="sign_in">
 		   <div class="modal fade" id="lgmEliminar" tabindex="-1" role="dialog">
 		       <div class="modal-dialog modal-lg" role="document">
 		           <div class="modal-content">
@@ -318,7 +231,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 		           </div>
 		       </div>
 		   </div>
-			<input type="hidden" id="accion" name="accion" value="<?php echo $eliminar; ?>"/>
+			<input type="hidden" class="accionEliminar" id="accion" name="accion" value=""/>
 			<input type="hidden" name="ideliminar" id="ideliminar" value="0">
 		</form>
 
@@ -342,10 +255,71 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 <script>
 	$(document).ready(function(){
-		var table = $('#example').DataTable({
+
+		var tablePlanta = $('#examplePlanta').DataTable({
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "../../json/jstablasajax.php?tabla=clientes",
+			"sAjaxSource": "../../json/jstablasajax.php?tabla=plantas&referencia1=<?php echo $id; ?>",
+			"language": {
+				"emptyTable":     "No hay datos cargados",
+				"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
+				"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
+				"infoFiltered":   "(filtrados del total de _MAX_ filas)",
+				"infoPostFix":    "",
+				"thousands":      ",",
+				"lengthMenu":     "Mostrar _MENU_ filas",
+				"loadingRecords": "Cargando...",
+				"processing":     "Procesando...",
+				"search":         "Buscar:",
+				"zeroRecords":    "No se encontraron resultados",
+				"paginate": {
+					"first":      "Primero",
+					"last":       "Ultimo",
+					"next":       "Siguiente",
+					"previous":   "Anterior"
+				},
+				"aria": {
+					"sortAscending":  ": activate to sort column ascending",
+					"sortDescending": ": activate to sort column descending"
+				}
+			}
+		});
+
+
+		var tableSector = $('#exampleSector').DataTable({
+			"bProcessing": true,
+			"bServerSide": true,
+			"sAjaxSource": "../../json/jstablasajax.php?tabla=sectores&referencia1=<?php echo $id; ?>",
+			"language": {
+				"emptyTable":     "No hay datos cargados",
+				"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
+				"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
+				"infoFiltered":   "(filtrados del total de _MAX_ filas)",
+				"infoPostFix":    "",
+				"thousands":      ",",
+				"lengthMenu":     "Mostrar _MENU_ filas",
+				"loadingRecords": "Cargando...",
+				"processing":     "Procesando...",
+				"search":         "Buscar:",
+				"zeroRecords":    "No se encontraron resultados",
+				"paginate": {
+					"first":      "Primero",
+					"last":       "Ultimo",
+					"next":       "Siguiente",
+					"previous":   "Anterior"
+				},
+				"aria": {
+					"sortAscending":  ": activate to sort column ascending",
+					"sortDescending": ": activate to sort column descending"
+				}
+			}
+		});
+
+
+		var tableContacto = $('#exampleContacto').DataTable({
+			"bProcessing": true,
+			"bServerSide": true,
+			"sAjaxSource": "../../json/jstablasajax.php?tabla=contactos&referencia1=<?php echo $id; ?>",
 			"language": {
 				"emptyTable":     "No hay datos cargados",
 				"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
@@ -373,111 +347,10 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 		var $demoMaskedInput = $('.demo-masked-input');
 
-		$('#activo').prop('checked',true);
+		$demoMaskedInput.find('.date').inputmask('yyyy-mm-dd', { placeholder: '____-__-__' });
 
-		function frmAjaxModificar(id) {
-			$.ajax({
-				url: '../../ajax/ajax.php',
-				type: 'POST',
-				// Form data
-				//datos del formulario
-				data: {accion: 'frmAjaxModificar',tabla: '<?php echo $tabla; ?>', id: id},
-				//mientras enviamos el archivo
-				beforeSend: function(){
-					$('.frmAjaxModificar').html('');
-				},
-				//una vez finalizado correctamente
-				success: function(data){
+		$demoMaskedInput.find('#cuit').inputmask('99999999999', { placeholder: '___________' });
 
-					if (data != '') {
-						$('.frmAjaxModificar').html(data);
-					} else {
-						swal("Error!", data, "warning");
-
-						$("#load").html('');
-					}
-				},
-				//si ha ocurrido un error
-				error: function(){
-					$(".alert").html('<strong>Error!</strong> Actualice la pagina');
-					$("#load").html('');
-				}
-			});
-
-		}
-
-
-		function frmAjaxEliminar(id) {
-			$.ajax({
-				url: '../../ajax/ajax.php',
-				type: 'POST',
-				// Form data
-				//datos del formulario
-				data: {accion: '<?php echo $eliminar; ?>', id: id},
-				//mientras enviamos el archivo
-				beforeSend: function(){
-
-				},
-				//una vez finalizado correctamente
-				success: function(data){
-
-					if (data == '') {
-						swal({
-								title: "Respuesta",
-								text: "Registro Eliminado con exito!!",
-								type: "success",
-								timer: 1500,
-								showConfirmButton: false
-						});
-						$('#lgmEliminar').modal('toggle');
-						table.ajax.reload();
-					} else {
-						swal({
-								title: "Respuesta",
-								text: data,
-								type: "error",
-								timer: 2000,
-								showConfirmButton: false
-						});
-
-					}
-				},
-				//si ha ocurrido un error
-				error: function(){
-					swal({
-							title: "Respuesta",
-							text: 'Actualice la pagina',
-							type: "error",
-							timer: 2000,
-							showConfirmButton: false
-					});
-
-				}
-			});
-
-		}
-
-		$("#example").on("click",'.btnEliminar', function(){
-			idTable =  $(this).attr("id");
-			$('#ideliminar').val(idTable);
-			$('#lgmEliminar').modal();
-		});//fin del boton eliminar
-
-		$('.eliminar').click(function() {
-			frmAjaxEliminar($('#ideliminar').val());
-		});
-
-		$("#example").on("click",'.btnVer', function(){
-			idTable =  $(this).attr("id");
-			url = "archivos.php?id=" + idTable;
-			$(location).attr('href',url);
-		});
-
-		$("#example").on("click",'.btnModificar', function(){
-			idTable =  $(this).attr("id");
-			frmAjaxModificar(idTable);
-			$('#lgmModificar').modal();
-		});//fin del boton modificar
 
 		$('#sign_in').submit(function(e){
 
@@ -485,7 +358,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 			if ($('#sign_in')[0].checkValidity()) {
 				//información del formulario
-				var formData = new FormData($(".formulario")[0]);
+				var formData = new FormData($("#sign_in")[0]);
 				var message = "";
 				//hacemos la petición ajax
 				$.ajax({
@@ -508,13 +381,12 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 						if (data == '') {
 							swal({
 									title: "Respuesta",
-									text: "Registro Creado con exito!!",
+									text: "Registro Modificado con exito!!",
 									type: "success",
 									timer: 1500,
 									showConfirmButton: false
 							});
 
-							table.ajax.reload();
 						} else {
 							swal({
 									title: "Respuesta",
@@ -534,61 +406,6 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 					}
 				});
 			}
-		});
-
-
-		$('.modificar').click(function(){
-
-			//información del formulario
-			var formData = new FormData($(".formulario")[1]);
-			var message = "";
-			//hacemos la petición ajax
-			$.ajax({
-				url: '../../ajax/ajax.php',
-				type: 'POST',
-				// Form data
-				//datos del formulario
-				data: formData,
-				//necesario para subir archivos via ajax
-				cache: false,
-				contentType: false,
-				processData: false,
-				//mientras enviamos el archivo
-				beforeSend: function(){
-
-				},
-				//una vez finalizado correctamente
-				success: function(data){
-
-					if (data == '') {
-						swal({
-								title: "Respuesta",
-								text: "Registro Modificado con exito!!",
-								type: "success",
-								timer: 1500,
-								showConfirmButton: false
-						});
-
-						$('#lgmModificar').modal('hide');
-						table.ajax.reload();
-					} else {
-						swal({
-								title: "Respuesta",
-								text: data,
-								type: "error",
-								timer: 2500,
-								showConfirmButton: false
-						});
-
-
-					}
-				},
-				//si ha ocurrido un error
-				error: function(){
-					$(".alert").html('<strong>Error!</strong> Actualice la pagina');
-					$("#load").html('');
-				}
-			});
 		});
 	});
 </script>

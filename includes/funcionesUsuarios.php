@@ -152,10 +152,10 @@ if (trim($usuario) != '' and trim($pass) != '') {
 
 		if ($error == '') {
 			session_start();
-			$_SESSION['usua_predio'] = $usuario;
-			$_SESSION['nombre_predio'] = mysql_result($resppass,0,0);
-			$_SESSION['email_predio'] = mysql_result($resppass,0,1);
-			$_SESSION['refroll_predio'] = mysql_result($resppass,0,2);
+			$_SESSION['usua_sahilices'] = $usuario;
+			$_SESSION['nombre_sahilices'] = mysql_result($resppass,0,0);
+			$_SESSION['email_sahilices'] = mysql_result($resppass,0,1);
+			$_SESSION['refroll_sahilices'] = mysql_result($resppass,0,2);
 		}
 
 
@@ -206,11 +206,34 @@ function traerUsuarios() {
 			inner join tbroles r on u.refroles = r.idrol
 			order by nombrecompleto";
 	$res = $this->query($sql,0);
-	if ($res == false) {
-		return 'Error al traer datos';
-	} else {
-		return $res;
+	return $res;
+}
+
+function traerUsuariosajax($length, $start, $busqueda) {
+
+   $where = '';
+
+	$busqueda = str_replace("'","",$busqueda);
+	if ($busqueda != '') {
+		$where = "where u.usuario like '%".$busqueda."%' or r.descripcion like '%".$busqueda."%' or u.email like '%".$busqueda."%' or u.nombrecompleto like '%".$busqueda."%'";
 	}
+
+
+	$sql = "select u.idusuario,
+                  u.usuario,
+                  r.descripcion,
+                  u.email ,
+                  u.nombrecompleto,
+                  (case when u.activo = 1 then 'Si' else 'No' end) as activo,
+                  u.refroles
+			from dbusuarios u
+			inner join tbroles r on u.refroles = r.idrol
+         ".$where."
+      	order by u.nombrecompleto
+      	limit ".$start.",".$length;
+
+	$res = $this->query($sql,0);
+	return $res;
 }
 
 
@@ -250,8 +273,14 @@ function traerUsuarioId($id) {
 	}
 }
 
-function existeUsuario($usuario) {
-	$sql = "select * from dbusuarios where email = '".$usuario."'";
+function existeUsuario($usuario, $id = 0) {
+
+   if ($id == 0) {
+      $sql = "select * from dbusuarios where email = '".$usuario."'";
+   } else {
+      $sql = "select * from dbusuarios where email = '".$usuario."' and idusuario <> ".$id;
+   }
+
 	$res = $this->query($sql,0);
 	if (mysql_num_rows($res)>0) {
 		return true;
@@ -360,25 +389,25 @@ function registrarSocio($email, $password,$apellido, $nombre,$refcliente) {
 				email,
 				nombrecompleto,
 				activo,
-				refcliente)
+				refclientes)
 			VALUES
 				('',
-				'".utf8_decode($apellido).' '.utf8_decode($nombre)."',
-				'".utf8_decode($password)."',
+				'".$apellido.' '.$nombre."',
+				'".$password."',
 				3,
-				'".utf8_decode($email)."',
-				'".utf8_decode($apellido).' '.utf8_decode($nombre)."',
+				'".$email."',
+				'".$apellido.' '.$nombre."',
 				0,
 				$refcliente)";
 
 	$res = $this->query($sql,1);
 
    if ($res == false) {
-		return 'Error al insertar datos';
+		return 'Error al insertar datos ';
 	} else {
 		$this->insertarActivacionusuarios($res,$token,'','');
 
-		$this->enviarEmail($email,'Alta de Usuario',utf8_decode($cuerpo));
+		//$this->enviarEmail($email,'Alta de Usuario',utf8_decode($cuerpo));
 
 		return $res;
 	}
@@ -389,7 +418,7 @@ function registrarSocio($email, $password,$apellido, $nombre,$refcliente) {
 
 function insertarActivacionusuarios($refusuarios,$token,$vigenciadesde,$vigenciahasta) {
 $sql = "insert into dbactivacionusuarios(idactivacionusuario,refusuarios,token,vigenciadesde,vigenciahasta)
-values ('',".$refusuarios.",'".utf8_decode($token)."',now(),ADDDATE(now(), INTERVAL 2 DAY))";
+values ('',".$refusuarios.",'".($token)."',now(),ADDDATE(now(), INTERVAL 2 DAY))";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -398,7 +427,7 @@ return $res;
 function modificarActivacionusuarios($id,$refusuarios,$token,$vigenciadesde,$vigenciahasta) {
 $sql = "update dbactivacionusuarios
 set
-refusuarios = ".$refusuarios.",token = '".($token)."',vigenciadesde = '".utf8_decode($vigenciadesde)."',vigenciahasta = '".utf8_decode($vigenciahasta)."'
+refusuarios = ".$refusuarios.",token = '".($token)."',vigenciadesde = '".($vigenciadesde)."',vigenciahasta = '".($vigenciahasta)."'
 where idactivacionusuario =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -418,7 +447,7 @@ return $res;
 function modificarActivacionusuariosRenovada($refusuarios,$token,$vigenciadesde,$vigenciahasta) {
 $sql = "update dbactivacionusuarios
 set
-vigenciadesde = now(),vigenciahasta = ADDDATE(now(), INTERVAL 2 DAY),token = '".($token)."'
+vigenciadesde = now(),vigenciahasta = ADDDATE(now(), INTERVAL 15 DAY),token = '".($token)."'
 where refusuarios =".$refusuarios;
 $res = $this->query($sql,0);
 return $res;
@@ -460,7 +489,7 @@ return $res;
 
 
 function traerActivacionusuariosPorToken($token) {
-$sql = "select idactivacionusuario,refusuarios,token,vigenciadesde,vigenciahasta from dbactivacionusuarios where token =".$token;
+$sql = "select idactivacionusuario,refusuarios,token,vigenciadesde,vigenciahasta from dbactivacionusuarios where token ='".$token."'";
 $res = $this->query($sql,0);
 return $res;
 }

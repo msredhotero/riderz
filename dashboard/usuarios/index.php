@@ -3,7 +3,7 @@
 
 session_start();
 
-if (!isset($_SESSION['usua_predio']))
+if (!isset($_SESSION['usua_sahilices']))
 {
 	header('Location: ../../error.php');
 } else {
@@ -13,306 +13,441 @@ include ('../../includes/funciones.php');
 include ('../../includes/funcionesUsuarios.php');
 include ('../../includes/funcionesHTML.php');
 include ('../../includes/funcionesReferencias.php');
+include ('../../includes/base.php');
 
+$serviciosFunciones 	= new Servicios();
+$serviciosUsuario 		= new ServiciosUsuarios();
+$serviciosHTML 			= new ServiciosHTML();
+$serviciosReferencias 	= new ServiciosReferencias();
+$baseHTML = new BaseHTML();
 
-$serviciosFunciones = new Servicios();
-$serviciosUsuario 	= new ServiciosUsuarios();
-$serviciosHTML 		= new ServiciosHTML();
-$serviciosReferencias = new ServiciosReferencias();
+//*** SEGURIDAD ****/
+include ('../../includes/funcionesSeguridad.php');
+$serviciosSeguridad = new ServiciosSeguridad();
+$serviciosSeguridad->seguridadRuta($_SESSION['refroll_sahilices'], '../usuarios/');
+//*** FIN  ****/
 
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"Usuarios",$_SESSION['refroll_predio'],'');
+$resMenu = $serviciosHTML->menu($_SESSION['nombre_sahilices'],"Usuarios",$_SESSION['refroll_sahilices'],$_SESSION['email_sahilices']);
 
+$configuracion = $serviciosReferencias->traerConfiguracion();
+
+$tituloWeb = mysql_result($configuracion,0,'sistema');
+
+$breadCumbs = '<a class="navbar-brand" href="../index.php">Dashboard</a>';
+
+/////////////////////// Opciones pagina ///////////////////////////////////////////////
+$singular = "Usuario";
+
+$plural = "Usuarios";
+
+$eliminar = "eliminarUsuarios";
+
+$insertar = "insertarUsuarios";
+
+$modificar = "modificarUsuarios";
+
+//////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
 $tabla 			= "dbusuarios";
 
-$lblCambio	 	= array("refroles","nombrecompleto");
-$lblreemplazo	= array("Perfil","Nombre Completo");
-
-if ($_SESSION['idroll_predio'] != 1) {
-	$resRoles 	= $serviciosUsuario->traerRolesSimple();
-} else {
-	$resRoles 	= $serviciosUsuario->traerRoles();
-	
-}
+$lblCambio	 	= array('nombrecompleto','refclientes');
+$lblreemplazo	= array('Nombre Completo','Cliente');
 
 
-$cadRef = $serviciosFunciones->devolverSelectBox($resRoles,array(1),'');
+$refClientes = $serviciosReferencias->traerClientes();
+$cadRef = $serviciosFunciones->devolverSelectBox($refClientes,array(1,2,3),' ');
 
+$refdescripcion = array(0=>$cadRef);
+$refCampo 	=  array('refclientes');
 
-$refdescripcion = array(0 => $cadRef);
-$refCampo 	=  array("refroles"); 
+$frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
-
-
-
-
-/////////////////////// Opciones para la creacion del view  /////////////////////
-$cabeceras 		= "	<th>Usuario</th>
-				<th>Password</th>
-				<th>Perfil</th>
-				<th>Email</th>
-				<th>Nombre Completo</th>";
-
-//////////////////////////////////////////////  FIN de los opciones //////////////////////////
-
-
-
-
-$formulario 	= $serviciosFunciones->camposTabla("insertarUsuario",$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
-
-if ($_SESSION['idroll_predio'] != 1) {
-	$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosUsuario->traerUsuariosSimple(),5);
-} else {
-	$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosUsuario->traerUsuarios(),5);
-}
-
-
-
-
-
 
 ?>
 
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 
 <head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<title><?php echo $tituloWeb; ?></title>
+	<!-- Favicon-->
+	<link rel="icon" href="../../favicon.ico" type="image/x-icon">
 
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<?php echo $baseHTML->cargarArchivosCSS('../../'); ?>
+
+	<link href="../../plugins/waitme/waitMe.css" rel="stylesheet" />
+	<link href="../../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+
+	<!-- VUE JS -->
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+	<!-- axios -->
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+	<script src="https://unpkg.com/vue-swal"></script>
+
+	<!-- Bootstrap Material Datetime Picker Css -->
+	<link href="../../plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+
+	<!-- Dropzone Css -->
+	<link href="../../plugins/dropzone/dropzone.css" rel="stylesheet">
 
 
+	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/dataTables.jqueryui.min.css">
+	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/jquery.dataTables.css">
 
-<title>Gestión: Talleres</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-<link href="../../css/estiloDash.css" rel="stylesheet" type="text/css">
-    
-
-    
-    <script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
-    <link rel="stylesheet" href="../../css/jquery-ui.css">
-
-    <script src="../../js/jquery-ui.js"></script>
-    
-	<!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="../../css/bootstrap-datetimepicker.min.css">
-	<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="../../bootstrap/js/bootstrap.min.js"></script>
-
-	<style type="text/css">
-		
-  
-		
+	<style>
+		.alert > i{ vertical-align: middle !important; }
 	</style>
-    
-   
-   <link href="../../css/perfect-scrollbar.css" rel="stylesheet">
-      <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
-      <script src="../../js/jquery.mousewheel.js"></script>
-      <script src="../../js/perfect-scrollbar.js"></script>
-      <script>
-      jQuery(document).ready(function ($) {
-        "use strict";
-        $('#navigation').perfectScrollbar();
-      });
-    </script>
+
+
 </head>
 
-<body>
 
- <?php echo $resMenu; ?>
 
-<div id="content">
+<body class="theme-red">
 
-<h3>Usuarios</h3>
-
-    <div class="boxInfoLargo">
-        <div id="headBoxInfo">
-        	<p style="color: #fff; font-size:18px; height:16px;">Carga de Usuarios</p>
-        	
-        </div>
-    	<div class="cuerpoBox">
-        	<form class="form-inline formulario" role="form">
-        	<div class="row">
-			<?php echo $formulario; ?>
-            </div>
-            
-            <div class='row' style="margin-left:25px; margin-right:25px;">
-                <div class='alert'>
-                
-                </div>
-                <div id='load'>
-                
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-12">
-                <ul class="list-inline" style="margin-top:15px;">
-                    <li>
-                        <button type="button" class="btn btn-primary" id="cargar" style="margin-left:0px;">Guardar</button>
-                    </li>
-                </ul>
-                </div>
-            </div>
-            </form>
-    	</div>
-    </div>
-    
-    <div class="boxInfoLargo">
-        <div id="headBoxInfo">
-        	<p style="color: #fff; font-size:18px; height:16px;">Usuarios Cargados</p>
-        	
-        </div>
-    	<div class="cuerpoBox">
-        	<?php echo $lstCargados; ?>
-    	</div>
-    </div>
-    
-    
-
-    
-    
-   
+<!-- Page Loader -->
+<div class="page-loader-wrapper">
+	<div class="loader">
+		<div class="preloader">
+			<div class="spinner-layer pl-red">
+				<div class="circle-clipper left">
+					<div class="circle"></div>
+				</div>
+				<div class="circle-clipper right">
+					<div class="circle"></div>
+				</div>
+			</div>
+		</div>
+		<p>Cargando...</p>
+	</div>
 </div>
-
-
+<!-- #END# Page Loader -->
+<!-- Overlay For Sidebars -->
+<div class="overlay"></div>
+<!-- #END# Overlay For Sidebars -->
+<!-- Search Bar -->
+<div class="search-bar">
+	<div class="search-icon">
+		<i class="material-icons">search</i>
+	</div>
+	<input type="text" placeholder="Ingrese palabras...">
+	<div class="close-search">
+		<i class="material-icons">close</i>
+	</div>
 </div>
-<div id="dialog2" title="Eliminar Equipos">
-    	<p>
-        	<span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
-            ¿Esta seguro que desea eliminar el Usuario?.<span id="proveedorEli"></span>
-        </p>
-        <p><strong>Importante: </strong>Si elimina el equipo se perderan todos los datos de este</p>
-        <input type="hidden" value="" id="idEliminar" name="idEliminar">
-</div>
-<script type="text/javascript" src="../../js/jquery.dataTables.min.js"></script>
-<script src="../../bootstrap/js/dataTables.bootstrap.js"></script>
-<script src="../../js/bootstrap-datetimepicker.min.js"></script>
-<script src="../../js/bootstrap-datetimepicker.es.js"></script>
+<!-- #END# Search Bar -->
+<!-- Top Bar -->
+<?php echo $baseHTML->cargarNAV($breadCumbs); ?>
+<!-- #Top Bar -->
+<?php echo $baseHTML->cargarSECTION($_SESSION['usua_sahilices'], $_SESSION['nombre_sahilices'], $resMenu,'../../'); ?>
 
-<script type="text/javascript">
-$(document).ready(function(){
-	$('#example').dataTable({
-		"order": [[ 0, "asc" ]],
-		"language": {
-			"emptyTable":     "No hay datos cargados",
-			"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
-			"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
-			"infoFiltered":   "(filtrados del total de _MAX_ filas)",
-			"infoPostFix":    "",
-			"thousands":      ",",
-			"lengthMenu":     "Mostrar _MENU_ filas",
-			"loadingRecords": "Cargando...",
-			"processing":     "Procesando...",
-			"search":         "Buscar:",
-			"zeroRecords":    "No se encontraron resultados",
-			"paginate": {
-				"first":      "Primero",
-				"last":       "Ultimo",
-				"next":       "Siguiente",
-				"previous":   "Anterior"
-			},
-			"aria": {
-				"sortAscending":  ": activate to sort column ascending",
-				"sortDescending": ": activate to sort column descending"
-			}
-		  }
-	} );
+<section class="content" style="margin-top:-15px;">
 
-	$("#example").on("click",'.varborrar', function(){
-		  usersid =  $(this).attr("id");
-		  if (!isNaN(usersid)) {
-			$("#idEliminar").val(usersid);
-			$("#dialog2").dialog("open");
+	<div class="container-fluid">
+		<div class="row clearfix">
 
-			
-			//url = "../clienteseleccionado/index.php?idcliente=" + usersid;
-			//$(location).attr('href',url);
-		  } else {
-			alert("Error, vuelva a realizar la acción.");	
-		  }
-	});//fin del boton eliminar
-	
-	
-	$("#example").on("click",'.varmodificar', function(){
-		  usersid =  $(this).attr("id");
-		  if (!isNaN(usersid)) {
-			
-			url = "modificar.php?id=" + usersid;
-			$(location).attr('href',url);
-		  } else {
-			alert("Error, vuelva a realizar la acción.");	
-		  }
-	});//fin del boton modificar
+			<div class="row">
 
-	 $( "#dialog2" ).dialog({
-		 	
-			    autoOpen: false,
-			 	resizable: false,
-				width:600,
-				height:240,
-				modal: true,
-				buttons: {
-				    "Eliminar": function() {
-	
-						$.ajax({
-									data:  {id: $('#idEliminar').val(), accion: 'eliminarUsuario'},
-									url:   '../../ajax/ajax.php',
-									type:  'post',
-									beforeSend: function () {
-											
-									},
-									success:  function (response) {
-											url = "index.php";
-											$(location).attr('href',url);
-											
-									}
-							});
-						$( this ).dialog( "close" );
-						$( this ).dialog( "close" );
-							$('html, body').animate({
-	           					scrollTop: '1000px'
-	       					},
-	       					1500);
-				    },
-				    Cancelar: function() {
-						$( this ).dialog( "close" );
-				    }
+
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div class="card ">
+						<div class="header bg-blue">
+							<h2>
+								<?php echo strtoupper($plural); ?>
+							</h2>
+							<ul class="header-dropdown m-r--5">
+								<li class="dropdown">
+									<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+										<i class="material-icons">more_vert</i>
+									</a>
+									<ul class="dropdown-menu pull-right">
+
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<div class="body table-responsive">
+							<form class="form" id="formCountry">
+
+
+								<div class="row" style="padding: 5px 20px;">
+
+									<table id="example" class="display table " style="width:100%">
+										<thead>
+											<tr>
+												<th>Usuario</th>
+												<th>Perfil</th>
+												<th>Email</th>
+												<th>Nombre Completo</th>
+												<th>Activo</th>
+												<th>Acciones</th>
+											</tr>
+										</thead>
+										<tfoot>
+											<tr>
+												<th>Usuario</th>
+												<th>Perfil</th>
+												<th>Email</th>
+												<th>Nombre Completo</th>
+												<th>Activo</th>
+												<th>Acciones</th>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+
+<!-- NUEVO -->
+	<form class="formulario" role="form" id="sign_in">
+	   <div class="modal fade" id="lgmNuevo" tabindex="-1" role="dialog">
+	       <div class="modal-dialog modal-lg" role="document">
+	           <div class="modal-content">
+	               <div class="modal-header">
+	                   <h4 class="modal-title" id="largeModalLabel">CREAR <?php echo strtoupper($singular); ?></h4>
+	               </div>
+	               <div class="modal-body">
+	                  <?php echo $frmUnidadNegocios; ?>
+	               </div>
+	               <div class="modal-footer">
+	                   <button type="submit" class="btn btn-primary waves-effect nuevo">GUARDAR</button>
+	                   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
+	               </div>
+	           </div>
+	       </div>
+	   </div>
+		<input type="hidden" id="accion" name="accion" value="<?php echo $insertar; ?>"/>
+	</form>
+
+	<!-- MODIFICAR -->
+		<form class="formulario" role="form" id="sign_in">
+		   <div class="modal fade" id="lgmModificar" tabindex="-1" role="dialog">
+		       <div class="modal-dialog modal-lg" role="document">
+		           <div class="modal-content">
+		               <div class="modal-header">
+		                   <h4 class="modal-title" id="largeModalLabel">MODIFICAR <?php echo strtoupper($singular); ?></h4>
+		               </div>
+		               <div class="modal-body frmAjaxModificar">
+
+		               </div>
+		               <div class="modal-footer">
+		                   <button type="button" class="btn btn-warning waves-effect modificar">MODIFICAR</button>
+		                   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
+		               </div>
+		           </div>
+		       </div>
+		   </div>
+			<input type="hidden" id="accion" name="accion" value="<?php echo $modificar; ?>"/>
+		</form>
+
+
+	<!-- ELIMINAR -->
+		<form class="formulario" role="form" id="sign_in">
+		   <div class="modal fade" id="lgmEliminar" tabindex="-1" role="dialog">
+		       <div class="modal-dialog modal-lg" role="document">
+		           <div class="modal-content">
+		               <div class="modal-header">
+		                   <h4 class="modal-title" id="largeModalLabel">ELIMINAR <?php echo strtoupper($singular); ?></h4>
+		               </div>
+		               <div class="modal-body">
+										 <p>¿Esta seguro que desea eliminar el registro?</p>
+										 <small>* Si este registro esta relacionado con algun otro dato no se podría eliminar.</small>
+		               </div>
+		               <div class="modal-footer">
+		                   <button type="button" class="btn btn-danger waves-effect eliminar">ELIMINAR</button>
+		                   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
+		               </div>
+		           </div>
+		       </div>
+		   </div>
+			<input type="hidden" id="accion" name="accion" value="<?php echo $eliminar; ?>"/>
+			<input type="hidden" name="ideliminar" id="ideliminar" value="0">
+		</form>
+
+
+<?php echo $baseHTML->cargarArchivosJS('../../'); ?>
+<!-- Wait Me Plugin Js -->
+<script src="../../plugins/waitme/waitMe.js"></script>
+
+<!-- Custom Js -->
+<script src="../../js/pages/cards/colored.js"></script>
+
+<script src="../../plugins/jquery-validation/jquery.validate.js"></script>
+
+<script src="../../js/pages/examples/sign-in.js"></script>
+
+<!-- Bootstrap Material Datetime Picker Plugin Js -->
+<script src="../../plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
+
+<script src="../../DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+
+
+<script>
+	$(document).ready(function(){
+		var table = $('#example').DataTable({
+			"bProcessing": true,
+			"bServerSide": true,
+			"sAjaxSource": "../../json/jstablasajax.php?tabla=usuarios",
+			"language": {
+				"emptyTable":     "No hay datos cargados",
+				"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
+				"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
+				"infoFiltered":   "(filtrados del total de _MAX_ filas)",
+				"infoPostFix":    "",
+				"thousands":      ",",
+				"lengthMenu":     "Mostrar _MENU_ filas",
+				"loadingRecords": "Cargando...",
+				"processing":     "Procesando...",
+				"search":         "Buscar:",
+				"zeroRecords":    "No se encontraron resultados",
+				"paginate": {
+					"first":      "Primero",
+					"last":       "Ultimo",
+					"next":       "Siguiente",
+					"previous":   "Anterior"
+				},
+				"aria": {
+					"sortAscending":  ": activate to sort column ascending",
+					"sortDescending": ": activate to sort column descending"
 				}
-		 
-		 
-	 		}); //fin del dialogo para eliminar
-			
-	<?php 
-		echo $serviciosHTML->validacion($tabla);
-	
-	?>
-	
+			}
+		});
 
-	
-	
-	//al enviar el formulario
-    $('#cargar').click(function(){
-		
-		if (validador() == "")
-        {
+		$("#sign_in").submit(function(e){
+			e.preventDefault();
+		});
+
+		$('#activo').prop('checked',true);
+
+		function frmAjaxModificar(id) {
+			$.ajax({
+				url: '../../ajax/ajax.php',
+				type: 'POST',
+				// Form data
+				//datos del formulario
+				data: {accion: 'frmAjaxModificar',tabla: '<?php echo $tabla; ?>', id: id},
+				//mientras enviamos el archivo
+				beforeSend: function(){
+					$('.frmAjaxModificar').html('');
+				},
+				//una vez finalizado correctamente
+				success: function(data){
+
+					if (data != '') {
+						$('.frmAjaxModificar').html(data);
+					} else {
+						swal("Error!", data, "warning");
+
+						$("#load").html('');
+					}
+				},
+				//si ha ocurrido un error
+				error: function(){
+					$(".alert").html('<strong>Error!</strong> Actualice la pagina');
+					$("#load").html('');
+				}
+			});
+
+		}
+
+
+		function frmAjaxEliminar(id) {
+			$.ajax({
+				url: '../../ajax/ajax.php',
+				type: 'POST',
+				// Form data
+				//datos del formulario
+				data: {accion: '<?php echo $eliminar; ?>', id: id},
+				//mientras enviamos el archivo
+				beforeSend: function(){
+
+				},
+				//una vez finalizado correctamente
+				success: function(data){
+
+					if (data == '') {
+						swal({
+								title: "Respuesta",
+								text: "Registro Eliminado con exito!!",
+								type: "success",
+								timer: 1500,
+								showConfirmButton: false
+						});
+						$('#lgmEliminar').modal('toggle');
+						table.ajax.reload();
+					} else {
+						swal({
+								title: "Respuesta",
+								text: data,
+								type: "error",
+								timer: 2000,
+								showConfirmButton: false
+						});
+
+					}
+				},
+				//si ha ocurrido un error
+				error: function(){
+					swal({
+							title: "Respuesta",
+							text: 'Actualice la pagina',
+							type: "error",
+							timer: 2000,
+							showConfirmButton: false
+					});
+
+				}
+			});
+
+		}
+
+		$("#example").on("click",'.btnEliminar', function(){
+			idTable =  $(this).attr("id");
+			$('#ideliminar').val(idTable);
+			$('#lgmEliminar').modal();
+		});//fin del boton eliminar
+
+		$('.eliminar').click(function() {
+			frmAjaxEliminar($('#ideliminar').val());
+		});
+
+		$("#example").on("click",'.btnModificar', function(){
+			idTable =  $(this).attr("id");
+			frmAjaxModificar(idTable);
+			$('#lgmModificar').modal();
+		});//fin del boton modificar
+
+		$('.nuevo').click(function(){
+
 			//información del formulario
 			var formData = new FormData($(".formulario")[0]);
 			var message = "";
-			//hacemos la petición ajax  
+			//hacemos la petición ajax
 			$.ajax({
-				url: '../../ajax/ajax.php',  
+				url: '../../ajax/ajax.php',
 				type: 'POST',
 				// Form data
 				//datos del formulario
@@ -323,59 +458,107 @@ $(document).ready(function(){
 				processData: false,
 				//mientras enviamos el archivo
 				beforeSend: function(){
-					$("#load").html('<img src="../../imagenes/load13.gif" width="50" height="50" />');       
+
 				},
 				//una vez finalizado correctamente
 				success: function(data){
 
 					if (data == '') {
-                                            $(".alert").removeClass("alert-danger");
-											$(".alert").removeClass("alert-info");
-                                            $(".alert").addClass("alert-success");
-                                            $(".alert").html('<strong>Ok!</strong> Se cargo exitosamente el <strong>Usuario</strong>. ');
-											$(".alert").delay(3000).queue(function(){
-												/*aca lo que quiero hacer 
-												  después de los 2 segundos de retraso*/
-												$(this).dequeue(); //continúo con el siguiente ítem en la cola
-												
-											});
-											$("#load").html('');
-											url = "index.php";
-											$(location).attr('href',url);
-                                            
-											
-                                        } else {
-                                        	$(".alert").removeClass("alert-danger");
-                                            $(".alert").addClass("alert-danger");
-                                            $(".alert").html('<strong>Error!</strong> '+data);
-                                            $("#load").html('');
-                                        }
+						swal({
+								title: "Respuesta",
+								text: "Registro Creado con exito!!",
+								type: "success",
+								timer: 1500,
+								showConfirmButton: false
+						});
+
+						$('#lgmNuevo').modal('hide');
+						$('#unidadnegocio').val('');
+						table.ajax.reload();
+					} else {
+						swal({
+								title: "Respuesta",
+								text: data,
+								type: "error",
+								timer: 2500,
+								showConfirmButton: false
+						});
+
+
+					}
 				},
 				//si ha ocurrido un error
 				error: function(){
 					$(".alert").html('<strong>Error!</strong> Actualice la pagina');
-                    $("#load").html('');
+					$("#load").html('');
 				}
 			});
-		}
-    });
+		});
 
-});
-</script>
-<script type="text/javascript">
-$('.form_date').datetimepicker({
-	language:  'es',
-	weekStart: 1,
-	todayBtn:  1,
-	autoclose: 1,
-	todayHighlight: 1,
-	startView: 2,
-	minView: 2,
-	forceParse: 0,
-	format: 'dd/mm/yyyy'
-});
+
+		$('.modificar').click(function(){
+
+			//información del formulario
+			var formData = new FormData($(".formulario")[1]);
+			var message = "";
+			//hacemos la petición ajax
+			$.ajax({
+				url: '../../ajax/ajax.php',
+				type: 'POST',
+				// Form data
+				//datos del formulario
+				data: formData,
+				//necesario para subir archivos via ajax
+				cache: false,
+				contentType: false,
+				processData: false,
+				//mientras enviamos el archivo
+				beforeSend: function(){
+
+				},
+				//una vez finalizado correctamente
+				success: function(data){
+
+					if (data == '') {
+						swal({
+								title: "Respuesta",
+								text: "Registro Modificado con exito!!",
+								type: "success",
+								timer: 1500,
+								showConfirmButton: false
+						});
+
+						$('#lgmModificar').modal('hide');
+						table.ajax.reload();
+					} else {
+						swal({
+								title: "Respuesta",
+								text: data,
+								type: "error",
+								timer: 2500,
+								showConfirmButton: false
+						});
+
+
+					}
+				},
+				//si ha ocurrido un error
+				error: function(){
+					$(".alert").html('<strong>Error!</strong> Actualice la pagina');
+					$("#load").html('');
+				}
+			});
+		});
+	});
 </script>
 
-<?php } ?>
+
+
+
+
+
+
+
 </body>
+<?php } ?>
 </html>

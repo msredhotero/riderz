@@ -1,6 +1,30 @@
 <?php
+
+require 'includes/funcionesUsuarios.php';
+
+
 session_start();
-session_destroy();
+
+$serviciosUsuario = new ServiciosUsuarios();
+
+
+$ui = $_GET['token'];
+
+$resActivacion = $serviciosUsuario->traerActivacionusuariosPorToken($ui);
+
+$cadResultado = '';
+
+if (mysql_num_rows($resActivacion) > 0) {
+	$idusuario = mysql_result($resActivacion,0,'refusuarios');
+
+	// prolongo la activacion
+	$resConcretar = $serviciosUsuario->modificarActivacionusuariosRenovada($idusuario,$ui,'','');
+
+	$cadResultado = 'Vuelva intentar activarse haciendo click <a href="activacion.php?token='.$ui.'">AQUI</a>!!';
+} else {
+
+	$cadResultado = 'Esta clave de Activación es inexistente';
+}
 
 
 
@@ -11,7 +35,7 @@ session_destroy();
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Logout | RIDERZ</title>
+    <title>Acceder | RIDERZ</title>
     <!-- Favicon-->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
@@ -37,25 +61,24 @@ session_destroy();
 
 <body class="login-page">
     <div class="login-box">
-        <div class="logo" style="background-color:#F00; padding:10px 10px;">
-            <a href="javascript:void(0);" style="color:#00F;">Logout <b>RIDERZ</b></a>
-            <small>Administración de Clientes</small>
+        <div class="logo" style="background-color:#0F0; padding:10px 10px;">
+            <a href="javascript:void(0);" style="color:#000;">Prolongar <b>RIDERZ</b></a>
+            <small style="color:#000;">Administración Sistema de Clientes</small>
         </div>
         <div class="card">
             <div class="body">
+                <form id="sign_in" method="POST">
+                     <h4><?php echo $cadResultado; ?></h4>
 
-                    <h3>Acaba de finalizar su sessión</h3>
-
-                    <div class="row js-sweetalert">
-                        <div class="col-xs-2">
+                     <div class="row m-t-15 m-b--20">
+                        <div class="col-xs-6">
+                           <a href="index.html">Iniciar Sessión!!</a>
+                        </div>
+                        <div class="col-xs-6 align-right">
 
                         </div>
-                        <div class="col-xs-8">
-                            <button class="btn btn-block bg-pink waves-effect" onclick="volver()" data-type="" type="button" id="login">VOLVER A INGRESAR</button>
-                        </div>
-                    </div>
-
-
+                     </div>
+               </form>
             </div>
         </div>
     </div>
@@ -80,13 +103,17 @@ session_destroy();
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
 
     <script src="js/pages/ui/dialogs.js"></script>
-	<script>
-		function volver() {
-			document.location.href = 'index.html';
-		}
-	</script>
 
 
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+
+
+        });/* fin del document ready */
+
+    </script>
 </body>
 
 </html>

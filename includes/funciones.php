@@ -116,6 +116,14 @@ class Servicios {
 				$idresultados = "resultados";
 				$classModNuevo = '';
 				break;
+			case 89:
+				$cantidad = 4;
+				$classMod = '';
+				$classEli = 'vardescargar';
+				$iconoVar2 = 'glyphicon glyphicon-download-alt';
+				$lblVar2	  = 'Decargar';
+				$idresultados = "resultados";
+				break;
 			default:
 				$classMod = 'varmodificar';
 				$classEli = 'varborrar';
@@ -374,8 +382,8 @@ class Servicios {
 		$label  = '';
 
 		switch ($tabla) {
-			case 'dboportunidades':
-				$ocultar = array("refcotizaciones","fechacreacion","refsemaforos","refusuarios","refestadocotizacion");
+			case 'dbarchivos':
+				$ocultar = array("type","fechacreacion","refsemaforos","refusuarios","refestadocotizacion");
 				break;
 
 			default:
@@ -1051,10 +1059,24 @@ class Servicios {
 	function camposTablaModificar($id,$lblid,$accion,$tabla,$lblcambio,$lblreemplazo,$refdescripcion,$refCampo) {
 
 		switch ($tabla) {
-			case 'tbunidadesnegocios':
-				$sqlMod = "select idunidadnegocio,
-													unidadnegocio,
-													(case when activo = 1 then 'Si' else 'No' end) activo
+			case 'dbclientes':
+				$sqlMod = "select
+								idcliente,
+								apellido,
+								nombre,
+								cuit,
+								telefono,
+								celular,
+								email,
+								(case when aceptaterminos = 1 then 'Si' else 'No' end) as aceptaterminos,
+								(case when subscripcion = 1 then 'Si' else 'No' end) as subscripcion,
+								(case when activo = 1 then 'Si' else 'No' end) as activo
+									from ".$tabla." where ".$lblid." = ".$id;
+				$resMod = $this->query($sqlMod,0);
+				break;
+			case 'dbusuarios':
+				$sqlMod = "select
+								idusuario,usuario,password,refroles,email,nombrecompleto,(case when activo = 1 then 'Si' else 'No' end) as activo,refclientes
 									from ".$tabla." where ".$lblid." = ".$id;
 				$resMod = $this->query($sqlMod,0);
 				break;
@@ -1111,7 +1133,17 @@ class Servicios {
 		$sql	=	"show columns from ".$tabla;
 		$res 	=	$this->query($sql,0);
 
-		$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi","idusuario");
+		if ($tabla == 'dbclientes') {
+			$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi","idusuario","activo");
+		} else {
+			if ($tabla == 'dbusuarios') {
+				$ocultar = array("password");
+			} else {
+				$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi","idusuario");
+			}
+
+		}
+
 
 		$camposEscondido = "";
 		$lblObligatorio = '';

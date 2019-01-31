@@ -187,9 +187,9 @@
 
 
             $("#sign_in").submit(function(e){
-               var form = document.getElementById('form');
+
                e.preventDefault();
-               if (!form.checkValidity()) {
+               if ($('#sign_in')[0].checkValidity()) {
                $.ajax({
                     data:  {email:		$("#email").val(),
                             pass:		$("#pass").val(),
