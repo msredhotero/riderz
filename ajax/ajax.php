@@ -2225,6 +2225,9 @@ function registrarme($serviciosUsuarios, $serviciosReferencias, $serviciosValida
    if ($error != '') {
       // todo ok
       $res = $serviciosReferencias->insertarClientes($apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion);
+
+      // empiezo la activacion del usuarios
+      $resActivacion = $serviciosUsuarios->registrarSocio($email, $pass,$apellido, $nombre,$res);
    } else {
       // error
       echo $error;
