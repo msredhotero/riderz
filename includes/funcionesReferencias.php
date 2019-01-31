@@ -496,10 +496,10 @@ return $res;
 }
 
 
-function modificarClientePorCliente($id,$cuit,$apellido,$nombre,$direccion,$telefono,$celular) {
+function modificarClientePorCliente($id,$apellido,$nombre,$telefono,$celular) {
 $sql = "update dbclientes
 set
-apellido = '".($apellido)."',nombre = '".($nombre)."',cuit = '".($cuit)."',telefono = '".($telefono)."',celular = '".($celular)."',email = '".($email)."',aceptaterminos = ".$aceptaterminos.",subscripcion = ".$subscripcion."
+apellido = '".($apellido)."',nombre = '".($nombre)."',telefono = '".($telefono)."',celular = '".($celular)."'
 where idcliente =".$id;
 $res = $this->query($sql,0);
 return $res;

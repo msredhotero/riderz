@@ -88,6 +88,9 @@ case 'traerArchivosPorCliente':
 	case 'eliminarCategorias':
 	eliminarCategorias($serviciosReferencias);
 	break;
+   case 'modificarClientePorCliente':
+	modificarClientePorCliente($serviciosReferencias);
+	break;
 
 
    case 'frmAjaxModificar':
@@ -110,6 +113,26 @@ case 'traerArchivosPorCliente':
 }
 /* Fin */
 
+
+function modificarClientePorCliente($serviciosReferencias) {
+	$id = $_POST['id'];
+	$apellido = $_POST['apellido'];
+	$nombre = $_POST['nombre'];
+	$telefono = $_POST['telefono'];
+	$celular = $_POST['celular'];
+
+	if (($apellido == '') || ($nombre == '')) {
+		echo 'Hubo un error al modificar datos, los campos Apellido, Nombre y CUIT son obligatorios';
+	} else {
+		$res = $serviciosReferencias->modificarClientePorCliente($id,$apellido,$nombre,$telefono,$celular);
+
+		if ($res == true) {
+			echo '';
+		} else {
+			echo 'Hubo un error al modificar datos';
+		}
+	}
+}
 
 function eliminarUsuarios($serviciosUsuarios, $serviciosReferencias) {
    $id = $_POST['id'];
