@@ -407,7 +407,7 @@ function registrarSocio($email, $password,$apellido, $nombre,$refcliente) {
 	} else {
 		$this->insertarActivacionusuarios($res,$token,'','');
 
-		//$this->enviarEmail($email,'Alta de Usuario',utf8_decode($cuerpo));
+		$this->enviarEmail($email,'Alta de Usuario',utf8_decode($cuerpo));
 
 		return $res;
 	}
