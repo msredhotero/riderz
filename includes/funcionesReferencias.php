@@ -313,6 +313,67 @@ function descargar($token) {
 
 
 
+/* PARA Facturas */
+
+function insertarFacturas($reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen) {
+$sql = "insert into dbfacturas(idfactura,reftipofacturas,refestados,refmeses,anio,concepto,total,iva,irff,fechaingreso,fechasubido,imagen)
+values ('',".$reftipofacturas.",".$refestados.",".$refmeses.",".$anio.",'".($concepto)."',".$total.",".$iva.",".$irff.",'".($fechaingreso)."','".($fechasubido)."','".($imagen)."')";
+$res = $this->query($sql,1);
+return $res;
+}
+
+
+function modificarFacturas($id,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen) {
+$sql = "update dbfacturas
+set
+reftipofacturas = ".$reftipofacturas.",refestados = ".$refestados.",refmeses = ".$refmeses.",anio = ".$anio.",concepto = '".($concepto)."',total = ".$total.",iva = ".$iva.",irff = ".$irff.",fechaingreso = '".($fechaingreso)."',fechasubido = '".($fechasubido)."',imagen = '".($imagen)."'
+where idfactura =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function eliminarFacturas($id) {
+$sql = "delete from dbfacturas where idfactura =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerFacturas() {
+$sql = "select
+f.idfactura,
+f.reftipofacturas,
+f.refestados,
+f.refmeses,
+f.anio,
+f.concepto,
+f.total,
+f.iva,
+f.irff,
+f.fechaingreso,
+f.fechasubido,
+f.imagen
+from dbfacturas f
+inner join tbtipofacturas tip ON tip.idtipofactura = f.reftipofacturas
+inner join tbestados est ON est.idestado = f.refestados
+inner join tbmeses mes ON mes.idmes = f.refmeses
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerFacturasPorId($id) {
+$sql = "select idfactura,reftipofacturas,refestados,refmeses,anio,concepto,total,iva,irff,fechaingreso,fechasubido,imagen from dbfacturas where idfactura =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+/* Fin */
+/* /* Fin de la Tabla: dbfacturas*/
+
+
 /* PARA Archivos */
 function insertarArchivos($refclientes,$token,$imagen,$type,$observacion,$refcategorias,$anio,$mes) {
 $sql = "insert into dbarchivos(idarchivo,refclientes,token,imagen,type,observacion, refcategorias, anio, mes)

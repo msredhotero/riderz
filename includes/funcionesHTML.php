@@ -13,17 +13,21 @@ function menu($usuario,$titulo,$rol,$empresa) {
 	$cadmenu = "";
 	$cadhover= "";
 
+	$active = '';
 
 	$cant = 1;
 	while ($row = mysql_fetch_array($res)) {
 		if ($titulo == $row['nombre']) {
+			$active = 'class="active"';
 			$nombre = $row['nombre'];
 			$row['url'] = "index.php";
+		} else {
+			$active = '';
 		}
 
 		if (strpos($row['permiso'],$rol) !== false) {
 			if ($row['idmenu'] == 1) {
-				$cadmenu .= '<li>
+				$cadmenu .= '<li '.$active.'>
 								<a href="'.$row['url'].'">
 									<i class="material-icons">'.$row['icono'].'</i>
 									<span>'.$row['nombre'].'</span>
@@ -36,7 +40,7 @@ function menu($usuario,$titulo,$rol,$empresa) {
 										</li>';	*/
 			} else {
 
-				$cadmenu .= '<li>
+				$cadmenu .= '<li '.$active.'>
 								<a href="'.$row['url'].'">
 									<i class="material-icons">'.$row['icono'].'</i>
 									<span>'.$row['nombre'].'</span>
@@ -54,7 +58,7 @@ function menu($usuario,$titulo,$rol,$empresa) {
 	}
 
 
-	
+
 
 
 

@@ -35,14 +35,26 @@ function query($sql,$accion) {
 
 
 
-$tablasAr	= array('clientes' => 'dbclientes');
+$tablasAr	= array('clientes' => 'dbclientes',
+							'facturas' => 'dbfacturas',
+							'tipofacturas' => 'tbtipofacturas',
+							'estados' => 'tbestados',
+							'meses' => 'tbmeses');
 
 
 function recursiveTablas($ar, $tabla, $aliasTablaMadre) {
 
-	$tablasArAux2	= array('clientes' => 'dbclientes');
+	$tablasArAux2	= array('clientes' => 'dbclientes',
+									'facturas' => 'dbfacturas',
+									'tipofacturas' => 'tbtipofacturas',
+									'estados' => 'tbestados',
+									'meses' => 'tbmeses');
 
-	$tablasArAux	= array('clientes' => 1);
+	$tablasArAux	= array('clientes' => 1,
+									'facturas' => 3,
+									'tipofacturas' => 1,
+									'estados' => 1,
+									'meses' => 1);
 
 	$inner= '';
 	$sql	=	"show columns from ".$tabla;
