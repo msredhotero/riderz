@@ -118,7 +118,7 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 
 </head>
 
-<body class="theme-indigo">
+<body class="theme-purple">
 
     <!-- Page Loader -->
     <div class="page-loader-wrapper">

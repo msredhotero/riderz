@@ -315,9 +315,9 @@ function descargar($token) {
 
 /* PARA Facturas */
 
-function insertarFacturas($reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen) {
-$sql = "insert into dbfacturas(idfactura,reftipofacturas,refestados,refmeses,anio,concepto,total,iva,irff,fechaingreso,fechasubido,imagen)
-values ('',".$reftipofacturas.",".$refestados.",".$refmeses.",".$anio.",'".($concepto)."',".$total.",".$iva.",".$irff.",'".($fechaingreso)."','".($fechasubido)."','".($imagen)."')";
+function insertarFacturas($refclientes,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen) {
+$sql = "insert into dbfacturas(idfactura,refclientes,reftipofacturas,refestados,refmeses,anio,concepto,total,iva,irff,fechaingreso,fechasubido,imagen)
+values ('',".$refclientes.",".$reftipofacturas.",".$refestados.",".$refmeses.",".$anio.",'".($concepto)."',".$total.",".$iva.",".$irff.",'".($fechaingreso)."','".($fechasubido)."','".($imagen)."')";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -483,10 +483,19 @@ function traerFacturasPorCliente($idcliente) {
 
 
 function traerFacturasPorClienteajax($idcliente,$length, $start, $busqueda) {
+
+   $where = '';
+
+		$busqueda = str_replace("'","",$busqueda);
+		if ($busqueda != '') {
+			$where = "and tip.tipofactura like '%".$busqueda."%' or est.estado like '%".$busqueda."%' or f.concepto like '%".$busqueda."%' or f.fechaingreso like '%".$busqueda."%' or f.fechasubido like '%".$busqueda."%'";
+		}
+
+
    $sql = "SELECT
           f.idfactura,
           tip.tipofactura,
-          est.estado,
+          (case when est.idestado then '<h4><span class=''label bg-blue''>Iniciado</span></h4>' end) as estado,
           f.concepto,
           f.total,
           f.iva,
@@ -512,7 +521,7 @@ function traerFacturasPorClienteajax($idcliente,$length, $start, $busqueda) {
           tbmeses m ON m.idmes = f.refmeses
               INNER JOIN
           dbclientes c ON c.idcliente = f.refclientes
-      where tip.idtipofactura = ".$idtipofactura."
+      where c.idcliente = ".$idcliente." ".$where."
       ORDER BY f.anio DESC , m.idmes DESC";
    $res = $this->query($sql,0);
    return $res;

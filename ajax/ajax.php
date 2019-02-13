@@ -107,11 +107,123 @@ case 'traerArchivosPorCliente':
       traerNotificacionesPorRol($serviciosReferencias, $serviciosNotificaciones, $serviciosUsuarios);
    break;
 
+   case 'insertarFacturas':
+      insertarFacturas($serviciosReferencias);
+   break;
+   case 'modificarFacturas':
+      modificarFacturas($serviciosReferencias);
+   break;
+   case 'eliminarFacturas':
+      eliminarFacturas($serviciosReferencias);
+   break;
+   case 'traerFacturas':
+      traerFacturas($serviciosReferencias);
+   break;
+   case 'traerFacturasPorId':
+      traerFacturasPorId($serviciosReferencias);
+   break;
+
 
 /* Fin */
 
 }
 /* Fin */
+
+
+function insertarFacturas($serviciosReferencias) {
+   $refclientes = $_POST['refclientes'];
+   $reftipofacturas = $_POST['reftipofacturas'];
+   $refestados = $_POST['refestados'];
+   switch ((integer)substr($_POST['fechaingreso'],4,2)) {
+      case 1:
+      case 2:
+      case 3:
+         $refmeses = 1;
+         break;
+      case 4:
+      case 5:
+      case 6:
+         $refmeses = 2;
+         break;
+      case 7:
+      case 8:
+      case 9:
+         $refmeses = 3;
+         break;
+      case 10:
+      case 11:
+      case 12:
+         $refmeses = 4;
+         break;
+      default:
+         $refmeses = 1;
+         break;
+   }
+
+   $anio = substr($_POST['fechaingreso'],0,4);
+   $concepto = $_POST['concepto'];
+   $total = $_POST['total'];
+   $iva = $_POST['iva'];
+   $irff = $_POST['irff'];
+   $fechaingreso = $_POST['fechaingreso'];
+   $fechasubido = $_POST['fechasubido'];
+   $imagen = '';
+   //$_POST['imagen'];
+
+   $res = $serviciosReferencias->insertarFacturas($refclientes,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen);
+
+   if ((integer)$res > 0) {
+      echo '';
+   } else {
+      echo 'Huvo un error al insertar datos ';
+   }
+}
+
+function modificarFacturas($serviciosReferencias) {
+   $id = $_POST['id'];
+   $refclientes = $_POST['refclientes'];
+   $reftipofacturas = $_POST['reftipofacturas'];
+   $refestados = $_POST['refestados'];
+   $refmeses = $_POST['refmeses'];
+   $anio = $_POST['anio'];
+   $concepto = $_POST['concepto'];
+   $total = $_POST['total'];
+   $iva = $_POST['iva'];
+   $irff = $_POST['irff'];
+   $fechaingreso = $_POST['fechaingreso'];
+   $fechasubido = $_POST['fechasubido'];
+   $imagen = $_POST['imagen'];
+
+   $res = $serviciosReferencias->modificarFacturas($id,$refclientes,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen);
+
+   if ($res == true) {
+      echo '';
+   } else {
+      echo 'Huvo un error al modificar datos';
+   }
+}
+
+function eliminarFacturas($serviciosReferencias) {
+   $id = $_POST['id'];
+
+   $res = $serviciosReferencias->eliminarFacturas($id);
+   echo $res;
+}
+
+function traerFacturas($serviciosReferencias) {
+   $res = $serviciosReferencias->traerFacturas();
+
+   $ar = array();
+
+   while ($row = mysql_fetch_array($res)) {
+      array_push($ar, $row);
+   }
+
+   $resV['datos'] = $ar;
+
+   header('Content-type: application/json');
+   echo json_encode($resV);
+}
 
 
 function modificarClientePorCliente($serviciosReferencias) {

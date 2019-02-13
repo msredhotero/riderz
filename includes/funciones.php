@@ -382,8 +382,8 @@ class Servicios {
 		$label  = '';
 
 		switch ($tabla) {
-			case 'dbarchivos':
-				$ocultar = array("type","fechacreacion","refsemaforos","refusuarios","refestadocotizacion");
+			case 'dbfacturas':
+				$ocultar = array("anio","refmeses","refclientes","reftipofacturas","refestados");
 				break;
 
 			default:
@@ -644,8 +644,8 @@ class Servicios {
 													$form	=	$form.'
 
 													<div class="col-md-12 col-xs-12" style="margin-left:-5px; margin-right:0px;">
-														<h4>Agregar Imagen</h4>
-															<p style=" color: #999;">Imagenes / Archivos (tamaño maximo del archivo 2 MB)</p>
+														<h4>Agregar Archivo</h4>
+															<p style=" color: #999;">Imagenes / Archivos (tamaño maximo del archivo 4 MB)</p>
 															<div style="height:auto;
 																	width:100%;
 																	background-color:#FFF;

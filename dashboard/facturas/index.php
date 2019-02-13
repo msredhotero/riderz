@@ -30,7 +30,7 @@ $serviciosSeguridad->seguridadRuta($_SESSION['refroll_sahilices'], '../facturas/
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu($_SESSION['nombre_sahilices'],"Facturas",$_SESSION['refroll_sahilices'],$_SESSION['email_sahilices']);
+$resMenu = $serviciosHTML->menu($_SESSION['nombre_sahilices'],"Mis Facturas",$_SESSION['refroll_sahilices'],$_SESSION['email_sahilices']);
 
 $configuracion = $serviciosReferencias->traerConfiguracion();
 
@@ -70,9 +70,9 @@ $cadRef3 	= $serviciosFunciones->devolverSelectBox($resVar3,array(1),'');
 
 $resVar4 = $serviciosReferencias->traerEstadosPorId(1);
 $cadRef4 	= $serviciosFunciones->devolverSelectBox($resVar4,array(1),'');
+//die(var_dump(mysql_result($resVar4,0,0)));
 
-
-$refdescripcion = array(0=>$cadRef1,1=>$cadRef2,2=>$cadRef3,3=>$cadRef4);
+$refdescripcion = array(0 => $cadRef1, 1 => $cadRef2, 2 => $cadRef3, 3 => $cadRef4);
 $refCampo 	=  array('refmeses','reftipofacturas','refclientes','refestados');
 
 $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
@@ -122,7 +122,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 
 
-<body class="theme-red">
+<body class="theme-purple">
 
 <!-- Page Loader -->
 <div class="page-loader-wrapper">
@@ -170,7 +170,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="card ">
-						<div class="header bg-blue">
+						<div class="header bg-purple">
 							<h2>
 								<?php echo strtoupper($plural); ?>
 							</h2>
@@ -191,11 +191,11 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 								<div class="row">
 									<div class="col-lg-12 col-md-12">
 										<div class="button-demo">
-											<button type="button" class="btn bg-light-green waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevo">
+											<button type="button" class="btn bg-green waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevo">
 												<i class="material-icons">note_add</i>
 												<span>NUEVA FACTURA DE INGRESOS</span>
 											</button>
-											<button type="button" class="btn bg-light-green waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevoGasto">
+											<button type="button" class="btn bg-orange waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevoGasto">
 												<i class="material-icons">note_add</i>
 												<span>NUEVA FACTURA DE GASTOS</span>
 											</button>
@@ -249,7 +249,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 
 <!-- NUEVO -->
-	<form class="formulario" role="form" id="sign_in">
+	<form class="formulario frmNuevo" role="form" id="sign_in">
 	   <div class="modal fade" id="lgmNuevo" tabindex="-1" role="dialog">
 	       <div class="modal-dialog modal-lg" role="document">
 	           <div class="modal-content">
@@ -263,7 +263,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 	               </div>
 	               <div class="modal-footer">
-	                   <button type="submit" class="btn btn-primary waves-effect nuevo">GUARDAR</button>
+	                   <button type="submit" class="btn btn-primary waves-effect btnNuevo">GUARDAR</button>
 	                   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
 	               </div>
 	           </div>
@@ -488,59 +488,64 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 			$('#lgmModificar').modal();
 		});//fin del boton modificar
 
-		$('.nuevo').click(function(){
+		$('#anio').val('2019');
 
-			//información del formulario
-			var formData = new FormData($(".formulario")[0]);
-			var message = "";
-			//hacemos la petición ajax
-			$.ajax({
-				url: '../../ajax/ajax.php',
-				type: 'POST',
-				// Form data
-				//datos del formulario
-				data: formData,
-				//necesario para subir archivos via ajax
-				cache: false,
-				contentType: false,
-				processData: false,
-				//mientras enviamos el archivo
-				beforeSend: function(){
+		$('.frmNuevo').submit(function(e){
 
-				},
-				//una vez finalizado correctamente
-				success: function(data){
+			e.preventDefault();
+         if ($('#sign_in')[0].checkValidity()) {
+				//información del formulario
+				var formData = new FormData($(".formulario")[0]);
+				var message = "";
+				//hacemos la petición ajax
+				$.ajax({
+					url: '../../ajax/ajax.php',
+					type: 'POST',
+					// Form data
+					//datos del formulario
+					data: formData,
+					//necesario para subir archivos via ajax
+					cache: false,
+					contentType: false,
+					processData: false,
+					//mientras enviamos el archivo
+					beforeSend: function(){
 
-					if (data == '') {
-						swal({
-								title: "Respuesta",
-								text: "Registro Creado con exito!!",
-								type: "success",
-								timer: 1500,
-								showConfirmButton: false
-						});
+					},
+					//una vez finalizado correctamente
+					success: function(data){
 
-						$('#lgmNuevo').modal('hide');
-						$('#unidadnegocio').val('');
-						table.ajax.reload();
-					} else {
-						swal({
-								title: "Respuesta",
-								text: data,
-								type: "error",
-								timer: 2500,
-								showConfirmButton: false
-						});
+						if (data == '') {
+							swal({
+									title: "Respuesta",
+									text: "Registro Creado con exito!!",
+									type: "success",
+									timer: 1500,
+									showConfirmButton: false
+							});
+
+							$('#lgmNuevo').modal('hide');
+							$('#unidadnegocio').val('');
+							table.ajax.reload();
+						} else {
+							swal({
+									title: "Respuesta",
+									text: data,
+									type: "error",
+									timer: 2500,
+									showConfirmButton: false
+							});
 
 
+						}
+					},
+					//si ha ocurrido un error
+					error: function(){
+						$(".alert").html('<strong>Error!</strong> Actualice la pagina');
+						$("#load").html('');
 					}
-				},
-				//si ha ocurrido un error
-				error: function(){
-					$(".alert").html('<strong>Error!</strong> Actualice la pagina');
-					$("#load").html('');
-				}
-			});
+				});
+			}
 		});
 
 
