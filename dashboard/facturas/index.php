@@ -55,20 +55,29 @@ $modificar = "modificarFacturas";
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
 $tabla 			= "dbfacturas";
 
-$lblCambio	 	= array('refestados','reftipofacturas','precio2','precio3','precio4','vigenciadesde','vigenciahasta');
-$lblreemplazo	= array('Estado','Tipo Factura','Precio 2','Precio 3','Precio 4','Vig. Desde','Vig. Hasta');
+$lblCambio	 	= array('refclientes','refmeses','refestados','reftipofacturas','iva','irff','fechaingreso','fechasubido','total','anio');
+$lblreemplazo	= array('Cliente','Trimestre','Estado','Tipo Factura','IVA','IRPF','Fecha Ingreso','Fecha Subido','Importe Total','Año');
 
 
-$resVar1 = $serviciosReferencias->traerConceptos();
+$resVar1 = $serviciosReferencias->traerMeses();
 $cadRef1 	= $serviciosFunciones->devolverSelectBox($resVar1,array(1),'');
 
-$refdescripcion = array(0=>$cadRef1);
-$refCampo 	=  array('refconceptos');
+$resVar2 = $serviciosReferencias->traerTipofacturas();
+$cadRef2 	= $serviciosFunciones->devolverSelectBox($resVar2,array(1),'');
+
+$resVar3 = $serviciosReferencias->traerClientesPorId($_SESSION['idcliente']);
+$cadRef3 	= $serviciosFunciones->devolverSelectBox($resVar3,array(1),'');
+
+$resVar4 = $serviciosReferencias->traerEstadosPorId(1);
+$cadRef4 	= $serviciosFunciones->devolverSelectBox($resVar4,array(1),'');
+
+
+$refdescripcion = array(0=>$cadRef1,1=>$cadRef2,2=>$cadRef3,3=>$cadRef4);
+$refCampo 	=  array('refmeses','reftipofacturas','refclientes','refestados');
 
 $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
-$existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 
 ?>
 
@@ -91,13 +100,6 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 	<link href="../../plugins/waitme/waitMe.css" rel="stylesheet" />
 	<link href="../../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
 
-	<!-- VUE JS -->
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
-	<!-- axios -->
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-	<script src="https://unpkg.com/vue-swal"></script>
 
 	<!-- Bootstrap Material Datetime Picker Css -->
 	<link href="../../plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
@@ -189,9 +191,13 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 								<div class="row">
 									<div class="col-lg-12 col-md-12">
 										<div class="button-demo">
-											<button <?php if ($existe == 0) { echo 'disabled="disabled"'; }?> type="button" class="btn bg-light-green waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevo">
-												<i class="material-icons">add</i>
-												<span>NUEVO</span>
+											<button type="button" class="btn bg-light-green waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevo">
+												<i class="material-icons">note_add</i>
+												<span>NUEVA FACTURA DE INGRESOS</span>
+											</button>
+											<button type="button" class="btn bg-light-green waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevoGasto">
+												<i class="material-icons">note_add</i>
+												<span>NUEVA FACTURA DE GASTOS</span>
 											</button>
 
 										</div>
@@ -203,29 +209,29 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 									<table id="example" class="display table " style="width:100%">
 										<thead>
 											<tr>
-												<th>Nombre</th>
+												<th>Tipo</th>
+												<th>Estado</th>
 												<th>Concepto</th>
-												<th>Precio 1</th>
-												<th>Precio 2</th>
-												<th>Precio 3</th>
-												<th>Precio 4</th>
+												<th>Importe Base</th>
 												<th>IVA</th>
-												<th>Vig. Desde</th>
-												<th>Vig. Hasta</th>
+												<th>IRPF</th>
+												<th>Importe Total</th>
+												<th>Fecha</th>
+												<th>Subido el</th>
 												<th>Acciones</th>
 											</tr>
 										</thead>
 										<tfoot>
 											<tr>
-												<th>Nombre</th>
+												<th>Tipo</th>
+												<th>Estado</th>
 												<th>Concepto</th>
-												<th>Precio 1</th>
-												<th>Precio 2</th>
-												<th>Precio 3</th>
-												<th>Precio 4</th>
+												<th>Importe Base</th>
 												<th>IVA</th>
-												<th>Vig. Desde</th>
-												<th>Vig. Hasta</th>
+												<th>IRPF</th>
+												<th>Importe Total</th>
+												<th>Fecha</th>
+												<th>Subido el</th>
 												<th>Acciones</th>
 											</tr>
 										</tfoot>
@@ -334,7 +340,7 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 		var table = $('#example').DataTable({
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "../../json/jstablasajax.php?tabla=listasprecios",
+			"sAjaxSource": "../../json/jstablasajax.php?tabla=facturas&idcliente=<?php echo $_SESSION['idcliente']; ?>",
 			"language": {
 				"emptyTable":     "No hay datos cargados",
 				"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",

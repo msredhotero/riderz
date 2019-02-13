@@ -49,17 +49,23 @@ $insertar = "";
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
 
 
-if ($_SESSION['idroll_sahilices'] == 3) {
-	$idcliente = $_SESSION['idcliente'];
-	$resCliente = $serviciosReferencias->traerClientesPorId($idcliente);
-} else {
-	$cabeceras 		= "	<th>Apellido y Nombre</th>
-					<th>Categoria</th>
-					<th>Año</th>
-					<th>Mes</th>";
+$resTrimestres = $serviciosReferencias->traerMeses();
+$resTrimestreActual = $serviciosReferencias->traerMesesPorMes(date('m'));
 
-	$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosReferencias->traerArchivosGrid(),89);
-}
+//($campos,$idestado='', $idtipofactura='', $idcliente='', $idmes='', $anio='', $fecha='',$limit='')
+$campos = 'f.concepto, f.total, f.fechaingreso, est.estado';
+$idtipofactura = 1;
+$idcliente = $_SESSION['idcliente'];
+$limit = 'limit 10';
+$resIngresos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado='', $idtipofactura, $idcliente, $idmes='', $anio='', $fecha='',$limit);
+
+//die(var_dump($resIngresos));
+
+$campos = 'f.concepto, f.total, f.fechaingreso, est.estado';
+$idtipofactura = 2;
+$idcliente = $_SESSION['idcliente'];
+$limit = 'limit 10';
+$resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado='', $idtipofactura, $idcliente, $idmes='', $anio='', $fecha='',$limit);
 
 
 ///////////////////////////              fin                   ////////////////////////
@@ -189,6 +195,74 @@ if ($_SESSION['idroll_sahilices'] == 3) {
 					</div>
 
 					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                  <div class="card">
+                        <div class="header bg-pink">
+                           <h2>
+                              <?php echo mysql_result($resTrimestreActual,0,'meses'); ?> del <?php echo date('Y'); ?> <small>Últimas Facturas de Ingresos</small>
+                           </h2>
+
+                        </div>
+                        <div class="body">
+									<table id="example1" class="display table " style="width:100%">
+										<thead>
+											<tr>
+												<th>Concepto</th>
+												<th>Importe Total</th>
+												<th>Fecha</th>
+												<th>Estado</th>
+											</tr>
+										</thead>
+										<tbody>
+										<?php while ($row = mysql_fetch_array($resIngresos)) { ?>
+											<tr>
+												<th><?php echo $row['concepto']; ?></th>
+												<th><?php echo $row['total']; ?></th>
+												<th><?php echo $row['fechaingreso']; ?></th>
+												<th><?php echo $row['estado']; ?></th>
+											</tr>
+										<?php } ?>
+										</tbody>
+									</table>
+                        </div>
+                  </div>
+               </div>
+
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                  <div class="card">
+                        <div class="header bg-pink">
+                           <h2>
+                              <?php echo mysql_result($resTrimestreActual,0,'meses'); ?> del <?php echo date('Y'); ?> <small>Últimas Facturas de Gastos</small>
+                           </h2>
+
+                        </div>
+                        <div class="body">
+									<table id="example2" class="display table " style="width:100%">
+										<thead>
+											<tr>
+												<th>Concepto</th>
+												<th>Importe Total</th>
+												<th>Fecha</th>
+												<th>Estado</th>
+											</tr>
+										</thead>
+										<tbody>
+										<?php while ($row2 = mysql_fetch_array($resGastos)) { ?>
+											<tr>
+												<th><?php echo $row2['concepto']; ?></th>
+												<th><?php echo $row2['total']; ?></th>
+												<th><?php echo $row2['fechaingreso']; ?></th>
+												<th><?php echo $row2['estado']; ?></th>
+											</tr>
+										<?php } ?>
+										</tbody>
+									</table>
+                        </div>
+                  </div>
+               </div>
+
 				</div>
 
 

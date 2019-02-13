@@ -14,6 +14,7 @@ $draw = $_GET['sEcho'];
 $start = $_GET['iDisplayStart'];
 $length = $_GET['iDisplayLength'];
 $busqueda = $_GET['sSearch'];
+$idcliente = $_GET['idcliente'];
 
 $referencia1 = 0;
 
@@ -36,12 +37,12 @@ function armarAcciones($id,$label='',$class,$icon) {
 }
 
 switch ($tabla) {
-	case 'categorias':
-		$resAjax = $serviciosReferencias->traerCategoriasajax($length, $start, $busqueda);
-		$res = $serviciosReferencias->traerCategorias();
-		$label = array('btnModificar','btnEliminar');
-		$class = array('bg-amber','bg-red');
-		$icon = array('create','delete');
+	case 'facturas':
+		$resAjax = $serviciosReferencias->traerCategoriasajax($idcliente,$length, $start, $busqueda);
+		$res = $serviciosReferencias->traerFacturasPorCliente($idcliente);
+		$label = array('btnDescargar');
+		$class = array('bg-green');
+		$icon = array('file_download');
 		$indiceID = 0;
 		$empieza = 1;
 		$termina = 1;

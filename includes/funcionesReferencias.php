@@ -341,37 +341,397 @@ return $res;
 
 
 function traerFacturas() {
-$sql = "select
-f.idfactura,
-f.reftipofacturas,
-f.refestados,
-f.refmeses,
-f.anio,
-f.concepto,
-f.total,
-f.iva,
-f.irff,
-f.fechaingreso,
-f.fechasubido,
-f.imagen
-from dbfacturas f
-inner join tbtipofacturas tip ON tip.idtipofactura = f.reftipofacturas
-inner join tbestados est ON est.idestado = f.refestados
-inner join tbmeses mes ON mes.idmes = f.refmeses
-order by 1";
-$res = $this->query($sql,0);
-return $res;
+   $sql = "SELECT
+          f.idfactura,
+          CONCAT(c.apellido, ' ', c.nombre) AS cliente,
+          tip.tipofactura,
+          m.meses,
+          f.anio,
+          f.concepto,
+          f.total,
+          f.iva,
+          f.irff,
+          f.fechaingreso,
+          f.fechasubido,
+          est.estado,
+          f.imagen,
+          f.refclientes,
+          f.reftipofacturas,
+          f.refestados,
+          f.refmeses
+      FROM
+          dbfacturas f
+              INNER JOIN
+          tbtipofacturas tip ON tip.idtipofactura = f.reftipofacturas
+              INNER JOIN
+          tbestados est ON est.idestado = f.refestados
+              INNER JOIN
+          tbmeses m ON m.idmes = f.refmeses
+              INNER JOIN
+          dbclientes c ON c.idcliente = f.refclientes
+      ORDER BY f.anio DESC , m.idmes DESC";
+   $res = $this->query($sql,0);
+   return $res;
+}
+
+function traerFacturasPorEstado($idestado) {
+   $sql = "SELECT
+          f.idfactura,
+          CONCAT(c.apellido, ' ', c.nombre) AS cliente,
+          tip.tipofactura,
+          m.meses,
+          f.anio,
+          f.concepto,
+          f.total,
+          f.iva,
+          f.irff,
+          f.fechaingreso,
+          f.fechasubido,
+          est.estado,
+          f.imagen,
+          f.refclientes,
+          f.reftipofacturas,
+          f.refestados,
+          f.refmeses
+      FROM
+          dbfacturas f
+              INNER JOIN
+          tbtipofacturas tip ON tip.idtipofactura = f.reftipofacturas
+              INNER JOIN
+          tbestados est ON est.idestado = f.refestados
+              INNER JOIN
+          tbmeses m ON m.idmes = f.refmeses
+              INNER JOIN
+          dbclientes c ON c.idcliente = f.refclientes
+      where est.idestado = ".$idestado."
+      ORDER BY f.anio DESC , m.idmes DESC";
+   $res = $this->query($sql,0);
+   return $res;
+}
+
+
+function traerFacturasPorTipo($idtipofactura) {
+   $sql = "SELECT
+          f.idfactura,
+          CONCAT(c.apellido, ' ', c.nombre) AS cliente,
+          tip.tipofactura,
+          m.meses,
+          f.anio,
+          f.concepto,
+          f.total,
+          f.iva,
+          f.irff,
+          f.fechaingreso,
+          f.fechasubido,
+          est.estado,
+          f.imagen,
+          f.refclientes,
+          f.reftipofacturas,
+          f.refestados,
+          f.refmeses
+      FROM
+          dbfacturas f
+              INNER JOIN
+          tbtipofacturas tip ON tip.idtipofactura = f.reftipofacturas
+              INNER JOIN
+          tbestados est ON est.idestado = f.refestados
+              INNER JOIN
+          tbmeses m ON m.idmes = f.refmeses
+              INNER JOIN
+          dbclientes c ON c.idcliente = f.refclientes
+      where tip.idtipofactura = ".$idtipofactura."
+      ORDER BY f.anio DESC , m.idmes DESC";
+   $res = $this->query($sql,0);
+   return $res;
+}
+
+function traerFacturasPorCliente($idcliente) {
+   $sql = "SELECT
+            f.idfactura,
+            tip.tipofactura,
+            est.estado,
+            f.concepto,
+            f.total,
+            f.iva,
+            f.irff,
+            f.total + f.iva - f.irff as importetotal,
+            f.fechaingreso,
+            f.fechasubido,
+            CONCAT(c.apellido, ' ', c.nombre) AS cliente,
+            m.meses,
+            f.anio,
+            f.imagen,
+            f.refclientes,
+            f.reftipofacturas,
+            f.refestados,
+            f.refmeses
+      FROM
+          dbfacturas f
+              INNER JOIN
+          tbtipofacturas tip ON tip.idtipofactura = f.reftipofacturas
+              INNER JOIN
+          tbestados est ON est.idestado = f.refestados
+              INNER JOIN
+          tbmeses m ON m.idmes = f.refmeses
+              INNER JOIN
+          dbclientes c ON c.idcliente = f.refclientes
+      where c.idcliente = ".$idcliente."
+      ORDER BY f.anio DESC , m.idmes DESC";
+   $res = $this->query($sql,0);
+   return $res;
+}
+
+
+function traerFacturasPorClienteajax($idcliente,$length, $start, $busqueda) {
+   $sql = "SELECT
+          f.idfactura,
+          tip.tipofactura,
+          est.estado,
+          f.concepto,
+          f.total,
+          f.iva,
+          f.irff,
+          f.total + f.iva - f.irff as importetotal,
+          f.fechaingreso,
+          f.fechasubido,
+          CONCAT(c.apellido, ' ', c.nombre) AS cliente,
+          m.meses,
+          f.anio,
+          f.imagen,
+          f.refclientes,
+          f.reftipofacturas,
+          f.refestados,
+          f.refmeses
+      FROM
+          dbfacturas f
+              INNER JOIN
+          tbtipofacturas tip ON tip.idtipofactura = f.reftipofacturas
+              INNER JOIN
+          tbestados est ON est.idestado = f.refestados
+              INNER JOIN
+          tbmeses m ON m.idmes = f.refmeses
+              INNER JOIN
+          dbclientes c ON c.idcliente = f.refclientes
+      where tip.idtipofactura = ".$idtipofactura."
+      ORDER BY f.anio DESC , m.idmes DESC";
+   $res = $this->query($sql,0);
+   return $res;
+}
+
+
+function traerFacturasPorGeneral($campos,$idestado='', $idtipofactura='', $idcliente='', $idmes='', $anio='', $fecha='',$limit='') {
+   $where = '';
+
+   if ($idestado != '') {
+      $where .= ' est.idestado = '.$idestado.' and';
+   }
+   if ($idtipofactura != '') {
+      $where .= ' tip.idtipofactura = '.$idtipofactura.' and';
+   }
+   if ($idcliente != '') {
+      $where .= ' c.idcliente = '.$idcliente.' and';
+   }
+   if ($idmes != '') {
+      $where .= ' m.idmes = '.$idmes.' and';
+   }
+   if ($anio != '') {
+      $where .= ' f.anio = '.$anio.' and';
+   }
+   if ($fecha != '') {
+      $where .= ' ('.$idestado.' between f.fechaingreso and current_date()) and';
+   }
+
+   if ($where != '') {
+      $where = 'where'.substr($where,0,-3);
+   }
+
+   $sql = "SELECT
+          ".$campos."
+      FROM
+          dbfacturas f
+              INNER JOIN
+          tbtipofacturas tip ON tip.idtipofactura = f.reftipofacturas
+              INNER JOIN
+          tbestados est ON est.idestado = f.refestados
+              INNER JOIN
+          tbmeses m ON m.idmes = f.refmeses
+              INNER JOIN
+          dbclientes c ON c.idcliente = f.refclientes
+      ".$where."
+      ORDER BY f.anio DESC , m.idmes DESC ".$limit;
+   $res = $this->query($sql,0);
+   return $res;
 }
 
 
 function traerFacturasPorId($id) {
-$sql = "select idfactura,reftipofacturas,refestados,refmeses,anio,concepto,total,iva,irff,fechaingreso,fechasubido,imagen from dbfacturas where idfactura =".$id;
+$sql = "select idfactura,refclientes,reftipofacturas,refestados,refmeses,anio,concepto,total,iva,irff,fechaingreso,fechasubido,imagen from dbfacturas where idfactura =".$id;
 $res = $this->query($sql,0);
 return $res;
 }
 
 /* Fin */
 /* /* Fin de la Tabla: dbfacturas*/
+
+/* PARA Estados */
+
+function insertarEstados($estado,$color,$icono) {
+$sql = "insert into tbestados(idestado,estado,color,icono)
+values ('','".($estado)."','".($color)."','".($icono)."')";
+$res = $this->query($sql,1);
+return $res;
+}
+
+
+function modificarEstados($id,$estado,$color,$icono) {
+$sql = "update tbestados
+set
+estado = '".($estado)."',color = '".($color)."',icono = '".($icono)."'
+where idestado =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function eliminarEstados($id) {
+$sql = "delete from tbestados where idestado =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerEstados() {
+$sql = "select
+e.idestado,
+e.estado,
+e.color,
+e.icono
+from tbestados e
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerEstadosPorId($id) {
+$sql = "select idestado,estado,color,icono from tbestados where idestado =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+/* Fin */
+/* /* Fin de la Tabla: tbestados*/
+
+/* PARA Meses */
+
+function insertarMeses($meses,$desde,$hasta) {
+$sql = "insert into tbmeses(idmes,meses,desde,hasta)
+values ('','".($meses)."',".$desde.",".$hasta.")";
+$res = $this->query($sql,1);
+return $res;
+}
+
+
+function modificarMeses($id,$meses,$desde,$hasta) {
+$sql = "update tbmeses
+set
+meses = '".($meses)."',desde = ".$desde.",hasta = ".$hasta."
+where idmes =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function eliminarMeses($id) {
+$sql = "delete from tbmeses where idmes =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerMeses() {
+$sql = "select
+m.idmes,
+m.meses,
+m.desde,
+m.hasta
+from tbmeses m
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerMesesPorMes($mes) {
+$sql = "select
+m.idmes,
+m.meses,
+m.desde,
+m.hasta
+from tbmeses m
+where ".$mes." between m.desde and m.hasta
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerMesesPorId($id) {
+$sql = "select idmes,meses,desde,hasta from tbmeses where idmes =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+/* Fin */
+/* /* Fin de la Tabla: tbmeses*/
+
+
+/* PARA Tipofacturas */
+
+function insertarTipofacturas($tipofactura) {
+$sql = "insert into tbtipofacturas(idtipofactura,tipofactura)
+values ('','".($tipofactura)."')";
+$res = $this->query($sql,1);
+return $res;
+}
+
+
+function modificarTipofacturas($id,$tipofactura) {
+$sql = "update tbtipofacturas
+set
+tipofactura = '".($tipofactura)."'
+where idtipofactura =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function eliminarTipofacturas($id) {
+$sql = "delete from tbtipofacturas where idtipofactura =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerTipofacturas() {
+$sql = "select
+t.idtipofactura,
+t.tipofactura
+from tbtipofacturas t
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerTipofacturasPorId($id) {
+$sql = "select idtipofactura,tipofactura from tbtipofacturas where idtipofactura =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+/* Fin */
+/* /* Fin de la Tabla: tbtipofacturas*/
 
 
 /* PARA Archivos */
