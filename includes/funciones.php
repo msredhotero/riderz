@@ -644,39 +644,17 @@ class Servicios {
 													$form	=	$form.'
 
 													<div class="col-md-12 col-xs-12" style="margin-left:-5px; margin-right:0px;">
-														<h4>Agregar Archivo</h4>
-															<p style=" color: #999;">Imagenes / Archivos (tamaño maximo del archivo 4 MB)</p>
-															<div style="height:auto;
-																	width:100%;
-																	background-color:#FFF;
-																	-webkit-border-radius: 13px;
-																	-moz-border-radius: 13px;
-																	border-radius: 13px;
-																	margin-left:15px;
-																	padding-left:20px;">
 
-
-												<ul class="list-inline">
-															<li style="margin-top:14px;">
-															<div style=" height:210px; width:340px; border:2px dashed #CCC; text-align:center; overflow: auto;">
-																<div class="custom-input-file">
-																	<input type="file" name="'.$campo.'" id="imagen1">
-																	<img src="../../imagenes/clip20.jpg">
-																	<div class="files">...</div>
+															<div class="row">
+																<div class="custom-file" id="customFile">
+																	<input type="file" name="'.$campo.' class="custom-file-input" id="exampleInputFile" aria-describedby="fileHelp">
+																	<label class="custom-file-label" for="exampleInputFile">
+																		Seleccionar Archivo (tamaño maximo del archivo 4 MB)
+																	</label>
 																</div>
-
-																<img id="vistaPrevia1" name="vistaPrevia1" width="100" height="100"/>
-															</div>
-															<div style="height:14px;">
-
-															</div>
-
-															</li>
-
-
-															</ul>
-												</div>
-												</div>
+											               
+											            </div>
+													</div>
 													';
 												}else {
 													if (strpos($row[1],"int") !== false) {
