@@ -193,11 +193,11 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 								<div class="row">
 									<div class="col-lg-12 col-md-12">
 										<div class="button-demo">
-											<button type="button" class="btn bg-green waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevo">
+											<button type="button" class="btn bg-green waves-effect btnNuevoIngreso">
 												<i class="material-icons">note_add</i>
 												<span>NUEVA FACTURA DE INGRESOS</span>
 											</button>
-											<button type="button" class="btn bg-orange waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevoGasto">
+											<button type="button" class="btn bg-orange waves-effect btnNuevoGasto">
 												<i class="material-icons">note_add</i>
 												<span>NUEVA FACTURA DE GASTOS</span>
 											</button>
@@ -256,7 +256,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 	       <div class="modal-dialog modal-lg" role="document">
 	           <div class="modal-content">
 	               <div class="modal-header">
-	                   <h4 class="modal-title" id="largeModalLabel">CREAR <?php echo strtoupper($singular); ?></h4>
+	                   <h4 class="modal-title" id="largeModalLabel">CREAR <?php echo strtoupper($singular); ?> <span id="tipo"></span></h4>
 	               </div>
 	               <div class="modal-body demo-masked-input">
 							<div class="row">
@@ -367,6 +367,26 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 				}
 			}
 		});
+
+		$('.btnNuevoIngreso').click(function() {
+			$('#lgmNuevo').modal();
+			$('#reftipofacturas').val(1);
+			$('#tipo').html('INGRESO');
+		});
+
+		$('.btnNuevoGasto').click(function() {
+			$('#lgmNuevo').modal();
+			$('#reftipofacturas').val(2);
+			$('#tipo').html('EGRESO');
+		});
+
+		$("#example").on("click",'.btnDescargar', function(){
+			usersid =  $(this).attr("id");
+
+			url = "descargar.php?token=" + usersid;
+			$(location).attr('href',url);
+
+		});//fin del boton modificar
 
 		$("#sign_in").submit(function(e){
 			e.preventDefault();

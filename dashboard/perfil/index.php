@@ -24,13 +24,13 @@ $baseHTML = new BaseHTML();
 //*** SEGURIDAD ****/
 include ('../../includes/funcionesSeguridad.php');
 $serviciosSeguridad = new ServiciosSeguridad();
-$serviciosSeguridad->seguridadRuta($_SESSION['refroll_sahilices'], '../facturas/');
+$serviciosSeguridad->seguridadRuta($_SESSION['refroll_sahilices'], '../perfil/');
 //*** FIN  ****/
 
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu($_SESSION['nombre_sahilices'],"Facturas",$_SESSION['refroll_sahilices'],$_SESSION['email_sahilices']);
+$resMenu = $serviciosHTML->menu($_SESSION['nombre_sahilices'],"Mi Perfil",$_SESSION['refroll_sahilices'],$_SESSION['email_sahilices']);
 
 $configuracion = $serviciosReferencias->traerConfiguracion();
 
@@ -39,36 +39,45 @@ $tituloWeb = mysql_result($configuracion,0,'sistema');
 $breadCumbs = '<a class="navbar-brand" href="../index.php">Dashboard</a>';
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Factura";
+$resResultado = $serviciosReferencias->traerClientesPorId($_SESSION['idcliente']);
 
-$plural = "Facturas";
+$singular = "Cliente";
 
-$eliminar = "eliminarFacturas";
+$plural = "Clientes";
 
-$insertar = "insertarFacturas";
+$eliminar = "eliminarClientes";
 
-$modificar = "modificarFacturas";
+$insertar = "insertarClientes";
+
+$modificar = "modificarClientes";
 
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "dbfacturas";
+$tabla 			= "dbclientes";
+$id 				= $_SESSION['idcliente'];
+$lblid 			= 'idcliente';
 
-$lblCambio	 	= array('refestados','reftipofacturas','precio2','precio3','precio4','vigenciadesde','vigenciahasta');
-$lblreemplazo	= array('Estado','Tipo Factura','Precio 2','Precio 3','Precio 4','Vig. Desde','Vig. Hasta');
+$lblCambio	 	= array('reftipodocumentos','nrodocumento','telefono','celular','aceptaterminos');
+$lblreemplazo	= array('Tipo Documento','Nro. Doc.','Tel. Fijo','Tel. Movil','Acepta Ter. Y Cond.');
 
 
-$resVar1 = $serviciosReferencias->traerConceptos();
+$resVar1 = $serviciosReferencias->traerTipodocumentosPorId(mysql_result($resResultado,0,'reftipodocumentos'));
 $cadRef1 	= $serviciosFunciones->devolverSelectBox($resVar1,array(1),'');
 
-$refdescripcion = array(0=>$cadRef1);
-$refCampo 	=  array('refconceptos');
+//die(var_dump(mysql_result($resVar4,0,0)));
 
-$frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
+$refdescripcion = array(0 => $cadRef1);
+$refCampo 	=  array('reftipodocumentos');
+
+$frm 	= $serviciosFunciones->camposTablaVer($id,$lblid,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
+
+
+
+
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
-$existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 
 ?>
 
@@ -91,13 +100,6 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 	<link href="../../plugins/waitme/waitMe.css" rel="stylesheet" />
 	<link href="../../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
 
-	<!-- VUE JS -->
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
-	<!-- axios -->
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-	<script src="https://unpkg.com/vue-swal"></script>
 
 	<!-- Bootstrap Material Datetime Picker Css -->
 	<link href="../../plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
@@ -111,8 +113,10 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/dataTables.jqueryui.min.css">
 	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/jquery.dataTables.css">
 
+
 	<style>
 		.alert > i{ vertical-align: middle !important; }
+
 	</style>
 
 
@@ -120,7 +124,7 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 
 
 
-<body class="theme-red">
+<body class="theme-purple">
 
 <!-- Page Loader -->
 <div class="page-loader-wrapper">
@@ -168,9 +172,9 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="card ">
-						<div class="header bg-blue">
-							<h2>
-								<?php echo strtoupper($plural); ?>
+						<div class="header bg-riderz">
+							<h2 style="color:#fff">
+								<?php echo strtoupper($singular); ?>
 							</h2>
 							<ul class="header-dropdown m-r--5">
 								<li class="dropdown">
@@ -185,51 +189,8 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 						</div>
 						<div class="body table-responsive">
 							<form class="form" id="formCountry">
-
-								<div class="row">
-									<div class="col-lg-12 col-md-12">
-										<div class="button-demo">
-											<button <?php if ($existe == 0) { echo 'disabled="disabled"'; }?> type="button" class="btn bg-light-green waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevo">
-												<i class="material-icons">add</i>
-												<span>NUEVO</span>
-											</button>
-
-										</div>
-									</div>
-								</div>
-
 								<div class="row" style="padding: 5px 20px;">
-
-									<table id="example" class="display table " style="width:100%">
-										<thead>
-											<tr>
-												<th>Nombre</th>
-												<th>Concepto</th>
-												<th>Precio 1</th>
-												<th>Precio 2</th>
-												<th>Precio 3</th>
-												<th>Precio 4</th>
-												<th>IVA</th>
-												<th>Vig. Desde</th>
-												<th>Vig. Hasta</th>
-												<th>Acciones</th>
-											</tr>
-										</thead>
-										<tfoot>
-											<tr>
-												<th>Nombre</th>
-												<th>Concepto</th>
-												<th>Precio 1</th>
-												<th>Precio 2</th>
-												<th>Precio 3</th>
-												<th>Precio 4</th>
-												<th>IVA</th>
-												<th>Vig. Desde</th>
-												<th>Vig. Hasta</th>
-												<th>Acciones</th>
-											</tr>
-										</tfoot>
-									</table>
+									<?php echo $frm; ?>
 								</div>
 							</form>
 							</div>
@@ -243,7 +204,7 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 
 
 <!-- NUEVO -->
-	<form class="formulario" role="form" id="sign_in">
+	<form class="formulario frmNuevo" role="form" id="sign_in">
 	   <div class="modal fade" id="lgmNuevo" tabindex="-1" role="dialog">
 	       <div class="modal-dialog modal-lg" role="document">
 	           <div class="modal-content">
@@ -257,7 +218,7 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 
 	               </div>
 	               <div class="modal-footer">
-	                   <button type="submit" class="btn btn-primary waves-effect nuevo">GUARDAR</button>
+	                   <button type="submit" class="btn bg-riderz waves-effect btnNuevo">GUARDAR</button>
 	                   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
 	               </div>
 	           </div>
@@ -334,7 +295,7 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 		var table = $('#example').DataTable({
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "../../json/jstablasajax.php?tabla=listasprecios",
+			"sAjaxSource": "../../json/jstablasajax.php?tabla=facturas&idcliente=<?php echo $_SESSION['idcliente']; ?>",
 			"language": {
 				"emptyTable":     "No hay datos cargados",
 				"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
@@ -359,6 +320,8 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 				}
 			}
 		});
+
+		
 
 		$("#sign_in").submit(function(e){
 			e.preventDefault();
@@ -482,59 +445,64 @@ $existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
 			$('#lgmModificar').modal();
 		});//fin del boton modificar
 
-		$('.nuevo').click(function(){
+		$('#anio').val('2019');
 
-			//información del formulario
-			var formData = new FormData($(".formulario")[0]);
-			var message = "";
-			//hacemos la petición ajax
-			$.ajax({
-				url: '../../ajax/ajax.php',
-				type: 'POST',
-				// Form data
-				//datos del formulario
-				data: formData,
-				//necesario para subir archivos via ajax
-				cache: false,
-				contentType: false,
-				processData: false,
-				//mientras enviamos el archivo
-				beforeSend: function(){
+		$('.frmNuevo').submit(function(e){
 
-				},
-				//una vez finalizado correctamente
-				success: function(data){
+			e.preventDefault();
+         if ($('#sign_in')[0].checkValidity()) {
+				//información del formulario
+				var formData = new FormData($(".formulario")[0]);
+				var message = "";
+				//hacemos la petición ajax
+				$.ajax({
+					url: '../../ajax/ajax.php',
+					type: 'POST',
+					// Form data
+					//datos del formulario
+					data: formData,
+					//necesario para subir archivos via ajax
+					cache: false,
+					contentType: false,
+					processData: false,
+					//mientras enviamos el archivo
+					beforeSend: function(){
 
-					if (data == '') {
-						swal({
-								title: "Respuesta",
-								text: "Registro Creado con exito!!",
-								type: "success",
-								timer: 1500,
-								showConfirmButton: false
-						});
+					},
+					//una vez finalizado correctamente
+					success: function(data){
 
-						$('#lgmNuevo').modal('hide');
-						$('#unidadnegocio').val('');
-						table.ajax.reload();
-					} else {
-						swal({
-								title: "Respuesta",
-								text: data,
-								type: "error",
-								timer: 2500,
-								showConfirmButton: false
-						});
+						if (data == '') {
+							swal({
+									title: "Respuesta",
+									text: "Registro Creado con exito!!",
+									type: "success",
+									timer: 1500,
+									showConfirmButton: false
+							});
+
+							$('#lgmNuevo').modal('hide');
+							$('#unidadnegocio').val('');
+							table.ajax.reload();
+						} else {
+							swal({
+									title: "Respuesta",
+									text: data,
+									type: "error",
+									timer: 2500,
+									showConfirmButton: false
+							});
 
 
+						}
+					},
+					//si ha ocurrido un error
+					error: function(){
+						$(".alert").html('<strong>Error!</strong> Actualice la pagina');
+						$("#load").html('');
 					}
-				},
-				//si ha ocurrido un error
-				error: function(){
-					$(".alert").html('<strong>Error!</strong> Actualice la pagina');
-					$("#load").html('');
-				}
-			});
+				});
+			}
 		});
 
 

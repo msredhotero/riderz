@@ -647,12 +647,12 @@ class Servicios {
 
 															<div class="row">
 																<div class="custom-file" id="customFile">
-																	<input type="file" name="'.$campo.' class="custom-file-input" id="exampleInputFile" aria-describedby="fileHelp">
+																	<input type="file" name="'.$campo.'" class="custom-file-input" id="exampleInputFile" aria-describedby="fileHelp">
 																	<label class="custom-file-label" for="exampleInputFile">
 																		Seleccionar Archivo (tamaño maximo del archivo 4 MB)
 																	</label>
 																</div>
-											               
+
 											            </div>
 													</div>
 													';
@@ -1777,10 +1777,11 @@ class Servicios {
 
 
 		switch ($tabla) {
-			case 'tbunidadesnegocios':
-				$sqlMod = "select idunidadnegocio,
-													unidadnegocio,
-													(case when activo = 1 then 'Si' else 'No' end) activo
+			case 'dbclientes':
+				$sqlMod = "select idcliente,reftipodocumentos,apellido,nombre,nrodocumento,telefono,celular,email,
+				(case when aceptaterminos = 1 then 'Si' else 'No' end) as aceptaterminos,
+				(case when subscripcion = 1 then 'Si' else 'No' end) as subscripcion,
+				(case when activo = 1 then 'Si' else 'No' end) as activo
 									from ".$tabla." where ".$lblid." = ".$id;
 				$resMod = $this->query($sqlMod,0);
 				break;
@@ -1942,7 +1943,7 @@ class Servicios {
 									<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 									<div class="switch">';
 								if ($valorBit == 'Si') {
-									$form	=	$form.'	<label><input name="'.$campo.'" id="'.$campo.'" type="checkbox" checked/><span class="lever switch-col-green"></span></label>
+									$form	=	$form.'	<label><input disabled name="'.$campo.'" id="'.$campo.'" type="checkbox" checked/><span class="lever switch-col-green"></span></label>
 									</div>
 								</div>
 

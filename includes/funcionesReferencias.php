@@ -173,6 +173,8 @@ function crearDirectorioPrincipal($dir) {
 
 						$this->insertarArchivos($carpeta,$token,str_replace(' ','',$archivo),$tipoarchivo, $observacion, $refcategorias, $anio, $mes);
 
+                  $this->modificarClienteImagenPorId($carpeta,$archivo);
+
 						echo "";
 
 						copy($noentrar, $nuevo_noentrar);
@@ -317,7 +319,7 @@ function descargar($token) {
 
 function insertarFacturas($refclientes,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen) {
 $sql = "insert into dbfacturas(idfactura,refclientes,reftipofacturas,refestados,refmeses,anio,concepto,total,iva,irff,fechaingreso,fechasubido,imagen)
-values ('',".$refclientes.",".$reftipofacturas.",".$refestados.",".$refmeses.",".$anio.",'".($concepto)."',".$total.",".$iva.",".$irff.",'".($fechaingreso)."','".($fechasubido)."','".($imagen)."')";
+values ('',".$refclientes.",".$reftipofacturas.",".$refestados.",".$refmeses.",".$anio.",'".($concepto)."',".($total == '' ? 'null' : $total).",".($iva == '' ? 'null' : $iva).",".($irff == '' ? 'null' : $irff).",'".$fechaingreso."','".$fechasubido."','".$imagen."')";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -493,7 +495,7 @@ function traerFacturasPorClienteajax($idcliente,$length, $start, $busqueda) {
 
 
    $sql = "SELECT
-          f.idfactura,
+          ar.token,
           tip.tipofactura,
           (case when est.idestado then '<h4><span class=''label bg-blue''>Iniciado</span></h4>' end) as estado,
           f.concepto,
@@ -521,6 +523,8 @@ function traerFacturasPorClienteajax($idcliente,$length, $start, $busqueda) {
           tbmeses m ON m.idmes = f.refmeses
               INNER JOIN
           dbclientes c ON c.idcliente = f.refclientes
+              INNER JOIN
+         dbarchivos ar ON ar.refclientes = f.idfactura
       where c.idcliente = ".$idcliente." ".$where."
       ORDER BY f.anio DESC , m.idmes DESC";
    $res = $this->query($sql,0);
@@ -855,11 +859,9 @@ a.type,
 a.observacion,
 cat.categoria,
 a.anio,
-a.mes,
-c.apellido,
-c.nombre
+a.mes
 from dbarchivos a
-inner join dbclientes c on c.idcliente = a.refclientes
+inner join dbfacturas f on f.idfactura = a.refclientes
 inner join tbcategorias cat on cat.idcategoria = a.refcategorias
 where a.token = '".$token."'";
 $res = $this->query($sql,0);
@@ -893,11 +895,11 @@ return $res;
 
 /* PARA Clientes */
 
-function existeCliente($cuit, $modifica = 0, $id = 0) {
+function existeCliente($nrodocumento, $modifica = 0, $id = 0) {
    if ($modifica == 1) {
-      $sql = "select * from dbclientes where cuit = '".$cuit."' and idcliente <> ".$id;
+      $sql = "select * from dbclientes where nrodocumento = '".$nrodocumento."' and idcliente <> ".$id;
    } else {
-      $sql = "select * from dbclientes where cuit = '".$cuit."'";
+      $sql = "select * from dbclientes where nrodocumento = '".$nrodocumento."'";
    }
 
 	$res = $this->query($sql,0);
@@ -908,18 +910,18 @@ function existeCliente($cuit, $modifica = 0, $id = 0) {
 	}
 }
 
-function insertarClientes($apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion,$activo) {
-$sql = "insert into dbclientes(idcliente,apellido,nombre,cuit,telefono,celular,email,aceptaterminos,subscripcion, activo)
-values ('','".($apellido)."','".($nombre)."','".($cuit)."','".($telefono)."','".($celular)."','".($email)."',".$aceptaterminos.",".$subscripcion.",".$activo.")";
+function insertarClientes($reftipodocumentos,$apellido,$nombre,$nrodocumento,$telefono,$celular,$email,$aceptaterminos,$subscripcion,$activo) {
+$sql = "insert into dbclientes(reftipodocumentos,idcliente,apellido,nombre,nrodocumento,telefono,celular,email,aceptaterminos,subscripcion, activo)
+values ('',".$reftipodocumentos.",'".($apellido)."','".($nombre)."','".($nrodocumento)."','".($telefono)."','".($celular)."','".($email)."',".$aceptaterminos.",".$subscripcion.",".$activo.")";
 $res = $this->query($sql,1);
 return $res;
 }
 
 
-function modificarClientes($id,$apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion, $activo) {
+function modificarClientes($id,$reftipodocumentos,$apellido,$nombre,$nrodocumento,$telefono,$celular,$email,$aceptaterminos,$subscripcion, $activo) {
 $sql = "update dbclientes
-set
-apellido = '".($apellido)."',nombre = '".($nombre)."',cuit = '".($cuit)."',telefono = '".($telefono)."',celular = '".($celular)."',email = '".($email)."',aceptaterminos = ".$aceptaterminos.",subscripcion = ".$subscripcion.",activo = ".$activo."
+set reftipodocumentos = ".$reftipodocumentos.",
+apellido = '".($apellido)."',nombre = '".($nombre)."',nrodocumento = '".($nrodocumento)."',telefono = '".($telefono)."',celular = '".($celular)."',email = '".($email)."',aceptaterminos = ".$aceptaterminos.",subscripcion = ".$subscripcion.",activo = ".$activo."
 where idcliente =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -927,12 +929,18 @@ return $res;
 
 
 function modificarClientePorCliente($id,$apellido,$nombre,$telefono,$celular) {
-$sql = "update dbclientes
-set
-apellido = '".($apellido)."',nombre = '".($nombre)."',telefono = '".($telefono)."',celular = '".($celular)."'
-where idcliente =".$id;
-$res = $this->query($sql,0);
-return $res;
+   $sql = "update dbclientes
+   set
+   apellido = '".($apellido)."',nombre = '".($nombre)."',telefono = '".($telefono)."',celular = '".($celular)."'
+   where idcliente =".$id;
+   $res = $this->query($sql,0);
+   return $res;
+}
+
+function modificarClienteImagenPorId($idcliente, $imagen) {
+   $sql = "update dbclientes set imagen = '".$imagen."' where idcliente = ".$idcliente;
+   $res = $this->query($sql,0);
+   return $res;
 }
 
 
@@ -949,14 +957,15 @@ function traerClientesajax($length, $start, $busqueda) {
 
 	$busqueda = str_replace("'","",$busqueda);
 	if ($busqueda != '') {
-		$where = "where c.apellido like '%".$busqueda."%' or c.nombre like '%".$busqueda."%' or c.cuit like '%".$busqueda."%' or c.telefono like '%".$busqueda."%' or c.celular like '%".$busqueda."%' or c.email like '%".$busqueda."%'";
+		$where = "where c.apellido like '%".$busqueda."%' or c.nombre like '%".$busqueda."%' or c.nrodocumento like '%".$busqueda."%' or c.telefono like '%".$busqueda."%' or c.celular like '%".$busqueda."%' or c.email like '%".$busqueda."%' or td.tipodocumento like '%".$busqueda."%'";
 	}
 
 	$sql = "select
    c.idcliente,
+   td.tipodocumento,
    c.apellido,
    c.nombre,
-   c.cuit,
+   c.nrodocumento,
    c.telefono,
    c.celular,
    c.email,
@@ -964,6 +973,8 @@ function traerClientesajax($length, $start, $busqueda) {
    (case when c.subscripcion = 1 then 'Si' else 'No' end) as subscripcion,
    (case when c.activo = 1 then 'Si' else 'No' end) as activo
    from dbclientes c
+   inner join tbtipodocumentos td
+   on td.idtipodocumento = c.reftipodocumentos
 	".$where."
 	order by c.apellido, c.nombre
 	limit ".$start.",".$length;
@@ -976,9 +987,10 @@ function traerClientesajax($length, $start, $busqueda) {
 function traerClientes() {
 $sql = "select
 c.idcliente,
+td.tipodocumento,
 c.apellido,
 c.nombre,
-c.cuit,
+c.nrodocumento,
 c.telefono,
 c.celular,
 c.email,
@@ -986,6 +998,8 @@ c.aceptaterminos,
 c.subscripcion,
 (case when c.activo = 1 then 'Si' else 'No' end) as activo
 from dbclientes c
+inner join tbtipodocumentos td
+on td.idtipodocumento = c.reftipodocumentos
 order by c.apellido, c.nombre";
 $res = $this->query($sql,0);
 return $res;
@@ -994,9 +1008,10 @@ return $res;
 function traerClientesActivos() {
 $sql = "select
 c.idcliente,
+td.tipodocumento,
 c.apellido,
 c.nombre,
-c.cuit,
+c.nrodocumento,
 c.telefono,
 c.celular,
 c.email,
@@ -1004,6 +1019,8 @@ c.aceptaterminos,
 c.subscripcion,
 (case when c.activo = 1 then 'Si' else 'No' end) as activo
 from dbclientes c
+inner join tbtipodocumentos td
+on td.idtipodocumento = c.reftipodocumentos
 where c.activo = 1
 order by 1";
 $res = $this->query($sql,0);
@@ -1012,7 +1029,7 @@ return $res;
 
 
 function traerClientesPorId($id) {
-$sql = "select idcliente,apellido,nombre,cuit,telefono,celular,email,aceptaterminos,subscripcion,(case when activo = 1 then 'Si' else 'No' end) as activo from dbclientes where idcliente =".$id;
+$sql = "select idcliente,reftipodocumentos,apellido,nombre,nrodocumento,telefono,celular,email,aceptaterminos,subscripcion,(case when activo = 1 then 'Si' else 'No' end) as activo from dbclientes where idcliente =".$id;
 $res = $this->query($sql,0);
 return $res;
 }
@@ -1021,6 +1038,53 @@ return $res;
 /* PARA Clientes */
 
 
+
+/* PARA Tipodocumentos */
+
+function insertarTipodocumentos($tipodocumento) {
+$sql = "insert into tbtipodocumentos(idtipodocumento,tipodocumento)
+values ('','".($tipodocumento)."')";
+$res = $this->query($sql,1);
+return $res;
+}
+
+
+function modificarTipodocumentos($id,$tipodocumento) {
+$sql = "update tbtipodocumentos
+set
+tipodocumento = '".($tipodocumento)."'
+where idtipodocumento =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function eliminarTipodocumentos($id) {
+$sql = "delete from tbtipodocumentos where idtipodocumento =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerTipodocumentos() {
+$sql = "select
+t.idtipodocumento,
+t.tipodocumento
+from tbtipodocumentos t
+order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerTipodocumentosPorId($id) {
+$sql = "select idtipodocumento,tipodocumento from tbtipodocumentos where idtipodocumento =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+/* Fin */
+/* /* Fin de la Tabla: tbtipodocumentos*/
 
 
 /* PARA Images */
@@ -1080,9 +1144,9 @@ $sql = "select
 c.idcliente,
 c.apellido,
 c.nombre,
-c.cuit
+c.nrodocumento
 from dbclientes c
-where concat(c.apellido,' ',c.nombre,' ',c.cuit) like '%".$busqueda."%'
+where concat(c.apellido,' ',c.nombre,' ',c.nrodocumento) like '%".$busqueda."%'
 order by c.apellido,c.nombre
 limit 15";
 $res = $this->query($sql,0);

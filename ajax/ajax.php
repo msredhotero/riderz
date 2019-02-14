@@ -131,6 +131,8 @@ case 'traerArchivosPorCliente':
 
 
 function insertarFacturas($serviciosReferencias) {
+   $error = '';
+
    $refclientes = $_POST['refclientes'];
    $reftipofacturas = $_POST['reftipofacturas'];
    $refestados = $_POST['refestados'];
@@ -167,16 +169,24 @@ function insertarFacturas($serviciosReferencias) {
    $irff = $_POST['irff'];
    $fechaingreso = $_POST['fechaingreso'];
    $fechasubido = $_POST['fechasubido'];
-   $imagen = '';
-   //$_POST['imagen'];
 
-   $res = $serviciosReferencias->insertarFacturas($refclientes,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen);
+
+   $res = $serviciosReferencias->insertarFacturas($refclientes,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,'asduhas');
 
    if ((integer)$res > 0) {
-      echo '';
+      $resSubida = $serviciosReferencias->subirArchivo('imagen',$res,$serviciosReferencias->obtenerNuevoId('dbarchivos'),$serviciosReferencias->GUID(),'', 1, date('Y'), date('m'));
+      if ($resSubida != '') {
+         //ok
+         $error = 'Se genero un problema al subir el archivo, intente nuevamente';
+         $resEliminar = $serviciosReferencias->eliminarFacturas($res);
+      }
+
    } else {
-      echo 'Huvo un error al insertar datos ';
+      $error = 'Hubo un error al insertar datos ';
    }
+
+   echo $error;
+
 }
 
 function modificarFacturas($serviciosReferencias) {
@@ -199,7 +209,7 @@ function modificarFacturas($serviciosReferencias) {
    if ($res == true) {
       echo '';
    } else {
-      echo 'Huvo un error al modificar datos';
+      echo 'Hubo un error al modificar datos';
    }
 }
 
@@ -573,7 +583,7 @@ function insertarClientes($serviciosReferencias, $serviciosValidador, $servicios
       	$resUsuario = $serviciosReferencias->query($sql,1);
          echo '';
       } else {
-         echo 'Huvo un error al insertar datos';
+         echo 'Hubo un error al insertar datos';
       }
    }
 
@@ -629,7 +639,7 @@ function modificarClientes($serviciosReferencias, $serviciosValidador) {
       if ($res == true) {
          echo '';
       } else {
-         echo 'Huvo un error al modificar datos';
+         echo 'Hubo un error al modificar datos';
       }
    }
 
@@ -643,7 +653,7 @@ function eliminarClientes($serviciosReferencias) {
    if ($res == true) {
       echo '';
    } else {
-      echo 'Huvo un error al modificar datos';
+      echo 'Hubo un error al modificar datos';
    }
 }
 
@@ -747,6 +757,7 @@ function registrarme($serviciosUsuarios, $serviciosReferencias, $serviciosValida
    $telefono   = trim($_POST['telefono']);
    $celular    = trim($_POST['celular']);
    $cuit       = trim($_POST['cuit']);
+   $reftipodocumentos = trim($_POST['reftipodocumentos']);
 
    $aceptaterminos   = $_POST['aceptaterminos'];
    $subscripcion     = $_POST['subscripcion'];
@@ -771,7 +782,7 @@ function registrarme($serviciosUsuarios, $serviciosReferencias, $serviciosValida
 
    if ($error == '') {
       // todo ok
-      $res = $serviciosReferencias->insertarClientes($apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion,0);
+      $res = $serviciosReferencias->insertarClientes($reftipodocumentos,$apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion,0);
 
       // empiezo la activacion del usuarios
       $resActivacion = $serviciosUsuarios->registrarSocio($email, $pass, $apellido, $nombre, $res);
@@ -780,7 +791,7 @@ function registrarme($serviciosUsuarios, $serviciosReferencias, $serviciosValida
 
          echo '';
       } else {
-         echo 'Huvo un error al insertar datos ';
+         echo 'Hubo un error al insertar datos ';
       }
    } else {
       // error
