@@ -114,7 +114,7 @@ function crearDirectorioPrincipal($dir) {
 	function obtenerNuevoId($tabla) {
         //u235498999_aif
         $sql = "SELECT AUTO_INCREMENT FROM information_schema.TABLES
-                WHERE TABLE_SCHEMA = 'u235498999_rider'
+                WHERE TABLE_SCHEMA = 'riderz'
                 AND TABLE_NAME = '".$tabla."'";
         $res = $this->query($sql,0);
         return mysql_result($res, 0,0);
