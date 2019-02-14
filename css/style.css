@@ -1877,6 +1877,10 @@ color: #fff; }
 .bg-riderz .content .number {
   color: #fff !important; }
 
+.bg-riderz:hover {
+   color: #fff;
+   background-color: #073D58 !important;
+}
 .bg-purple {
   background-color: #9C27B0 !important;
   color: #fff; }
