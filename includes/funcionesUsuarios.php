@@ -374,13 +374,12 @@ function registrarSocio($email, $password,$apellido, $nombre,$refcliente) {
 	date_add($fecha, date_interval_create_from_date_string('5 days'));
 	$fechaprogramada =  date_format($fecha, 'Y-m-d');
 
-	$cuerpo .= '<p>Antes que nada por favor no responda este mail ya que no recibirá respuesta.</p>';
-	$cuerpo .= '<p>Recibimos su solicitud de alta como Cliente en Riderz. Para verificar(activar) tu casilla de correo por favor ingresá al siguiente link: <a href="http://www.saupureinconsulting.com.ar/aifzn/activacion/index.php?token='.$token.'" target="_blank">AQUI</a>.</p>';
-	$cuerpo .= '<p>Este link estara vigente hasta la fecha '.$fechaprogramada.', pasada esta fecha deberá solicitar mas tiempo para activar su cuenta.</p>';
-	$cuerpo .= '<p>Una vez hecho esto, el personal administrativo se pondrá en contacto mediante esta misma via para notificarle si su estado de alta se encuentra aprobado, de no ser así se detallará la causa.</p>';
+   $cuerpo .= '<img src="https://saupureinconsulting.com.ar/riderz/imagenes/1PNGlogosRIDERZ.png" alt="RIDERZ" width="190">';
 
-	$cuerpo .= '<p>Atte.</p>';
-	$cuerpo .= '<p>RIDERZ</p>';
+   $cuerpo .= '<h2>¡Bienvenido a RIDERZ!</h2>';
+
+
+   $cuerpo .= '<p>Usa el siguente <a href="http://www.saupureinconsulting.com.ar/aifzn/activacion/index.php?token='.$token.'" target="_blank">enlace</a> para confirmar tu cuenta.</p>';
 
 
 	$sql = "INSERT INTO dbusuarios

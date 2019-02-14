@@ -37,14 +37,19 @@ session_destroy();
 
 <body class="login-page">
     <div class="login-box">
-        <div class="logo" style="background-color:#F00; padding:10px 10px;">
-            <a href="javascript:void(0);" style="color:#00F;">Logout <b>RIDERZ</b></a>
-            <small>Administración de Clientes</small>
+        <div class="logo">
+           <div class="row">
+              <div class="col-md-12">
+                 <img src="imagenes/1PNGlogosRIDERZ.png" alt="RIDERZ">
+              </div>
+           </div>
         </div>
         <div class="card">
             <div class="body">
+                  <div align="center">
+                     <h3>Acaba de finalizar su sessión</h3>
+                  </div>
 
-                    <h3>Acaba de finalizar su sessión</h3>
 
                     <div class="row js-sweetalert">
                         <div class="col-xs-2">

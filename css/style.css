@@ -1,12 +1,17 @@
 ﻿/* Navbar ====================================== */
 @import url(materialize.css);
 
+@font-face {
+  font-family: "Champagne";
+  src: url("../fuentes/Champagne & Limousines.ttf");
+}
+
 .margTop {
   margin-top: 10px;
 }
 
 .navbar {
-  font-family: "Roboto", sans-serif;
+  font-family: "Champagne", sans-serif;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   -ms-border-radius: 0;
@@ -117,7 +122,7 @@
   position: absolute;
   top: 2px;
   right: 6px;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 15px;
   background-color: #000;
   padding: 0 4px;
@@ -1865,6 +1870,13 @@
   .bg-pink .content .number {
     color: #fff !important; }
 
+.bg-riderz {
+background-color: #115A7E !important;
+color: #fff; }
+.bg-riderz .content .text,
+.bg-riderz .content .number {
+  color: #fff !important; }
+
 .bg-purple {
   background-color: #9C27B0 !important;
   color: #fff; }
@@ -2373,7 +2385,7 @@ body {
   -o-transition: all 0.5s;
   -webkit-transition: all 0.5s;
   transition: all 0.5s;
-  font-family: 'Roboto', Arial, Tahoma, sans-serif; }
+  font-family: 'Champagne', Arial, Tahoma, sans-serif; }
 
 h1,
 h2,
@@ -3034,7 +3046,7 @@ section.content {
     .card .header .col-xs-12 h2 {
       margin-top: 5px; }
   .card .body {
-    font-size: 14px;
+    font-size: 18px;
     color: #555;
     padding: 20px; }
     .card .body .col-xs-1,
@@ -5025,11 +5037,11 @@ section.content {
       padding-left: 10px; }
   .input-group .help-info {
     float: right;
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 5px;
     color: #999; }
   .input-group label.error {
-    font-size: 12px;
+    font-size: 14px;
     display: block;
     margin-top: 5px;
     font-weight: normal;
@@ -5049,7 +5061,7 @@ section.content {
   .input-group .form-line.focused .form-label {
     bottom: 25px;
     left: 0;
-    font-size: 12px; }
+    font-size: 15px; }
   .input-group .input-group-addon {
     border: none;
     background-color: transparent;
@@ -5073,7 +5085,7 @@ section.content {
   font-size: 14px; }
 
 .input-group.input-group-sm .form-control {
-  font-size: 12px; }
+  font-size: 15px; }
 
 .input-group.input-group-lg .input-group-addon i {
   font-size: 26px; }
@@ -5103,11 +5115,11 @@ section.content {
     padding-left: 0; }
   .form-group .help-info {
     float: right;
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 5px;
     color: #999; }
   .form-group label.error {
-    font-size: 12px;
+    font-size: 14px;
     display: block;
     margin-top: 5px;
     font-weight: normal;
@@ -5159,21 +5171,21 @@ section.content {
   .form-group .form-line.focused .form-label {
     top: -10px;
     left: 0;
-    font-size: 12px; }
+    font-size: 15px; }
 
 .form-group-sm .form-label {
   font-size: 12px; }
 
 .form-group-sm .form-line.focused .form-label {
   bottom: 20px;
-  font-size: 10px; }
+  font-size: 12px; }
 
 .form-group-lg .form-label {
   font-size: 18px; }
 
 .form-group-lg .form-line.focused .form-label {
   bottom: 35px;
-  font-size: 12px; }
+  font-size: 14px; }
 
 .form-control[disabled],
 .form-control[readonly],
@@ -5204,7 +5216,7 @@ fieldset[disabled] .form-control {
   -ms-border-radius: 0;
   border-radius: 0;
   background-color: transparent;
-  font-size: 13px;
+  font-size: 15px;
   margin-bottom: 10px; }
   .breadcrumb li a {
     color: #444;
@@ -5581,7 +5593,7 @@ fieldset[disabled] .form-control {
     border-color: #2196F3; }
   .list-group .active .list-group-item-text {
     color: #dfe9f1;
-    font-size: 13px; }
+    font-size: 15px; }
     .list-group .active .list-group-item-text:hover, .list-group .active .list-group-item-text:active, .list-group .active .list-group-item-text:focus {
       color: #dfe9f1; }
 
@@ -6311,7 +6323,7 @@ fieldset[disabled] .form-control {
   overflow: hidden;
   text-align: center; }
   .page-loader-wrapper p {
-    font-size: 13px;
+    font-size: 15px;
     margin-top: 10px;
     font-weight: bold;
     color: #444; }
@@ -6686,7 +6698,7 @@ fieldset[disabled] .form-control {
 
 /* Navbars ===================================== */
 .navbar {
-  font-family: "Roboto", sans-serif;
+  font-family: "Champagne", sans-serif;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   -ms-border-radius: 0;
@@ -7406,7 +7418,7 @@ fieldset[disabled] .form-control {
   .dropdown-menu .divider {
     margin: 5px 0; }
   .dropdown-menu .header {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: bold;
     min-width: 270px;
     border-bottom: 1px solid #eee;
@@ -7416,7 +7428,7 @@ fieldset[disabled] .form-control {
     padding-left: 0; }
     .dropdown-menu ul.menu.tasks h4 {
       color: #333;
-      font-size: 13px;
+      font-size: 15px;
       margin: 0 0 8px 0; }
       .dropdown-menu ul.menu.tasks h4 small {
         float: right;
@@ -7457,14 +7469,14 @@ fieldset[disabled] .form-control {
       left: 5px; }
       .dropdown-menu ul.menu .menu-info h4 {
         margin: 0;
-        font-size: 13px;
+        font-size: 15px;
         color: #333; }
       .dropdown-menu ul.menu .menu-info p {
         margin: 0;
-        font-size: 11px;
+        font-size: 13px;
         color: #aaa; }
         .dropdown-menu ul.menu .menu-info p .material-icons {
-          font-size: 13px;
+          font-size: 15px;
           color: #aaa;
           position: relative;
           top: 2px; }
@@ -7472,7 +7484,7 @@ fieldset[disabled] .form-control {
     text-align: center;
     border-top: 1px solid #eee;
     padding: 5px 0 5px 0;
-    font-size: 12px;
+    font-size: 14px;
     margin-bottom: -5px; }
     .dropdown-menu .footer a:hover {
       background-color: transparent; }
@@ -7483,7 +7495,7 @@ fieldset[disabled] .form-control {
     -o-transition: all 0.5s;
     -webkit-transition: all 0.5s;
     transition: all 0.5s;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 25px; }
     .dropdown-menu > li > a:hover {
       background-color: rgba(0, 0, 0, 0.075); }
@@ -7520,7 +7532,7 @@ fieldset[disabled] .form-control {
   -o-transition: all 0.5s;
   -webkit-transition: all 0.5s;
   transition: all 0.5s;
-  font-family: "Roboto", sans-serif;
+  font-family: "Champagne", sans-serif;
   background: #fdfdfd;
   width: 300px;
   overflow: hidden;
@@ -7542,7 +7554,7 @@ fieldset[disabled] .form-control {
     padding: 15px;
     overflow: hidden; }
     .sidebar .legal .copyright {
-      font-size: 13px;
+      font-size: 15px;
       white-space: nowrap;
       -ms-text-overflow: ellipsis;
       -o-text-overflow: ellipsis;
@@ -7558,7 +7570,7 @@ fieldset[disabled] .form-control {
       text-overflow: ellipsis;
       overflow: hidden;
       margin-top: 5px;
-      font-size: 13px; }
+      font-size: 15px; }
   .sidebar .user-info {
     padding: 13px 15px 12px 15px;
     white-space: nowrap;
@@ -7586,7 +7598,7 @@ fieldset[disabled] .form-control {
         -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
         overflow: hidden;
-        font-size: 14px;
+        font-size: 16px;
         max-width: 200px;
         color: #fff; }
       .sidebar .user-info .info-container .email {
@@ -7595,7 +7607,7 @@ fieldset[disabled] .form-control {
         -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
         overflow: hidden;
-        font-size: 12px;
+        font-size: 14px;
         max-width: 200px;
         color: #fff; }
       .sidebar .user-info .info-container .user-helper-dropdown {
@@ -7619,7 +7631,7 @@ fieldset[disabled] .form-control {
         font-weight: bold; }
       .sidebar .menu .list .header {
         background: #eee;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 600;
         padding: 8px 16px; }
       .sidebar .menu .list i.material-icons {
@@ -7682,7 +7694,7 @@ fieldset[disabled] .form-control {
           margin: 7px 0 7px 12px;
           color: #333;
           font-weight: bold;
-          font-size: 14px;
+          font-size: 15px;
           overflow: hidden; }
       .sidebar .menu .list .ml-menu {
         list-style: none;
@@ -7690,7 +7702,7 @@ fieldset[disabled] .form-control {
         padding-left: 0; }
         .sidebar .menu .list .ml-menu span {
           font-weight: normal;
-          font-size: 14px;
+          font-size: 15px;
           margin: 3px 0 1px 6px; }
         .sidebar .menu .list .ml-menu li a {
           padding-left: 55px;
@@ -7733,7 +7745,7 @@ fieldset[disabled] .form-control {
     right: 0; }
   .right-sidebar .nav-tabs {
     font-weight: 600;
-    font-size: 13px;
+    font-size: 15px;
     width: 100%;
     margin-left: 2px; }
     .right-sidebar .nav-tabs li {
@@ -7768,7 +7780,7 @@ fieldset[disabled] .form-control {
 
 /* Login Page ================================== */
 .login-page {
-  background: url(../imagenes/bg12.jpg) no-repeat center center fixed;
+  background-color: rgb(220,220,220);
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -7783,11 +7795,14 @@ fieldset[disabled] .form-control {
     margin-bottom: 30px;
     text-align: center; }
   .login-page .login-box a {
-    font-size: 14px;
+    font-size: 16px;
     text-decoration: none;
     color: #00BCD4; }
   .login-page .login-box .logo {
     margin-bottom: 20px; }
+    .login-page .login-box .logo img {
+      width: 100%;
+    }
     .login-page .login-box .logo a {
       font-size: 36px;
       display: block;
@@ -7813,7 +7828,7 @@ fieldset[disabled] .form-control {
     margin-bottom: 30px;
     text-align: center; }
   .signup-page .signup-box a {
-    font-size: 14px;
+    font-size: 16px;
     text-decoration: none;
     color: #00BCD4; }
   .signup-page .signup-box .logo {
@@ -7843,7 +7858,7 @@ fieldset[disabled] .form-control {
     margin-bottom: 30px;
     text-align: center; }
   .fp-page .fp-box a {
-    font-size: 14px;
+    font-size: 16px;
     text-decoration: none;
     color: #00BCD4; }
   .fp-page .fp-box .logo {
@@ -8004,7 +8019,7 @@ fieldset[disabled] .form-control {
     -ms-box-shadow: none;
     box-shadow: none;
     border: none;
-    font-size: 12px;
+    font-size: 14px;
     border-bottom: 1px solid #ddd; }
     .dataTables_wrapper input[type="search"]:focus, .dataTables_wrapper input[type="search"]:active {
       border-bottom: 2px solid #1f91f3; }
@@ -8022,7 +8037,7 @@ fieldset[disabled] .form-control {
       -ms-border-radius: 2px;
       border-radius: 2px;
       border: none;
-      font-size: 13px;
+      font-size: 14px;
       outline: none; }
       .dataTables_wrapper .dt-buttons a.dt-button:active {
         opacity: 0.8; }
