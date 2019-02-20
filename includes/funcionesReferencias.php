@@ -315,6 +315,22 @@ function descargar($token) {
 
 
 
+function validarDNI($dni, $dnicompleto) {
+   $letras = array(0=>'T',1=>'R',2=>'W',3=>'A',4=>'G',5=>'W',6=>'Y',7=>'F',8=>'P',9=>'D',10=>'X',11=>'B',12=>'N',
+13=>'J',14=>'Z',15=>'S',16=>'Q',17=>'V',18=>'H',19=>'L',20=>'C',21=>'K',22=>'E');
+
+   $resto = $dni % 23;
+
+   $dnicompletoreal = $dni.$letras[$resto];
+
+   if ($dnicompletoreal == $dnicompleto) {
+      return 1;
+   }
+   return 0;
+
+}
+
+
 /* PARA Facturas */
 
 function insertarFacturas($refclientes,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen) {
