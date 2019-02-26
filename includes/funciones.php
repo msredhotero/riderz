@@ -1042,13 +1042,23 @@ class Servicios {
 								idcliente,
 								apellido,
 								nombre,
-								cuit,
+								nrodocumento,
 								telefono,
 								celular,
 								email,
 								(case when aceptaterminos = 1 then 'Si' else 'No' end) as aceptaterminos,
 								(case when subscripcion = 1 then 'Si' else 'No' end) as subscripcion,
-								(case when activo = 1 then 'Si' else 'No' end) as activo
+								(case when activo = 1 then 'Si' else 'No' end) as activo,
+								ciudad,
+								fechanacimiento,
+								domicilio,
+								codigopostal,
+								municipio,
+								iban,
+								nroseguro,
+								fotofrente,
+								fotodorsal,
+								codigoreferencia
 									from ".$tabla." where ".$lblid." = ".$id;
 				$resMod = $this->query($sqlMod,0);
 				break;
@@ -1112,7 +1122,7 @@ class Servicios {
 		$res 	=	$this->query($sql,0);
 
 		if ($tabla == 'dbclientes') {
-			$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi","idusuario","activo");
+			$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi","idusuario","activo",'fotofrente','fotodorsal');
 		} else {
 			if ($tabla == 'dbusuarios') {
 				$ocultar = array("password");

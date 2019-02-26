@@ -501,16 +501,22 @@ function frmAjaxModificar($serviciosFunciones, $serviciosReferencias, $servicios
          break;
 
       case 'dbclientes':
+         $resultado = $serviciosReferencias->traerClientesPorId($id);
+
          $modificar = "modificarClientes";
          $idTabla = "idcliente";
 
-         $lblCambio	 	= array('telefono','celular','aceptaterminos','cuit');
-         $lblreemplazo	= array('Tel. Fijo','Tel. Movil','Acepta Terminos y condiciones','DNI');
+         $lblCambio	 	= array('reftipodocumentos','nrodocumento','telefono','celular','aceptaterminos','fechanacimiento','codigopostal','nroseguro','codigoreferencia');
+         $lblreemplazo	= array('Tipo Documento','Nro. Doc.','Tel. Fijo','Tel. Movil','Acepta Ter. Y Cond.','Fecha de Nacimiento','Cod. Postal','Nro de Seguro','Cod. de Referencia');
 
-         $cadRef 	= '';
 
-         $refdescripcion = array();
-         $refCampo 	=  array();
+         $resVar1 = $serviciosReferencias->traerTipodocumentosPorId(mysql_result($resultado,0,'reftipodocumentos'));
+         $cadRef1 	= $serviciosFunciones->devolverSelectBox($resVar1,array(1),'');
+
+         //die(var_dump(mysql_result($resVar4,0,0)));
+
+         $refdescripcion = array(0 => $cadRef1);
+         $refCampo 	=  array('reftipodocumentos');
          break;
       case 'dbusuarios':
          $resultado = $serviciosReferencias->traerUsuariosPorId($id);
@@ -685,7 +691,7 @@ function insertarClientes($serviciosReferencias, $serviciosValidador, $servicios
 
 }
 
-function modificarClientes($serviciosReferencias, $serviciosValidador) {
+function modificarClientes($serviciosReferencias, $serviciosValidador, $serviciosUsuarios) {
    $error = '';
 
    $id = $_POST['id'];
@@ -695,7 +701,7 @@ function modificarClientes($serviciosReferencias, $serviciosValidador) {
    $nombre = ( $serviciosValidador->validaRequerido( trim($_POST['nombre']) ) == true ? trim($_POST['nombre']) : $error .= 'El campo Nombre es obligatorio
    ');
 
-   $cuit = ( $serviciosValidador->validaRequerido( str_replace('_','',trim($_POST['cuit'])) ) == true ? trim($_POST['cuit']) : $error .= 'El campo DNI es obligatorio
+   $cuit = ( $serviciosValidador->validaRequerido( str_replace('_','',trim($_POST['nrodocumento'])) ) == true ? trim($_POST['nrodocumento']) : $error .= 'El campo DNI es obligatorio
    ');
 
    if (isset($_POST['aceptaterminos'])) {
@@ -710,11 +716,31 @@ function modificarClientes($serviciosReferencias, $serviciosValidador) {
       $subscripcion = 0;
    }
 
+   if (isset($_POST['activo'])) {
+      $activo = 1;
+   } else {
+      $activo = 0;
+   }
+
+   $reftipodocumentos = $_POST['reftipodocumentos'];
+
    $email = $_POST['email'];
    $telefono = $_POST['telefono'];
    $celular = $_POST['celular'];
 
-   $existeEmail = $serviciosUsuarios->existeUsuario($email);
+   $ciudad = $_POST['ciudad'];
+   $fechanacimiento = $_POST['fechanacimiento'];
+   $domicilio = $_POST['domicilio'];
+   $codigopostal = $_POST['codigopostal'];
+   $municipio = $_POST['municipio'];
+   $iban = $_POST['iban'];
+   $nroseguro = $_POST['nroseguro'];
+   $fotofrente = $_POST['fotofrente'];
+   $fotodorsal = $_POST['fotodorsal'];
+   $codigoreferencia = $_POST['codigoreferencia'];
+
+   //$existeEmail = $serviciosUsuarios->existeUsuario($email);
+   $existeEmail = 0;
    $existeCliente = $serviciosReferencias->existeCliente($cuit,1,$id);
 
    if ($existeEmail == 1) {
@@ -730,7 +756,7 @@ function modificarClientes($serviciosReferencias, $serviciosValidador) {
    if ($error != '') {
       echo $error;
    } else {
-      $res = $serviciosReferencias->modificarClientes($id,$apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion, 1);
+      $res = $serviciosReferencias->modificarClientes($id,$reftipodocumentos,$apellido,$nombre,$cuit,$telefono,$celular,$email,$aceptaterminos,$subscripcion,$activo,$ciudad,$fechanacimiento,$domicilio,$codigopostal,$municipio,$iban,$nroseguro,$fotofrente,$fotodorsal,$codigoreferencia);
 
       if ($res == true) {
          echo '';

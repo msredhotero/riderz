@@ -1140,10 +1140,19 @@ return $res;
 }
 
 
-function modificarClientes($id,$reftipodocumentos,$apellido,$nombre,$nrodocumento,$telefono,$celular,$email,$aceptaterminos,$subscripcion, $activo) {
+function modificarClientes($id,$reftipodocumentos,$apellido,$nombre,$nrodocumento,$telefono,$celular,$email,$aceptaterminos,$subscripcion, $activo,$ciudad,$fechanacimiento,$domicilio,$codigopostal,$municipio,$iban,$nroseguro,$fotofrente,$fotodorsal,$codigoreferencia) {
 $sql = "update dbclientes
 set reftipodocumentos = ".$reftipodocumentos.",
 apellido = '".($apellido)."',nombre = '".($nombre)."',nrodocumento = '".($nrodocumento)."',telefono = '".($telefono)."',celular = '".($celular)."',email = '".($email)."',aceptaterminos = ".$aceptaterminos.",subscripcion = ".$subscripcion.",activo = ".$activo."
+,ciudad = '".($ciudad)."'
+,fechanacimiento = '".($fechanacimiento)."'
+,domicilio = '".($domicilio)."'
+,codigopostal = '".($codigopostal)."'
+,municipio = '".($municipio)."'
+,iban = '".($iban)."'
+,fotofrente = '".($fotofrente)."'
+,fotodorsal = '".($fotodorsal)."'
+,codigoreferencia = '".($codigoreferencia)."'
 where idcliente =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -1245,7 +1254,17 @@ c.celular,
 c.email,
 c.aceptaterminos,
 c.subscripcion,
-(case when c.activo = 1 then 'Si' else 'No' end) as activo
+(case when c.activo = 1 then 'Si' else 'No' end) as activo,
+c.ciudad,
+c.fechanacimiento,
+c.domicilio,
+c.codigopostal,
+c.municipio,
+c.iban,
+c.nroseguro,
+c.fotofrente,
+c.fotodorsal,
+c.codigoreferencia
 from dbclientes c
 inner join tbtipodocumentos td
 on td.idtipodocumento = c.reftipodocumentos

@@ -15,7 +15,13 @@ $start = $_GET['iDisplayStart'];
 $length = $_GET['iDisplayLength'];
 $busqueda = $_GET['sSearch'];
 
-$idcliente = $_GET['idcliente'];
+$idcliente = 0;
+if (isset($_GET['referencia1'])) {
+	$idcliente = $_GET['idcliente'];
+} else {
+	$idcliente = 0;
+}
+
 
 $referencia1 = 0;
 
@@ -55,6 +61,17 @@ switch ($tabla) {
 		$label = array('btnDescargar','btnModificar');
 		$class = array('bg-green','bg-orange');
 		$icon = array('file_download','edit');
+		$indiceID = 0;
+		$empieza = 1;
+		$termina = 10;
+
+		break;
+	case 'clientes':
+		$resAjax = $serviciosReferencias->traerClientesajax($length, $start, $busqueda);
+		$res = $serviciosReferencias->traerClientes();
+		$label = array('btnModificar','btnEliminar');
+		$class = array('bg-amber','bg-red');
+		$icon = array('create','delete');
 		$indiceID = 0;
 		$empieza = 1;
 		$termina = 10;

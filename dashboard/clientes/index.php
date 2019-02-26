@@ -183,23 +183,14 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 						<div class="body table-responsive">
 							<form class="form" id="frmView">
 
-								<div class="row">
-									<div class="col-lg-12 col-md-12">
-										<div class="button-demo">
-											<button type="button" class="btn bg-light-green waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevo">
-												<i class="material-icons">add</i>
-												<span>NUEVO</span>
-											</button>
 
-										</div>
-									</div>
-								</div>
 
 								<div class="row" style="padding: 5px 20px;">
 
 									<table id="example" class="display table " style="width:100%">
 										<thead>
 											<tr>
+												<th>Tipo Doc.</th>
 												<th>Apellido</th>
 												<th>Nombre</th>
 												<th>DNI</th>
@@ -214,6 +205,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 										</thead>
 										<tfoot>
 											<tr>
+												<th>Tipo Doc.</th>
 												<th>Apellido</th>
 												<th>Nombre</th>
 												<th>DNI</th>
@@ -371,6 +363,19 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 			}
 		});
 
+		$('.maximizar').click(function() {
+			if ($('.icomarcos').text() == 'web') {
+				$('#marcos').show();
+				$('.content').css('marginLeft', '315px');
+				$('.icomarcos').html('aspect_ratio');
+			} else {
+				$('#marcos').hide();
+				$('.content').css('marginLeft', '15px');
+				$('.icomarcos').html('web');
+			}
+
+		});
+
 		var $demoMaskedInput = $('.demo-masked-input');
 
 		$('#activo').prop('checked',true);
@@ -391,6 +396,11 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 					if (data != '') {
 						$('.frmAjaxModificar').html(data);
+						var $demoMaskedInput = $('.demo-masked-input');
+
+		 	  			$demoMaskedInput.find('#fechanacimiento').inputmask('yyyy-mm-dd', { placeholder: '____-__-__' });
+
+		 				$demoMaskedInput.find('#iban').inputmask('aa99 9999 9999 9999 9999 99', { placeholder: '____ ____ ____ ____ ____ __'});
 					} else {
 						swal("Error!", data, "warning");
 
