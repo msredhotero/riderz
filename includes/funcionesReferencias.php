@@ -227,7 +227,7 @@ function crearDirectorioPrincipal($dir) {
 
 						$this->insertarArchivos($carpeta,$token,str_replace(' ','',$archivo),$tipoarchivo, $observacion, $refcategorias, $anio, $mes);
 
-                  $this->modificarClienteImagenPorId($carpeta,$archivo);
+                  //$this->modificarClienteImagenPorId($carpeta,$archivo);
 
 						echo "";
 
@@ -1070,6 +1070,12 @@ $res = $this->query($sql,0);
 return $res;
 }
 
+function traerArchivosPorIdCliente($id) {
+$sql = "select idarchivo,refclientes,token,imagen,type,observacion from dbarchivos where refclientes =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
 
 function traerArchivosPorToken($token) {
 $sql = "select
@@ -1203,7 +1209,7 @@ function modificarClientePorUsuario($idusuario,$ciudad,$fechanacimiento,$domicil
 
 
 function eliminarClientes($id) {
-$sql = "delete from dbclientes where idcliente =".$id;
+$sql = "update dbclientes set activo = 0 where idcliente =".$id;
 $res = $this->query($sql,0);
 return $res;
 }

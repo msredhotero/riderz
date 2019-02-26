@@ -117,7 +117,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 
 
-<body class="theme-red">
+<body class="theme-purple">
 
 <!-- Page Loader -->
 <div class="page-loader-wrapper">

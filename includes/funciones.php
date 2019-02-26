@@ -1122,7 +1122,7 @@ class Servicios {
 		$res 	=	$this->query($sql,0);
 
 		if ($tabla == 'dbclientes') {
-			$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi","idusuario","activo",'fotofrente','fotodorsal');
+			$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi","idusuario",'fotofrente','fotodorsal');
 		} else {
 			if ($tabla == 'dbusuarios') {
 				$ocultar = array("password");

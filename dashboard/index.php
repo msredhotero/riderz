@@ -547,6 +547,14 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 
 				});
 
+				$("#example").on("click",'.btnDescargar', function(){
+					usersid =  $(this).attr("id");
+
+					url = "descargaradmin.php?token=" + usersid;
+					$(location).attr('href',url);
+
+				});//fin del boton modificar
+
 				$('.modificar').click(function(){
 
 					//información del formulario
@@ -599,6 +607,8 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 							$("#load").html('');
 						}
 					});
+
+
 				});
 
 			<?php } ?>

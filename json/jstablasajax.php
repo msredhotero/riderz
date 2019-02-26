@@ -16,7 +16,7 @@ $length = $_GET['iDisplayLength'];
 $busqueda = $_GET['sSearch'];
 
 $idcliente = 0;
-if (isset($_GET['referencia1'])) {
+if (isset($_GET['idcliente'])) {
 	$idcliente = $_GET['idcliente'];
 } else {
 	$idcliente = 0;
