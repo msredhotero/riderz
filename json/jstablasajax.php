@@ -77,6 +77,17 @@ switch ($tabla) {
 		$termina = 10;
 
 		break;
+	case 'usuarios':
+		$resAjax = $serviciosUsuarios->traerUsuariosajax($length, $start, $busqueda);
+		$res = $serviciosUsuarios->traerUsuarios();
+		$label = array('btnModificar','btnEliminar');
+		$class = array('bg-amber','bg-red');
+		$icon = array('create','delete');
+		$indiceID = 0;
+		$empieza = 1;
+		$termina = 5;
+
+		break;
 
 	default:
 		// code...

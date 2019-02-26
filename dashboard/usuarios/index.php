@@ -60,10 +60,14 @@ $lblreemplazo	= array('Nombre Completo','Cliente');
 
 
 $refClientes = $serviciosReferencias->traerClientes();
-$cadRef = $serviciosFunciones->devolverSelectBox($refClientes,array(1,2,3),' ');
+$cadRef = $serviciosFunciones->devolverSelectBox($refClientes,array(2,3,4),' ');
 
-$refdescripcion = array(0=>$cadRef);
-$refCampo 	=  array('refclientes');
+
+$resRoles 	= $serviciosUsuario->traerRoles();
+$cadRef2 = $serviciosFunciones->devolverSelectBox($resRoles,array(1),'');
+
+$refdescripcion = array(0=>$cadRef, 1 => $cadRef2);
+$refCampo 	=  array('refclientes','refroles');
 
 $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
@@ -118,7 +122,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 
 
-<body class="theme-red">
+<body class="theme-purple">
 
 <!-- Page Loader -->
 <div class="page-loader-wrapper">
@@ -183,6 +187,18 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 						</div>
 						<div class="body table-responsive">
 							<form class="form" id="formCountry">
+
+								<div class="row">
+									<div class="col-lg-12 col-md-12">
+										<div class="button-demo">
+											<button type="button" class="btn bg-light-green waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevo">
+												<i class="material-icons">add</i>
+												<span>NUEVO</span>
+											</button>
+
+										</div>
+									</div>
+								</div>
 
 
 								<div class="row" style="padding: 5px 20px;">

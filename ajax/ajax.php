@@ -42,6 +42,9 @@ switch ($accion) {
    case 'registrarme':
       registrarme($serviciosUsuarios, $serviciosReferencias, $serviciosValidador);
    break;
+   case 'insertarUsuarios':
+        insertarUsuarios($serviciosReferencias);
+   break;
 
    case 'eliminarUsuarios':
       eliminarUsuarios($serviciosUsuarios, $serviciosReferencias);
@@ -528,7 +531,7 @@ function frmAjaxModificar($serviciosFunciones, $serviciosReferencias, $servicios
          $lblreemplazo	= array('Nombre Completo','Cliente');
 
          $refClientes = $serviciosReferencias->traerClientesPorId(mysql_result($resultado,0,'refclientes'));
-         $cadRef2 = $serviciosFunciones->devolverSelectBox($refClientes,array(1,2,3),' ');
+         $cadRef2 = $serviciosFunciones->devolverSelectBox($refClientes,array(2,3),' ');
 
          if ($_SESSION['idroll_sahilices'] != 1) {
          	$resRoles 	= $serviciosUsuarios->traerRolesSimple();
@@ -820,7 +823,8 @@ function entrar($serviciosUsuarios) {
 function registrar($serviciosUsuarios) {
 	$usuario			=	$_POST['usuario'];
 	$password			=	$_POST['password'];
-	$refroll			=	$_POST['refroll'];
+	$refroll			=	$_POST['refroles'];
+   $refclientes			=	$_POST['refclientes'];
 	$email				=	$_POST['email'];
 	$nombre				=	$_POST['nombrecompleto'];
 
@@ -841,6 +845,23 @@ function insertarUsuario($serviciosUsuarios) {
 	$nombre				=	$_POST['nombrecompleto'];
 
 	$res = $serviciosUsuarios->insertarUsuario($usuario,$password,$refroll,$email,$nombre);
+	if ((integer)$res > 0) {
+		echo '';
+	} else {
+		echo $res;
+	}
+}
+
+
+function insertarUsuarios($serviciosReferencias) {
+	$usuario			=	$_POST['usuario'];
+	$password			=	$_POST['password'];
+	$refroll			=	$_POST['refroles'];
+	$email				=	$_POST['email'];
+	$nombre				=	$_POST['nombrecompleto'];
+   $refclientes			=	$_POST['refclientes'];
+
+	$res = $serviciosReferencias->insertarUsuarios($usuario,$password,$refroll,$email,$nombre,1,$refclientes);
 	if ((integer)$res > 0) {
 		echo '';
 	} else {
