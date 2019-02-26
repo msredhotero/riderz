@@ -9,6 +9,61 @@ date_default_timezone_set('America/Buenos_Aires');
 
 class ServiciosReferencias {
 
+   function traerAniosFacturadosPorCliente($id) {
+      $sql = "select f.anio from dbfacturas f where f.refclientes = ".$id." group by f.anio";
+
+      $res = $this->query($sql,0);
+
+      $sqlVacio = 'select 2019';
+
+      $resVacio = $this->query($sqlVacio,0);
+
+      if (mysql_num_rows($res) > 0) {
+         return $res;
+      }
+
+      return $resVacio;
+   }
+
+   function traerTotalPorCliente($idcliente, $tipo, $anio, $trimestre) {
+      $sql = 'select sum(f.total) from dbfacturas f where f.anio = '.$anio.' and f.refmeses = '.$trimestre.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = '.$tipo;
+
+      $res = $this->query($sql,0);
+
+      if (mysql_num_rows($res) > 0) {
+         return mysql_result($res,0,0);
+      }
+
+      return 0;
+   }
+
+   function traerTotalImpuestosPorClienteAnioTrimestre($idcliente, $tipo, $anio, $trimestre) {
+      // tipo 1 irpf
+      // tipo 2 iva
+      if ($tipo == 1) {
+         $sql = 'select sum(r.total) * 0.2 from (
+            select sum(f.total) as total from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 1
+            union all
+            select -1*sum(f.total) as total from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 2
+            ) r';
+      } else {
+         $sql = 'select sum(r.total) from (
+            select sum(f.iva) as total from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 1 and f.refmeses = '.$trimestre.'
+            union all
+            select -1*sum(f.iva) as total from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 2 and f.refmeses = '.$trimestre.'
+            ) r';
+      }
+
+
+      $res = $this->query($sql,0);
+
+      if (mysql_num_rows($res) > 0) {
+         return mysql_result($res,0,0);
+      }
+
+      return 0;
+   }
+
 
 function GUID()
 {
@@ -46,7 +101,6 @@ function GUID()
 			   if(mysql_num_rows($resultado)>0){
 
 				   return mysql_result($resultado,0,0);
-
 			   }
 
 			   return 0;
@@ -331,6 +385,26 @@ function validarDNI($dni, $dnicompleto) {
 }
 
 
+function validarNIE($nie, $niecompleto) {
+   $letrasP= array('X'=>0,'Y'=>1,'Z'=>2);
+
+   $letras = array(0=>'T',1=>'R',2=>'W',3=>'A',4=>'G',5=>'W',6=>'Y',7=>'F',8=>'P',9=>'D',10=>'X',11=>'B',12=>'N',
+13=>'J',14=>'Z',15=>'S',16=>'Q',17=>'V',18=>'H',19=>'L',20=>'C',21=>'K',22=>'E');
+
+   $primeraLetra = substr($niecompleto,0,1);
+
+   $resto = (integer)$letrasP[$primeraLetra].$nie % 23;
+
+   $niecompletoreal = $letrasP[$primeraLetra].$nie.$letras[$resto];
+
+   if ($niecompletoreal == $niecompleto) {
+      return $niecompletoreal;
+   }
+   return $niecompletoreal;
+
+}
+
+
 /* PARA Facturas */
 
 function insertarFacturas($refclientes,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen) {
@@ -513,7 +587,9 @@ function traerFacturasPorClienteajax($idcliente,$length, $start, $busqueda) {
    $sql = "SELECT
           ar.token,
           tip.tipofactura,
-          (case when est.idestado then '<h4><span class=''label bg-blue''>Iniciado</span></h4>' end) as estado,
+          (case when est.idestado = 1 then '<h4><span class=''label bg-blue''>Iniciado</span></h4>'
+               when est.idestado = 2 then '<h4><span class=''label bg-green''>Aceptado</span></h4>'
+               when est.idestado = 3 then '<h4><span class=''label bg-red''>Rechazado</span></h4>' end) as estado,
           f.concepto,
           f.total,
           f.iva,
@@ -927,7 +1003,7 @@ function existeCliente($nrodocumento, $modifica = 0, $id = 0) {
 }
 
 function insertarClientes($reftipodocumentos,$apellido,$nombre,$nrodocumento,$telefono,$celular,$email,$aceptaterminos,$subscripcion,$activo) {
-$sql = "insert into dbclientes(reftipodocumentos,idcliente,apellido,nombre,nrodocumento,telefono,celular,email,aceptaterminos,subscripcion, activo)
+$sql = "insert into dbclientes(idcliente,reftipodocumentos,apellido,nombre,nrodocumento,telefono,celular,email,aceptaterminos,subscripcion, activo)
 values ('',".$reftipodocumentos.",'".($apellido)."','".($nombre)."','".($nrodocumento)."','".($telefono)."','".($celular)."','".($email)."',".$aceptaterminos.",".$subscripcion.",".$activo.")";
 $res = $this->query($sql,1);
 return $res;

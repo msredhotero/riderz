@@ -1,6 +1,5 @@
 <?php
 
-
 session_start();
 
 if (!isset($_SESSION['usua_sahilices']))
@@ -9,595 +8,285 @@ if (!isset($_SESSION['usua_sahilices']))
 } else {
 
 
-include ('../../includes/funciones.php');
 include ('../../includes/funcionesUsuarios.php');
 include ('../../includes/funcionesHTML.php');
+include ('../../includes/funciones.php');
 include ('../../includes/funcionesReferencias.php');
 include ('../../includes/base.php');
 
-$serviciosFunciones 	= new Servicios();
-$serviciosUsuario 		= new ServiciosUsuarios();
-$serviciosHTML 			= new ServiciosHTML();
+$serviciosUsuario = new ServiciosUsuarios();
+$serviciosHTML = new ServiciosHTML();
+$serviciosFunciones = new Servicios();
 $serviciosReferencias 	= new ServiciosReferencias();
 $baseHTML = new BaseHTML();
-
-//*** SEGURIDAD ****/
-include ('../../includes/funcionesSeguridad.php');
-$serviciosSeguridad = new ServiciosSeguridad();
-$serviciosSeguridad->seguridadRuta($_SESSION['refroll_sahilices'], '../facturas/');
-//*** FIN  ****/
 
 $fecha = date('Y-m-d');
 
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
-$resMenu = $serviciosHTML->menu($_SESSION['nombre_sahilices'],"Facturas",$_SESSION['refroll_sahilices'],$_SESSION['email_sahilices']);
+$resMenu = $serviciosHTML->menu($_SESSION['nombre_sahilices'],"Impuestos",$_SESSION['refroll_sahilices'],'');
 
 $configuracion = $serviciosReferencias->traerConfiguracion();
 
 $tituloWeb = mysql_result($configuracion,0,'sistema');
 
-$breadCumbs = '<a class="navbar-brand" href="../index.php">Dashboard</a>';
+$breadCumbs = '<a class="navbar-brand" href="../index.php">Impuestos</a>';
+
+
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "Factura";
+$singular = "";
 
-$plural = "Facturas";
+$plural = "";
 
-$eliminar = "eliminarFacturas";
+$eliminar = "";
 
-$insertar = "insertarFacturas";
+$insertar = "";
 
-$modificar = "modificarFacturas";
-
+//$tituloWeb = "Gestión: Talleres";
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "dbfacturas";
-
-$lblCambio	 	= array('refestados','reftipofacturas','precio2','precio3','precio4','vigenciadesde','vigenciahasta');
-$lblreemplazo	= array('Estado','Tipo Factura','Precio 2','Precio 3','Precio 4','Vig. Desde','Vig. Hasta');
 
 
-$resVar1 = $serviciosReferencias->traerConceptos();
-$cadRef1 	= $serviciosFunciones->devolverSelectBox($resVar1,array(1),'');
+$resTrimestres = $serviciosReferencias->traerMeses();
+$resTrimestreActual = $serviciosReferencias->traerMesesPorMes(date('m'));
 
-$refdescripcion = array(0=>$cadRef1);
-$refCampo 	=  array('refconceptos');
+$cadTrimestre 	= $serviciosFunciones->devolverSelectBox($resTrimestres,array(1),'');
 
-$frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
-//////////////////////////////////////////////  FIN de los opciones //////////////////////////
+$resAniosFacturados = $serviciosReferencias->traerAniosFacturadosPorCliente($_SESSION['idcliente']);
+$cadAnios 	= $serviciosFunciones->devolverSelectBox($resAniosFacturados,array(0),'');
 
-$existe = $serviciosReferencias->existe('select idconcepto from dbconceptos');
+//($campos,$idestado='', $idtipofactura='', $idcliente='', $idmes='', $anio='', $fecha='',$limit='')
+$campos = 'f.concepto, f.total, f.fechaingreso, est.estado';
+$idtipofactura = 1;
+$idcliente = $_SESSION['idcliente'];
+$limit = 'limit 10';
+$resIngresos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado='', $idtipofactura, $idcliente, $idmes='', $anio='', $fecha='',$limit);
+
+//die(var_dump($resIngresos));
+
+$campos = 'f.concepto, f.total, f.fechaingreso, est.estado';
+$idtipofactura = 2;
+$idcliente = $_SESSION['idcliente'];
+$limit = 'limit 10';
+$resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado='', $idtipofactura, $idcliente, $idmes='', $anio='', $fecha='',$limit);
+
+
+
+///////////////////////////              fin                   ////////////////////////
 
 ?>
-
 <!DOCTYPE html>
 <html>
 
 <head>
-	<meta charset="UTF-8">
-	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-	<title><?php echo $tituloWeb; ?></title>
-	<!-- Favicon-->
-	<link rel="icon" href="../../favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title><?php echo $tituloWeb; ?></title>
+    <!-- Favicon-->
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon">
 
-	<!-- Google Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
 
-	<?php echo $baseHTML->cargarArchivosCSS('../../'); ?>
+    <?php echo $baseHTML->cargarArchivosCSS('../../'); ?>
 
-	<link href="../../plugins/waitme/waitMe.css" rel="stylesheet" />
-	<link href="../../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+	 <!-- CSS file -->
+	<link rel="stylesheet" href="../../css/easy-autocomplete.min.css">
 
-	<!-- VUE JS -->
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
-	<!-- axios -->
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-	<script src="https://unpkg.com/vue-swal"></script>
-
-	<!-- Bootstrap Material Datetime Picker Css -->
-	<link href="../../plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
-
-	<!-- Dropzone Css -->
-	<link href="../../plugins/dropzone/dropzone.css" rel="stylesheet">
+	<!-- Additional CSS Themes file - not required-->
+	<link rel="stylesheet" href="../../css/easy-autocomplete.themes.min.css">
 
 
-	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css">
-	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
-	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/dataTables.jqueryui.min.css">
-	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/jquery.dataTables.css">
 
-	<style>
-		.alert > i{ vertical-align: middle !important; }
-	</style>
+	 <!-- Morris Chart Css-->
+    <link href="../../plugins/morrisjs/morris.css" rel="stylesheet" />
 
+	 <!-- Animation Css -->
+    <link href="../../plugins/animate-css/animate.css" rel="stylesheet" />
+
+	 <!-- Custom Css -->
+    <link href="../../css/style.css" rel="stylesheet">
+
+    <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+    <link href="../../css/themes/all-themes.css" rel="stylesheet" />
+
+	 <link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css">
+ 	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+ 	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/dataTables.jqueryui.min.css">
+ 	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/jquery.dataTables.css">
+
+    <style>
+        .alert > i{ vertical-align: middle !important; }
+    </style>
 
 </head>
 
+<body class="theme-purple">
 
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <div class="preloader">
+                <div class="spinner-layer pl-red">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+            <p>Cargando...</p>
+        </div>
+    </div>
+    <!-- #END# Page Loader -->
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+    <!-- #END# Overlay For Sidebars -->
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <div class="search-icon">
+            <i class="material-icons">search</i>
+        </div>
+        <input type="text" placeholder="Ingrese palabras...">
+        <div class="close-search">
+            <i class="material-icons">close</i>
+        </div>
+    </div>
+    <!-- #END# Search Bar -->
+    <!-- Top Bar -->
+    <?php echo $baseHTML->cargarNAV($breadCumbs); ?>
+    <!-- #Top Bar -->
+    <?php echo $baseHTML->cargarSECTION($_SESSION['usua_sahilices'], $_SESSION['nombre_sahilices'], str_replace('..','../dashboard',$resMenu),'../'); ?>
 
-<body class="theme-red">
+    <section class="content" style="margin-top:-35px;">
 
-<!-- Page Loader -->
-<div class="page-loader-wrapper">
-	<div class="loader">
-		<div class="preloader">
-			<div class="spinner-layer pl-red">
-				<div class="circle-clipper left">
-					<div class="circle"></div>
-				</div>
-				<div class="circle-clipper right">
-					<div class="circle"></div>
-				</div>
-			</div>
-		</div>
-		<p>Cargando...</p>
-	</div>
-</div>
-<!-- #END# Page Loader -->
-<!-- Overlay For Sidebars -->
-<div class="overlay"></div>
-<!-- #END# Overlay For Sidebars -->
-<!-- Search Bar -->
-<div class="search-bar">
-	<div class="search-icon">
-		<i class="material-icons">search</i>
-	</div>
-	<input type="text" placeholder="Ingrese palabras...">
-	<div class="close-search">
-		<i class="material-icons">close</i>
-	</div>
-</div>
-<!-- #END# Search Bar -->
-<!-- Top Bar -->
-<?php echo $baseHTML->cargarNAV($breadCumbs); ?>
-<!-- #Top Bar -->
-<?php echo $baseHTML->cargarSECTION($_SESSION['usua_sahilices'], $_SESSION['nombre_sahilices'], $resMenu,'../../'); ?>
-
-<section class="content" style="margin-top:-15px;">
-
-	<div class="container-fluid">
-		<div class="row clearfix">
-
-			<div class="row">
-
-
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<div class="card ">
-						<div class="header bg-blue">
-							<h2>
-								<?php echo strtoupper($plural); ?>
-							</h2>
-							<ul class="header-dropdown m-r--5">
-								<li class="dropdown">
-									<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-										<i class="material-icons">more_vert</i>
-									</a>
-									<ul class="dropdown-menu pull-right">
-
-									</ul>
-								</li>
-							</ul>
+		<div class="container-fluid">
+			<!-- Widgets -->
+			<div class="row clearfix">
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="alert bg-orange">
+							<h4>Impuestos Trimestre: <?php echo mysql_result($resTrimestreActual,0,'meses'); ?> del <?php echo date('Y'); ?></h4>
 						</div>
-						<div class="body table-responsive">
-							<form class="form" id="formCountry">
+					</div>
 
-								<div class="row">
-									<div class="col-lg-12 col-md-12">
-										<div class="button-demo">
-											<button <?php if ($existe == 0) { echo 'disabled="disabled"'; }?> type="button" class="btn bg-light-green waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevo">
-												<i class="material-icons">add</i>
-												<span>NUEVO</span>
-											</button>
+				</div>
+				<hr>
+				<div class="row">
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+						<select class="form-control show-tick" name="trimestre" id="trimestre">
+							<?php echo $cadTrimestre; ?>
+						</select>
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+						<select class="form-control show-tick" name="anio" id="anio">
+							<?php echo $cadAnios; ?>
+						</select>
+					</div>
+				</div>
+				<hr>
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<?php if ($_SESSION['idroll_sahilices'] == 1) { ?>
 
-										</div>
-									</div>
-								</div>
+						<?php } else { ?>
 
-								<div class="row" style="padding: 5px 20px;">
 
-									<table id="example" class="display table " style="width:100%">
-										<thead>
-											<tr>
-												<th>Nombre</th>
-												<th>Concepto</th>
-												<th>Precio 1</th>
-												<th>Precio 2</th>
-												<th>Precio 3</th>
-												<th>Precio 4</th>
-												<th>IVA</th>
-												<th>Vig. Desde</th>
-												<th>Vig. Hasta</th>
-												<th>Acciones</th>
-											</tr>
-										</thead>
-										<tfoot>
-											<tr>
-												<th>Nombre</th>
-												<th>Concepto</th>
-												<th>Precio 1</th>
-												<th>Precio 2</th>
-												<th>Precio 3</th>
-												<th>Precio 4</th>
-												<th>IVA</th>
-												<th>Vig. Desde</th>
-												<th>Vig. Hasta</th>
-												<th>Acciones</th>
-											</tr>
-										</tfoot>
-									</table>
-								</div>
-							</form>
+						<?php } ?>
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+						<div class="info-box bg-green hover-expand-effect">
+							<div class="icon">
+								<i class="material-icons">trending_up</i>
+							</div>
+							<div class="content">
+								<div class="text">IRPF</div>
+								<div class="number">$ <span class="lblTotalIRPF"></span></div>
 							</div>
 						</div>
+					</div>
+
+
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+						<div class="info-box bg-orange hover-expand-effect">
+							<div class="icon">
+								<i class="material-icons">restore_page</i>
+							</div>
+							<div class="content">
+								<div class="text">IVA</div>
+								<div class="number">$ <span class="lblTotalIVA"></span></div>
+							</div>
+						</div>
+					</div>
+
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</section>
 
 
-<!-- NUEVO -->
-	<form class="formulario" role="form" id="sign_in">
-	   <div class="modal fade" id="lgmNuevo" tabindex="-1" role="dialog">
-	       <div class="modal-dialog modal-lg" role="document">
-	           <div class="modal-content">
-	               <div class="modal-header">
-	                   <h4 class="modal-title" id="largeModalLabel">CREAR <?php echo strtoupper($singular); ?></h4>
-	               </div>
-	               <div class="modal-body demo-masked-input">
-							<div class="row">
-							<?php echo $frmUnidadNegocios; ?>
-							</div>
-
-	               </div>
-	               <div class="modal-footer">
-	                   <button type="submit" class="btn btn-primary waves-effect nuevo">GUARDAR</button>
-	                   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
-	               </div>
-	           </div>
-	       </div>
-	   </div>
-		<input type="hidden" id="accion" name="accion" value="<?php echo $insertar; ?>"/>
-	</form>
-
-	<!-- MODIFICAR -->
-		<form class="formulario formMod" role="form" id="sign_in">
-		   <div class="modal fade" id="lgmModificar" tabindex="-1" role="dialog">
-		       <div class="modal-dialog modal-lg" role="document">
-		           <div class="modal-content">
-		               <div class="modal-header">
-		                   <h4 class="modal-title" id="largeModalLabel">MODIFICAR <?php echo strtoupper($singular); ?></h4>
-		               </div>
-		               <div class="modal-body frmAjaxModificar">
-
-		               </div>
-		               <div class="modal-footer">
-		                   <button type="button" class="btn btn-warning waves-effect modificar">MODIFICAR</button>
-		                   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
-		               </div>
-		           </div>
-		       </div>
-		   </div>
-			<input type="hidden" id="accion" name="accion" value="<?php echo $modificar; ?>"/>
-		</form>
+    </section>
 
 
-	<!-- ELIMINAR -->
-		<form class="formulario" role="form" id="sign_in">
-		   <div class="modal fade" id="lgmEliminar" tabindex="-1" role="dialog">
-		       <div class="modal-dialog modal-lg" role="document">
-		           <div class="modal-content">
-		               <div class="modal-header">
-		                   <h4 class="modal-title" id="largeModalLabel">ELIMINAR <?php echo strtoupper($singular); ?></h4>
-		               </div>
-		               <div class="modal-body">
-										 <p>¿Esta seguro que desea eliminar el registro?</p>
-										 <small>* Si este registro esta relacionado con algun otro dato no se podría eliminar.</small>
-		               </div>
-		               <div class="modal-footer">
-		                   <button type="button" class="btn btn-danger waves-effect eliminar">ELIMINAR</button>
-		                   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
-		               </div>
-		           </div>
-		       </div>
-		   </div>
-			<input type="hidden" id="accion" name="accion" value="<?php echo $eliminar; ?>"/>
-			<input type="hidden" name="ideliminar" id="ideliminar" value="0">
-		</form>
+    <?php echo $baseHTML->cargarArchivosJS('../../'); ?>
+
+	 <script src="../../js/jquery.easy-autocomplete.min.js"></script>
+
+	 <script src="../../DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
 
 
-<?php echo $baseHTML->cargarArchivosJS('../../'); ?>
-<!-- Wait Me Plugin Js -->
-<script src="../../plugins/waitme/waitMe.js"></script>
 
-<!-- Custom Js -->
-<script src="../../js/pages/cards/colored.js"></script>
+	<script>
+		$(document).ready(function(){
+			function traerTotales(tipo, anio, trimestre, contenedor) {
+				$.ajax({
+					url: '../../ajax/ajax.php',
+					type: 'POST',
+					// Form data
+					//datos del formulario
+					data: {
+						accion: 'traerTotalImpuestosPorClienteAnioTrimestre',
+						id: <?php echo $idcliente; ?>,
+						tipo: tipo,
+						anio: anio,
+						trimestre: trimestre
+					},
+					//mientras enviamos el archivo
+					beforeSend: function(){
+						$('.' + contenedor).html('');
+					},
+					//una vez finalizado correctamente
+					success: function(data){
 
-<script src="../../plugins/jquery-validation/jquery.validate.js"></script>
+						$('.' + contenedor).html(data);
 
-<script src="../../js/pages/examples/sign-in.js"></script>
-
-<!-- Bootstrap Material Datetime Picker Plugin Js -->
-<script src="../../plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
-
-<script src="../../DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
-
-
-<script>
-	$(document).ready(function(){
-		var table = $('#example').DataTable({
-			"bProcessing": true,
-			"bServerSide": true,
-			"sAjaxSource": "../../json/jstablasajax.php?tabla=listasprecios",
-			"language": {
-				"emptyTable":     "No hay datos cargados",
-				"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
-				"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
-				"infoFiltered":   "(filtrados del total de _MAX_ filas)",
-				"infoPostFix":    "",
-				"thousands":      ",",
-				"lengthMenu":     "Mostrar _MENU_ filas",
-				"loadingRecords": "Cargando...",
-				"processing":     "Procesando...",
-				"search":         "Buscar:",
-				"zeroRecords":    "No se encontraron resultados",
-				"paginate": {
-					"first":      "Primero",
-					"last":       "Ultimo",
-					"next":       "Siguiente",
-					"previous":   "Anterior"
-				},
-				"aria": {
-					"sortAscending":  ": activate to sort column ascending",
-					"sortDescending": ": activate to sort column descending"
-				}
-			}
-		});
-
-		$("#sign_in").submit(function(e){
-			e.preventDefault();
-		});
-
-		$('#activo').prop('checked',true);
-
-		$('#precio1').number( true, 2, '.', '' );
-		$('#precio2').number( true, 2, '.', '' );
-		$('#precio3').number( true, 2, '.', '' );
-		$('#precio4').number( true, 2, '.', '' );
-		$('#iva').number( true, 2, '.', '' );
-
-		var $demoMaskedInput = $('.demo-masked-input');
-
-		$demoMaskedInput.find('.date').inputmask('yyyy-mm-dd', { placeholder: '____-__-__' });
-
-		function frmAjaxModificar(id, $demoMaskedInput) {
-			$.ajax({
-				url: '../../ajax/ajax.php',
-				type: 'POST',
-				// Form data
-				//datos del formulario
-				data: {accion: 'frmAjaxModificar',tabla: '<?php echo $tabla; ?>', id: id},
-				//mientras enviamos el archivo
-				beforeSend: function(){
-					$('.frmAjaxModificar').html('');
-				},
-				//una vez finalizado correctamente
-				success: function(data){
-
-					if (data != '') {
-						$('.frmAjaxModificar').html(data);
-						$('.formMod #precio1').number( true, 2, '.', '' );
-						$('.formMod #precio2').number( true, 2, '.', '' );
-						$('.formMod #precio3').number( true, 2, '.', '' );
-						$('.formMod #precio4').number( true, 2, '.', '' );
-						$('.formMod #iva').number( true, 2, '.', '' );
-						$('.formMod #vigenciadesde').inputmask('yyyy-mm-dd', { placeholder: '____-__-__' });
-						$('.formMod #vigenciahasta').inputmask('yyyy-mm-dd', { placeholder: '____-__-__' });
-
-					} else {
-						swal("Error!", data, "warning");
-
+					},
+					//si ha ocurrido un error
+					error: function(){
+						$(".alert").html('<strong>Error!</strong> Actualice la pagina');
 						$("#load").html('');
 					}
-				},
-				//si ha ocurrido un error
-				error: function(){
-					$(".alert").html('<strong>Error!</strong> Actualice la pagina');
-					$("#load").html('');
-				}
+				});
+			}
+
+			traerTotales(1, $('#anio').val(), $('#trimestre').val(), 'lblTotalIRPF');
+			traerTotales(2, $('#anio').val(), $('#trimestre').val(), 'lblTotalIVA');
+
+			$('#anio').change(function() {
+				traerTotales(1, $(this).val(), $('#trimestre').val(), 'lblTotalIRPF');
+				traerTotales(2, $(this).val(), $('#trimestre').val(), 'lblTotalIVA');
 			});
 
-		}
-
-
-		function frmAjaxEliminar(id) {
-			$.ajax({
-				url: '../../ajax/ajax.php',
-				type: 'POST',
-				// Form data
-				//datos del formulario
-				data: {accion: '<?php echo $eliminar; ?>', id: id},
-				//mientras enviamos el archivo
-				beforeSend: function(){
-
-				},
-				//una vez finalizado correctamente
-				success: function(data){
-
-					if (data == '') {
-						swal({
-								title: "Respuesta",
-								text: "Registro Eliminado con exito!!",
-								type: "success",
-								timer: 1500,
-								showConfirmButton: false
-						});
-						$('#lgmEliminar').modal('toggle');
-						table.ajax.reload();
-					} else {
-						swal({
-								title: "Respuesta",
-								text: data,
-								type: "error",
-								timer: 2000,
-								showConfirmButton: false
-						});
-
-					}
-				},
-				//si ha ocurrido un error
-				error: function(){
-					swal({
-							title: "Respuesta",
-							text: 'Actualice la pagina',
-							type: "error",
-							timer: 2000,
-							showConfirmButton: false
-					});
-
-				}
+			$('#trimestre').change(function() {
+				traerTotales(1, $('#anio').val(), $(this).val(), 'lblTotalIRPF');
+				traerTotales(2, $('#anio').val(), $(this).val(), 'lblTotalIVA');
 			});
 
-		}
-
-		$("#example").on("click",'.btnEliminar', function(){
-			idTable =  $(this).attr("id");
-			$('#ideliminar').val(idTable);
-			$('#lgmEliminar').modal();
-		});//fin del boton eliminar
-
-		$('.eliminar').click(function() {
-			frmAjaxEliminar($('#ideliminar').val());
 		});
-
-		$("#example").on("click",'.btnModificar', function(){
-			idTable =  $(this).attr("id");
-			frmAjaxModificar(idTable);
-			$('#lgmModificar').modal();
-		});//fin del boton modificar
-
-		$('.nuevo').click(function(){
-
-			//información del formulario
-			var formData = new FormData($(".formulario")[0]);
-			var message = "";
-			//hacemos la petición ajax
-			$.ajax({
-				url: '../../ajax/ajax.php',
-				type: 'POST',
-				// Form data
-				//datos del formulario
-				data: formData,
-				//necesario para subir archivos via ajax
-				cache: false,
-				contentType: false,
-				processData: false,
-				//mientras enviamos el archivo
-				beforeSend: function(){
-
-				},
-				//una vez finalizado correctamente
-				success: function(data){
-
-					if (data == '') {
-						swal({
-								title: "Respuesta",
-								text: "Registro Creado con exito!!",
-								type: "success",
-								timer: 1500,
-								showConfirmButton: false
-						});
-
-						$('#lgmNuevo').modal('hide');
-						$('#unidadnegocio').val('');
-						table.ajax.reload();
-					} else {
-						swal({
-								title: "Respuesta",
-								text: data,
-								type: "error",
-								timer: 2500,
-								showConfirmButton: false
-						});
-
-
-					}
-				},
-				//si ha ocurrido un error
-				error: function(){
-					$(".alert").html('<strong>Error!</strong> Actualice la pagina');
-					$("#load").html('');
-				}
-			});
-		});
-
-
-		$('.modificar').click(function(){
-
-			//información del formulario
-			var formData = new FormData($(".formulario")[1]);
-			var message = "";
-			//hacemos la petición ajax
-			$.ajax({
-				url: '../../ajax/ajax.php',
-				type: 'POST',
-				// Form data
-				//datos del formulario
-				data: formData,
-				//necesario para subir archivos via ajax
-				cache: false,
-				contentType: false,
-				processData: false,
-				//mientras enviamos el archivo
-				beforeSend: function(){
-
-				},
-				//una vez finalizado correctamente
-				success: function(data){
-
-					if (data == '') {
-						swal({
-								title: "Respuesta",
-								text: "Registro Modificado con exito!!",
-								type: "success",
-								timer: 1500,
-								showConfirmButton: false
-						});
-
-						$('#lgmModificar').modal('hide');
-						table.ajax.reload();
-					} else {
-						swal({
-								title: "Respuesta",
-								text: data,
-								type: "error",
-								timer: 2500,
-								showConfirmButton: false
-						});
-
-
-					}
-				},
-				//si ha ocurrido un error
-				error: function(){
-					$(".alert").html('<strong>Error!</strong> Actualice la pagina');
-					$("#load").html('');
-				}
-			});
-		});
-	});
-</script>
-
-
-
-
-
+	</script>
 
 
 

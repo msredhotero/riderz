@@ -380,6 +380,9 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 			$('#tipo').html('EGRESO');
 		});
 
+		$('#fechasubido').val('<?php echo date('Y-m-d'); ?>');
+		$('#fechaingreso').val('<?php echo date('Y-m-d'); ?>');
+
 		$("#example").on("click",'.btnDescargar', function(){
 			usersid =  $(this).attr("id");
 

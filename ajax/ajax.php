@@ -122,12 +122,40 @@ case 'traerArchivosPorCliente':
    case 'traerFacturasPorId':
       traerFacturasPorId($serviciosReferencias);
    break;
+   case 'traerTotalPorClienteAnioTrimestre':
+      traerTotalPorClienteAnioTrimestre($serviciosReferencias);
+   break;
+   case 'traerTotalImpuestosPorClienteAnioTrimestre':
+      traerTotalImpuestosPorClienteAnioTrimestre($serviciosReferencias);
+   break;
 
 
 /* Fin */
 
 }
 /* Fin */
+
+function traerTotalImpuestosPorClienteAnioTrimestre($serviciosReferencias) {
+   $id = $_POST['id'];
+   $tipo = $_POST['tipo'];
+   $anio = $_POST['anio'];
+   $trimestre = $_POST['trimestre'];
+
+   $res = $serviciosReferencias->traerTotalImpuestosPorClienteAnioTrimestre($id, $tipo, $anio, $trimestre);
+
+   echo number_format($res,2,',','.');
+}
+
+function traerTotalPorClienteAnioTrimestre($serviciosReferencias) {
+   $id = $_POST['id'];
+   $tipo = $_POST['tipo'];
+   $anio = $_POST['anio'];
+   $trimestre = $_POST['trimestre'];
+
+   $res = $serviciosReferencias->traerTotalPorCliente($id, $tipo, $anio, $trimestre);
+
+   echo number_format($res,2,',','.');
+}
 
 
 function insertarFacturas($serviciosReferencias) {

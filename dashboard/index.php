@@ -52,6 +52,11 @@ $insertar = "";
 $resTrimestres = $serviciosReferencias->traerMeses();
 $resTrimestreActual = $serviciosReferencias->traerMesesPorMes(date('m'));
 
+$cadTrimestre 	= $serviciosFunciones->devolverSelectBox($resTrimestres,array(1),'');
+
+$resAniosFacturados = $serviciosReferencias->traerAniosFacturadosPorCliente($_SESSION['idcliente']);
+$cadAnios 	= $serviciosFunciones->devolverSelectBox($resAniosFacturados,array(0),'');
+
 //($campos,$idestado='', $idtipofactura='', $idcliente='', $idmes='', $anio='', $fecha='',$limit='')
 $campos = 'f.concepto, f.total, f.fechaingreso, est.estado';
 $idtipofactura = 1;
@@ -66,6 +71,7 @@ $idtipofactura = 2;
 $idcliente = $_SESSION['idcliente'];
 $limit = 'limit 10';
 $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado='', $idtipofactura, $idcliente, $idmes='', $anio='', $fecha='',$limit);
+
 
 
 ///////////////////////////              fin                   ////////////////////////
@@ -176,7 +182,7 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 							</div>
 							<div class="content">
 								<div class="text">INGRESOS</div>
-								<div class="number">$ 3.684.984</div>
+								<div class="number">$ <span class="lblTotalIngresos"></span></div>
 							</div>
 						</div>
 					</div>
@@ -189,13 +195,27 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 							</div>
 							<div class="content">
 								<div class="text">GASTOS</div>
-								<div class="number">$ -1.684.984</div>
+								<div class="number">$ <span class="lblTotalGastos"></span></div>
 							</div>
 						</div>
 					</div>
 
 					</div>
 				</div>
+				<hr>
+				<div class="row">
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+						<select class="form-control show-tick" name="trimestre" id="trimestre">
+							<?php echo $cadTrimestre; ?>
+						</select>
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+						<select class="form-control show-tick" name="anio" id="anio">
+							<?php echo $cadAnios; ?>
+						</select>
+					</div>
+				</div>
+				<hr>
 				<div class="row">
 					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                   <div class="card">
@@ -283,7 +303,49 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 
 	<script>
 		$(document).ready(function(){
+			function traerTotales(tipo, anio, trimestre, contenedor) {
+				$.ajax({
+					url: '../ajax/ajax.php',
+					type: 'POST',
+					// Form data
+					//datos del formulario
+					data: {
+						accion: 'traerTotalPorClienteAnioTrimestre',
+						id: <?php echo $idcliente; ?>,
+						tipo: tipo,
+						anio: anio,
+						trimestre: trimestre
+					},
+					//mientras enviamos el archivo
+					beforeSend: function(){
+						$('.' + contenedor).html('');
+					},
+					//una vez finalizado correctamente
+					success: function(data){
 
+						$('.' + contenedor).html(data);
+
+					},
+					//si ha ocurrido un error
+					error: function(){
+						$(".alert").html('<strong>Error!</strong> Actualice la pagina');
+						$("#load").html('');
+					}
+				});
+			}
+
+			traerTotales(1, $('#anio').val(), $('#trimestre').val(), 'lblTotalIngresos');
+			traerTotales(2, $('#anio').val(), $('#trimestre').val(), 'lblTotalGastos');
+
+			$('#anio').change(function() {
+				traerTotales(1, $(this).val(), $('#trimestre').val(), 'lblTotalIngresos');
+				traerTotales(2, $(this).val(), $('#trimestre').val(), 'lblTotalGastos');
+			});
+
+			$('#trimestre').change(function() {
+				traerTotales(1, $('#anio').val(), $(this).val(), 'lblTotalIngresos');
+				traerTotales(2, $('#anio').val(), $(this).val(), 'lblTotalGastos');
+			});
 
 		});
 	</script>

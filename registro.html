@@ -97,7 +97,7 @@
                               </select>
                            </div>
                            <div class="col-lg-8 col-md-8 col-xs-6 col-sm-8">
-                              <input type="number" class="form-control" name="cuit" id="cuit" placeholder="Nro" required>
+                              <input type="text" class="form-control" name="cuit" id="cuit" placeholder="Nro" required>
                            </div>
 
                         </div>
@@ -197,52 +197,85 @@
                 }
             });
 
+            function validateDoc(value){
+
+               var validChars = 'TRWAGMYFPDXBNJZSQVHLCKET';
+               var nifRexp = /^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKET]{1}$/i;
+               var nieRexp = /^[XYZ]{1}[0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKET]{1}$/i;
+               var str = value.toString().toUpperCase();
+
+               if (!nifRexp.test(str) && !nieRexp.test(str)) return false;
+
+               var nie = str
+               .replace(/^[X]/, '0')
+               .replace(/^[Y]/, '1')
+               .replace(/^[Z]/, '2');
+
+               var letter = str.substr(-1);
+               var charIndex = parseInt(nie.substr(0, 8)) % 23;
+
+               if (validChars.charAt(charIndex) === letter) return true;
+
+               return false;
+            }
+
 
             $("#sign_in").submit(function(e){
 
                e.preventDefault();
                if ($('#sign_in')[0].checkValidity()) {
-               $.ajax({
-                    data:  {email:		$("#email").val(),
-                            pass:		$("#pass").val(),
-                            apellido:		$("#apellido").val(),
-                            nombre:		$("#nombre").val(),
-                            telefono:		$("#telefono").val(),
-                            cuit:		$("#cuit").val(),
-                            celular:		$("#celular").val(),
-                            aceptaterminos:		$("#aceptaterminos").prop('checked') == true ? 1 : 0,
-                            subscripcion:		$("#subscripcion").prop('checked') == true ? 1 : 0,
-                            accion:		'registrarme'},
-                    url:   'ajax/ajax.php',
-                    type:  'post',
-                    beforeSend: function () {
-                            $("#load").html('<img src="imagenes/load13.gif" width="50" height="50" />');
-                    },
-                    success:  function (response) {
+                  if (validateDoc($("#cuit").val())) {
+                     $.ajax({
+                       data:  {email:		$("#email").val(),
+                               pass:		$("#pass").val(),
+                               apellido:		$("#apellido").val(),
+                               nombre:		$("#nombre").val(),
+                               telefono:		$("#telefono").val(),
+                               cuit:		$("#cuit").val(),
+                               reftipodocumentos: $('#reftipodocumentos').val(),
+                               celular:		$("#celular").val(),
+                               aceptaterminos:		$("#aceptaterminos").prop('checked') == true ? 1 : 0,
+                               subscripcion:		$("#subscripcion").prop('checked') == true ? 1 : 0,
+                               accion:		'registrarme'},
+                       url:   'ajax/ajax.php',
+                       type:  'post',
+                       beforeSend: function () {
+                               $("#load").html('<img src="imagenes/load13.gif" width="50" height="50" />');
+                       },
+                       success:  function (response) {
 
-                            if ((response == '')) {
+                               if ((response == '')) {
 
-                                swal({
-                                    title: "Respuesta",
-                                    text: "El usuario fue creado correctamente, le enviamos un email a su casilla de correo para ACTIVAR la cuenta",
-                                    type: "success",
-                                    timer: 3000,
-                                    showConfirmButton: false
-                                });
+                                   swal({
+                                       title: "Respuesta",
+                                       text: "El usuario fue creado correctamente, le enviamos un email a su casilla de correo para ACTIVAR la cuenta",
+                                       type: "success",
+                                       timer: 3000,
+                                       showConfirmButton: false
+                                   });
 
-                            } else {
-                                swal({
-                                    title: "Respuesta",
-                                    text: response,
-                                    type: "error",
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                });
+                               } else {
+                                   swal({
+                                       title: "Respuesta",
+                                       text: response,
+                                       type: "error",
+                                       timer: 2000,
+                                       showConfirmButton: false
+                                   });
 
-                            }
+                               }
 
-                    }
-                });
+                       }
+                     });
+                  } else {
+                     swal({
+                         title: "Respuesta",
+                         text: 'El Nro de Documento no es valido',
+                         type: "error",
+                         timer: 2000,
+                         showConfirmButton: false
+                     });
+                  }
              }
 
             });
