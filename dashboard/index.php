@@ -423,7 +423,7 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 	<script>
 		$(document).ready(function(){
 
-			<?php if ($_SESSION['idroll_sahilices'] == 2) { ?>
+			<?php if ($_SESSION['idroll_sahilices'] == 3) { ?>
 			function traerTotales(tipo, anio, trimestre, contenedor) {
 				$.ajax({
 					url: '../ajax/ajax.php',
