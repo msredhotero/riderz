@@ -175,7 +175,7 @@ function crearDirectorioPrincipal($dir) {
     }
 
 
-	function subirArchivo($file,$carpeta,$id,$token,$observacion, $refcategorias, $anio, $mes) {
+	function subirArchivo($file,$carpeta,$id,$token,$observacion, $refcategorias, $anio, $mes, $reftipoarchivos) {
 
 
 		$dir_destino_padre = '../archivos/'.$carpeta.'/';
@@ -225,7 +225,7 @@ function crearDirectorioPrincipal($dir) {
 
 						$zip->close();
 
-						$this->insertarArchivos($carpeta,$token,str_replace(' ','',$archivo),$tipoarchivo, $observacion, $refcategorias, $anio, $mes);
+						$this->insertarArchivos($carpeta,$token,str_replace(' ','',$archivo),$tipoarchivo, $observacion, $refcategorias, $anio, $mes,$reftipoarchivos);
 
                   //$this->modificarClienteImagenPorId($carpeta,$archivo);
 
@@ -695,7 +695,7 @@ function traerFacturasPorClienteajax($idcliente,$length, $start, $busqueda) {
               INNER JOIN
           dbclientes c ON c.idcliente = f.refclientes
               INNER JOIN
-         dbarchivos ar ON ar.refclientes = f.idfactura
+         dbarchivos ar ON ar.refclientes = f.idfactura and ar.reftipoarchivos = 1
       where c.idcliente = ".$idcliente." ".$where."
       ORDER BY f.anio DESC , m.idmes DESC";
    $res = $this->query($sql,0);
@@ -746,7 +746,7 @@ function traerFacturasajax($length, $start, $busqueda) {
               INNER JOIN
           dbclientes c ON c.idcliente = f.refclientes
               INNER JOIN
-         dbarchivos ar ON ar.refclientes = f.idfactura
+         dbarchivos ar ON ar.refclientes = f.idfactura and ar.reftipoarchivos = 1
       ".$where."
       ORDER BY f.anio DESC , m.idmes DESC";
    $res = $this->query($sql,0);
@@ -970,9 +970,9 @@ return $res;
 
 
 /* PARA Archivos */
-function insertarArchivos($refclientes,$token,$imagen,$type,$observacion,$refcategorias,$anio,$mes) {
-$sql = "insert into dbarchivos(idarchivo,refclientes,token,imagen,type,observacion, refcategorias, anio, mes)
-values ('',".$refclientes.",'".($token)."','".($imagen)."','".($type)."','".($observacion)."',".$refcategorias.",".$anio.",".$mes.")";
+function insertarArchivos($refclientes,$token,$imagen,$type,$observacion,$refcategorias,$anio,$mes,$reftipoarchivos) {
+$sql = "insert into dbarchivos(idarchivo,refclientes,token,imagen,type,observacion, refcategorias, anio, mes, reftipoarchivos)
+values ('',".$refclientes.",'".($token)."','".($imagen)."','".($type)."','".($observacion)."',".$refcategorias.",".$anio.",".$mes.",".$reftipoarchivos.")";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -990,6 +990,12 @@ return $res;
 
 function eliminarArchivos($id) {
 $sql = "delete from dbarchivos where token = '".$id."'";
+$res = $this->query($sql,0);
+return $res;
+}
+
+function eliminarArchivosPorId($id) {
+$sql = "delete from dbarchivos where idarchivo = ".$id;
 $res = $this->query($sql,0);
 return $res;
 }
@@ -1096,6 +1102,34 @@ $res = $this->query($sql,0);
 return $res;
 }
 
+
+function traerArchivosPorClienteajax($idcliente,$length, $start, $busqueda) {
+   $where = '';
+
+	$busqueda = str_replace("'","",$busqueda);
+	if ($busqueda != '') {
+		$where = "where cat.categoria like '%".$busqueda."%' or a.anio like '%".$busqueda."%' or a.mes like '%".$busqueda."%'";
+	}
+
+	$sql = "select
+a.idarchivo,
+cat.categoria,
+a.anio,
+a.mes,
+a.token,
+a.observacion,
+a.imagen,
+a.refclientes,
+a.fechacreacion,
+a.type
+from dbarchivos a
+inner join dbclientes c on c.idcliente = a.refclientes
+inner join tbcategorias cat on cat.idcategoria = a.refcategorias
+where a.reftipoarchivos = 2 and refclientes = ".$idcliente;
+$res = $this->query($sql,0);
+return $res;
+}
+
 function traerArchivosPorCliente($idcliente) {
 	$sql = "select
 a.idarchivo,
@@ -1111,7 +1145,7 @@ a.type
 from dbarchivos a
 inner join dbclientes c on c.idcliente = a.refclientes
 inner join tbcategorias cat on cat.idcategoria = a.refcategorias
-where refclientes = ".$idcliente;
+where a.reftipoarchivos = 2 and refclientes = ".$idcliente;
 $res = $this->query($sql,0);
 return $res;
 }
@@ -1221,7 +1255,7 @@ function traerClientesajax($length, $start, $busqueda) {
 
 	$busqueda = str_replace("'","",$busqueda);
 	if ($busqueda != '') {
-		$where = "where c.apellido like '%".$busqueda."%' or c.nombre like '%".$busqueda."%' or c.nrodocumento like '%".$busqueda."%' or c.telefono like '%".$busqueda."%' or c.celular like '%".$busqueda."%' or c.email like '%".$busqueda."%' or td.tipodocumento like '%".$busqueda."%'";
+		$where = " and c.apellido like '%".$busqueda."%' or c.nombre like '%".$busqueda."%' or c.nrodocumento like '%".$busqueda."%' or c.telefono like '%".$busqueda."%' or c.celular like '%".$busqueda."%' or c.email like '%".$busqueda."%' or td.tipodocumento like '%".$busqueda."%'";
 	}
 
 	$sql = "select
@@ -1239,7 +1273,7 @@ function traerClientesajax($length, $start, $busqueda) {
    from dbclientes c
    inner join tbtipodocumentos td
    on td.idtipodocumento = c.reftipodocumentos
-	".$where."
+	where c.idcliente <> 1".$where."
 	order by c.apellido, c.nombre
 	limit ".$start.",".$length;
 
@@ -1274,6 +1308,7 @@ c.codigoreferencia
 from dbclientes c
 inner join tbtipodocumentos td
 on td.idtipodocumento = c.reftipodocumentos
+where c.idcliente <> 1
 order by c.apellido, c.nombre";
 $res = $this->query($sql,0);
 return $res;

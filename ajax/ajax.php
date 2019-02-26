@@ -248,7 +248,7 @@ function insertarFacturas($serviciosReferencias) {
    $res = $serviciosReferencias->insertarFacturas($refclientes,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,'asduhas');
 
    if ((integer)$res > 0) {
-      $resSubida = $serviciosReferencias->subirArchivo('imagen',$res,$serviciosReferencias->obtenerNuevoId('dbarchivos'),$serviciosReferencias->GUID(),'', 1, date('Y'), date('m'));
+      $resSubida = $serviciosReferencias->subirArchivo('imagen',$res,$serviciosReferencias->obtenerNuevoId('dbarchivos'),$serviciosReferencias->GUID(),'', 1, date('Y'), date('m'), 1);
       if ($resSubida != '') {
          //ok
          $error = 'Se genero un problema al subir el archivo, intente nuevamente';
@@ -438,7 +438,7 @@ function insertarArchivos($serviciosReferencias) {
 	$mes = $_POST['mes'];
 
 	if ($_FILES['imagen']['tmp_name'] != '') {
-		$res = $serviciosReferencias->subirArchivo('imagen',$refclientes,$serviciosReferencias->obtenerNuevoId('dbarchivos'),$token,$observacion, $refcategorias, $anio, $mes);
+		$res = $serviciosReferencias->subirArchivo('imagen',$refclientes,$serviciosReferencias->obtenerNuevoId('dbarchivos'),$token,$observacion, $refcategorias, $anio, $mes, 2);
 
 		if ($res == '') {
 			echo '';
@@ -472,7 +472,7 @@ function modificarArchivos($serviciosReferencias) {
 function eliminarArchivos($serviciosReferencias) {
 	$id = $_POST['id'];
 
-   $res = $serviciosReferencias->eliminarArchivos($id);
+   $res = $serviciosReferencias->eliminarArchivosPorId($id);
 
    if ($res == true) {
 		echo '';

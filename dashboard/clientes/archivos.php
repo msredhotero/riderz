@@ -74,8 +74,29 @@ $cadRef = $serviciosFunciones->devolverSelectBox($refClientes,array(1,2,3),' ');
 $refCate = $serviciosReferencias->traerCategorias();
 $cadRef2 = $serviciosFunciones->devolverSelectBox($refCate,array(1),' ');
 
-$refdescripcion = array(0 => $cadRef, 1=>$cadRef2);
-$refCampo 	=  array("refclientes","refcategorias");
+$cadMes = '<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+			<option value="8">8</option>
+			<option value="9">9</option>
+			<option value="10">10</option>
+			<option value="11">11</option>
+			<option value="12">12</option>';
+
+$cadAnio = '';
+for ($i=date('Y');$i>=1980;$i--) {
+	$cadAnio .= '<option value="'.$i.'">'.$i.'</option>';
+}
+//die(var_dump($cadAnio));
+
+$refdescripcion = array(0 => $cadRef, 1=>$cadRef2, 2=>$cadMes,3=>$cadAnio);
+$refCampo 	=  array("refclientes","refcategorias","mes","anio");
+
+
 
 $frm 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
@@ -126,7 +147,7 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 
 
 
-<body class="theme-red">
+<body class="theme-purple">
 
 <!-- Page Loader -->
 <div class="page-loader-wrapper">
@@ -171,7 +192,7 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="card ">
-						<div class="header bg-blue">
+						<div class="header bg-riderz">
 							<h2>
 								<?php echo strtoupper($singular); ?>: <?php echo strtoupper(mysql_result($resultado,0,'apellido')); ?> <?php echo strtoupper(mysql_result($resultado,0,'nombre')); ?>
 							</h2>
@@ -189,7 +210,7 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 						<div class="body">
 
 							<form class="form" id="sign_in" enctype="multipart/form-data">
-								<div class="row">
+								<div class="row demo-masked-input">
 									<?php echo $frm; ?>
 								</div>
 
@@ -203,6 +224,61 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 
 										</div>
 									</div>
+								</div>
+
+
+							</form>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div class="card ">
+						<div class="header bg-riderz">
+							<h2>
+								<?php echo strtoupper($singular); ?>: <?php echo strtoupper(mysql_result($resultado,0,'apellido')); ?> <?php echo strtoupper(mysql_result($resultado,0,'nombre')); ?>
+							</h2>
+							<ul class="header-dropdown m-r--5">
+								<li class="dropdown">
+									<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+										<i class="material-icons">more_vert</i>
+									</a>
+									<ul class="dropdown-menu pull-right">
+
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<div class="body table-responsive">
+
+							<form class="form" id="sign_in" enctype="multipart/form-data">
+								<div class="row" style="padding: 5px 20px;">
+
+									<table id="example" class="display table " style="width:100%">
+										<thead>
+											<tr>
+												<th>Categoria</th>
+												<th>Año</th>
+												<th>Mes</th>
+												<th>Token</th>
+												<th>Obs.</th>
+												<th>Acciones</th>
+											</tr>
+										</thead>
+										<tfoot>
+											<tr>
+												<th>Categoria</th>
+												<th>Año</th>
+												<th>Mes</th>
+												<th>Token</th>
+												<th>Obs.</th>
+												<th>Acciones</th>
+											</tr>
+										</tfoot>
+									</table>
 								</div>
 
 
@@ -266,7 +342,7 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 		           </div>
 		       </div>
 		   </div>
-			<input type="hidden" class="accionEliminar" id="accion" name="accion" value=""/>
+			<input type="hidden" class="accionEliminar" id="accion" name="accion" value="eliminarArchivos"/>
 			<input type="hidden" name="ideliminar" id="ideliminar" value="0">
 		</form>
 
@@ -291,10 +367,10 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 <script>
 	$(document).ready(function(){
 
-		var tablePlanta = $('#examplePlanta').DataTable({
+		var tablePlanta = $('#example').DataTable({
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "../../json/jstablasajax.php?tabla=plantas&referencia1=<?php echo $id; ?>",
+			"sAjaxSource": "../../json/jstablasajax.php?tabla=archivos&idcliente=<?php echo $id; ?>",
 			"language": {
 				"emptyTable":     "No hay datos cargados",
 				"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
@@ -324,64 +400,10 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 		$('#token').prop('readOnly', true);
 
 
-		var tableSector = $('#exampleSector').DataTable({
-			"bProcessing": true,
-			"bServerSide": true,
-			"sAjaxSource": "../../json/jstablasajax.php?tabla=sectores&referencia1=<?php echo $id; ?>",
-			"language": {
-				"emptyTable":     "No hay datos cargados",
-				"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
-				"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
-				"infoFiltered":   "(filtrados del total de _MAX_ filas)",
-				"infoPostFix":    "",
-				"thousands":      ",",
-				"lengthMenu":     "Mostrar _MENU_ filas",
-				"loadingRecords": "Cargando...",
-				"processing":     "Procesando...",
-				"search":         "Buscar:",
-				"zeroRecords":    "No se encontraron resultados",
-				"paginate": {
-					"first":      "Primero",
-					"last":       "Ultimo",
-					"next":       "Siguiente",
-					"previous":   "Anterior"
-				},
-				"aria": {
-					"sortAscending":  ": activate to sort column ascending",
-					"sortDescending": ": activate to sort column descending"
-				}
-			}
-		});
+
+		$('#reftipoarchivos').val(2);
 
 
-		var tableContacto = $('#exampleContacto').DataTable({
-			"bProcessing": true,
-			"bServerSide": true,
-			"sAjaxSource": "../../json/jstablasajax.php?tabla=contactos&referencia1=<?php echo $id; ?>",
-			"language": {
-				"emptyTable":     "No hay datos cargados",
-				"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
-				"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
-				"infoFiltered":   "(filtrados del total de _MAX_ filas)",
-				"infoPostFix":    "",
-				"thousands":      ",",
-				"lengthMenu":     "Mostrar _MENU_ filas",
-				"loadingRecords": "Cargando...",
-				"processing":     "Procesando...",
-				"search":         "Buscar:",
-				"zeroRecords":    "No se encontraron resultados",
-				"paginate": {
-					"first":      "Primero",
-					"last":       "Ultimo",
-					"next":       "Siguiente",
-					"previous":   "Anterior"
-				},
-				"aria": {
-					"sortAscending":  ": activate to sort column ascending",
-					"sortDescending": ": activate to sort column descending"
-				}
-			}
-		});
 
 
 		function frmAjaxModificar(id, tabla, referencia1) {
@@ -414,8 +436,6 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 			});
 
 		}
-
-
 
 
 		function frmAjaxEliminar(id, accion) {
@@ -511,6 +531,7 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 									timer: 1500,
 									showConfirmButton: false
 							});
+							table.ajax.reload();
 
 						} else {
 							swal({
@@ -532,6 +553,12 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 				});
 			}
 		});
+
+		$("#example").on("click",'.btnEliminar', function(){
+			idTable =  $(this).attr("id");
+			$('#ideliminar').val(idTable);
+			$('#lgmEliminar').modal();
+		});//fin del boton eliminar
 
 
 		$('.modificar').click(function(){

@@ -483,6 +483,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 			$(location).attr('href',url);
 		});
 
+
 		$("#example").on("click",'.btnModificar', function(){
 			idTable =  $(this).attr("id");
 			frmAjaxModificar(idTable);

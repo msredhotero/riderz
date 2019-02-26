@@ -385,6 +385,9 @@ class Servicios {
 			case 'dbfacturas':
 				$ocultar = array("anio","refmeses","refclientes","reftipofacturas","refestados");
 				break;
+			case 'dbarchivos':
+				$ocultar = array("fechacreacion","type","reftipoarchivos");
+				break;
 
 			default:
 				$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi","tipoimagen","utilidad","idusuario","refestados");
@@ -647,7 +650,7 @@ class Servicios {
 
 															<div class="row">
 																<div class="custom-file" id="customFile">
-																	<input type="file" name="'.$campo.'" class="custom-file-input" id="exampleInputFile" aria-describedby="fileHelp">
+																	<input type="file" name="'.$campo.'" class="custom-file-input" id="exampleInputFile" aria-describedby="fileHelp" required>
 																	<label class="custom-file-label" for="exampleInputFile">
 																		Seleccionar Archivo (tamaño maximo del archivo 4 MB)
 																	</label>

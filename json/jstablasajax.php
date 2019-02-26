@@ -69,9 +69,9 @@ switch ($tabla) {
 	case 'clientes':
 		$resAjax = $serviciosReferencias->traerClientesajax($length, $start, $busqueda);
 		$res = $serviciosReferencias->traerClientes();
-		$label = array('btnModificar','btnEliminar');
-		$class = array('bg-amber','bg-red');
-		$icon = array('create','delete');
+		$label = array('btnVer','btnModificar','btnEliminar');
+		$class = array('bg-riderz','bg-amber','bg-red');
+		$icon = array('backup','create','delete');
 		$indiceID = 0;
 		$empieza = 1;
 		$termina = 10;
@@ -86,6 +86,26 @@ switch ($tabla) {
 		$indiceID = 0;
 		$empieza = 1;
 		$termina = 5;
+	case 'archivos':
+		$resAjax = $serviciosReferencias->traerArchivosPorClienteajax($idcliente,$length, $start, $busqueda);
+		$res = $serviciosReferencias->traerArchivosPorCliente($idcliente);
+		$label = array('btnEliminar');
+		$class = array('bg-red');
+		$icon = array('delete');
+		$indiceID = 0;
+		$empieza = 1;
+		$termina = 5;
+
+		break;
+	case 'categorias':
+		$resAjax = $serviciosReferencias->traerCategoriasajax($length, $start, $busqueda);
+		$res = $serviciosReferencias->traerCategorias();
+		$label = array('btnModificar','btnEliminar');
+		$class = array('bg-orange','bg-red');
+		$icon = array('edit','delete');
+		$indiceID = 0;
+		$empieza = 1;
+		$termina = 1;
 
 		break;
 
