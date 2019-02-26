@@ -59,8 +59,8 @@ $tabla 			= "dbclientes";
 $id 				= $_SESSION['idcliente'];
 $lblid 			= 'idcliente';
 
-$lblCambio	 	= array('reftipodocumentos','nrodocumento','telefono','celular','aceptaterminos');
-$lblreemplazo	= array('Tipo Documento','Nro. Doc.','Tel. Fijo','Tel. Movil','Acepta Ter. Y Cond.');
+$lblCambio	 	= array('reftipodocumentos','nrodocumento','telefono','celular','aceptaterminos','fechanacimiento','codigopostal','nroseguro');
+$lblreemplazo	= array('Tipo Documento','Nro. Doc.','Tel. Fijo','Tel. Movil','Acepta Ter. Y Cond.','Fecha de Nacimiento','Cod. Postal','Nro de Seguro');
 
 
 $resVar1 = $serviciosReferencias->traerTipodocumentosPorId(mysql_result($resResultado,0,'reftipodocumentos'));
@@ -74,7 +74,8 @@ $refCampo 	=  array('reftipodocumentos');
 $frm 	= $serviciosFunciones->camposTablaVer($id,$lblid,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
 
-
+$fotoFrente = '../../data/'.$_SESSION['usuaid_sahilices'].'/1/'.mysql_result($resResultado,0,'fotofrente');
+$fotoDorsal = '../../data/'.$_SESSION['usuaid_sahilices'].'/2/'.mysql_result($resResultado,0,'fotodorsal');
 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
@@ -191,6 +192,16 @@ $frm 	= $serviciosFunciones->camposTablaVer($id,$lblid,$tabla,$lblCambio,$lblree
 							<form class="form" id="formCountry">
 								<div class="row" style="padding: 5px 20px;">
 									<?php echo $frm; ?>
+								</div>
+								<div class="row">
+									<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										<p>Foto Frente</p>
+										<img src="<?php echo $fotoFrente; ?>" width="100%"/>
+									</div>
+									<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										<p>Foto Dorsal</p>
+										<img src="<?php echo $fotoDorsal; ?>" width="100%"/>
+									</div>
 								</div>
 							</form>
 							</div>
@@ -321,7 +332,7 @@ $frm 	= $serviciosFunciones->camposTablaVer($id,$lblid,$tabla,$lblCambio,$lblree
 			}
 		});
 
-		
+
 
 		$("#sign_in").submit(function(e){
 			e.preventDefault();

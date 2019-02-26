@@ -245,6 +245,85 @@ function crearDirectorioPrincipal($dir) {
 	}
 
 
+   function subirFoto($file,$carpeta,$id) {
+
+      // carpeta = 'idcliente'
+      // id = 'foto frente 1 o foto dorsal 2'
+
+
+		$dir_destino_padre = '../data/'.$carpeta.'/';
+
+		$dir_destino = '../data/'.$carpeta.'/'.$id.'/';
+
+      $this->borrarDirecctorio($dir_destino);
+
+		$imagen_subida = $dir_destino . $this->sanear_string(str_replace(' ','',basename($_FILES[$file]['name'])));
+
+		$noentrar = '../imagenes/index.php';
+		$nuevo_noentrar = '../data/'.$carpeta.'/'.$id.'/'.'index.php';
+
+		//die(var_dump($dir_destino));
+		if (!file_exists($dir_destino_padre)) {
+			mkdir($dir_destino_padre, 0777);
+		}
+
+		if (!file_exists($dir_destino)) {
+			mkdir($dir_destino, 0777);
+		}
+
+
+		if(!is_writable($dir_destino)){
+
+			echo "no tiene permisos";
+
+		}	else	{
+			if ($_FILES[$file]['tmp_name'] != '') {
+				if(is_uploaded_file($_FILES[$file]['tmp_name'])){
+					//la carpeta de libros solo los piso
+					if ($carpeta == 'galeria') {
+						$this->eliminarFotoPorObjeto($id);
+					}
+					/*echo "Archivo ". $_FILES['foto']['name'] ." subido con éxtio.\n";
+					echo "Mostrar contenido\n";
+					echo $imagen_subida;*/
+					if (move_uploaded_file($_FILES[$file]['tmp_name'], $imagen_subida)) {
+
+						$archivo = $this->sanear_string($_FILES[$file]["name"]);
+						$tipoarchivo = $_FILES[$file]["type"];
+
+						$filename = $dir_destino.'descarga.zip';
+						$zip = new ZipArchive();
+
+						if ($zip->open($filename, ZipArchive::CREATE) !== TRUE) {
+						exit('cannot open <$filename>\n');
+						}
+
+						$zip->addFile($dir_destino.$archivo, $archivo);
+
+						$zip->close();
+
+                  if ($id == 1) {
+                     $resMod = $this->modificarClienteImagenFrentePorId($carpeta, $archivo);
+                  } else {
+                     $resMod = $this->modificarClienteImagenDorsalPorId($carpeta, $archivo);
+                  }
+
+						echo '';
+
+						copy($noentrar, $nuevo_noentrar);
+
+					} else {
+						echo "Posible ataque de carga de archivos!\n";
+					}
+				}else{
+					echo "Posible ataque del archivo subido: ";
+					echo "nombre del archivo '". $_FILES[$file]['tmp_name'] . "'.";
+				}
+			}
+		}
+	}
+
+
 
 	function TraerFotosRelacion($id) {
 		$sql    =   "select 'galeria',s.idproducto,f.imagen,f.idfoto,f.type
@@ -415,10 +494,10 @@ return $res;
 }
 
 
-function modificarFacturas($id,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen) {
+function modificarFacturas($id,$refclientes,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen) {
 $sql = "update dbfacturas
 set
-reftipofacturas = ".$reftipofacturas.",refestados = ".$refestados.",refmeses = ".$refmeses.",anio = ".$anio.",concepto = '".($concepto)."',total = ".$total.",iva = ".$iva.",irff = ".$irff.",fechaingreso = '".($fechaingreso)."',fechasubido = '".($fechasubido)."',imagen = '".($imagen)."'
+refclientes = ".$refclientes.",reftipofacturas = ".$reftipofacturas.",refestados = ".$refestados.",refmeses = ".$refmeses.",anio = ".$anio.",concepto = '".($concepto)."',total = ".$total.",iva = ".$iva.",irff = ".$irff.",fechaingreso = '".($fechaingreso)."',fechasubido = '".($fechasubido)."',imagen = '".($imagen)."'
 where idfactura =".$id;
 $res = $this->query($sql,0);
 return $res;
@@ -618,6 +697,57 @@ function traerFacturasPorClienteajax($idcliente,$length, $start, $busqueda) {
               INNER JOIN
          dbarchivos ar ON ar.refclientes = f.idfactura
       where c.idcliente = ".$idcliente." ".$where."
+      ORDER BY f.anio DESC , m.idmes DESC";
+   $res = $this->query($sql,0);
+   return $res;
+}
+
+
+
+function traerFacturasajax($length, $start, $busqueda) {
+
+   $where = '';
+
+		$busqueda = str_replace("'","",$busqueda);
+		if ($busqueda != '') {
+			$where = "where tip.tipofactura like '%".$busqueda."%' or est.estado like '%".$busqueda."%' or f.concepto like '%".$busqueda."%' or f.fechaingreso like '%".$busqueda."%' or f.fechasubido like '%".$busqueda."%'";
+		}
+
+
+   $sql = "SELECT
+          f.idfactura,
+          tip.tipofactura,
+          (case when est.idestado = 1 then '<h4><span class=''label bg-blue''>Iniciado</span></h4>'
+               when est.idestado = 2 then '<h4><span class=''label bg-green''>Aceptado</span></h4>'
+               when est.idestado = 3 then '<h4><span class=''label bg-red''>Rechazado</span></h4>' end) as estado,
+          f.concepto,
+          f.total,
+          f.iva,
+          f.irff,
+          f.total + f.iva - f.irff as importetotal,
+          f.fechaingreso,
+          f.fechasubido,
+          CONCAT(c.apellido, ' ', c.nombre) AS cliente,
+          m.meses,
+          f.anio,
+          f.imagen,
+          f.refclientes,
+          f.reftipofacturas,
+          f.refestados,
+          f.refmeses
+      FROM
+          dbfacturas f
+              INNER JOIN
+          tbtipofacturas tip ON tip.idtipofactura = f.reftipofacturas
+              INNER JOIN
+          tbestados est ON est.idestado = f.refestados
+              INNER JOIN
+          tbmeses m ON m.idmes = f.refmeses
+              INNER JOIN
+          dbclientes c ON c.idcliente = f.refclientes
+              INNER JOIN
+         dbarchivos ar ON ar.refclientes = f.idfactura
+      ".$where."
       ORDER BY f.anio DESC , m.idmes DESC";
    $res = $this->query($sql,0);
    return $res;
@@ -1029,8 +1159,35 @@ function modificarClientePorCliente($id,$apellido,$nombre,$telefono,$celular) {
    return $res;
 }
 
-function modificarClienteImagenPorId($idcliente, $imagen) {
-   $sql = "update dbclientes set imagen = '".$imagen."' where idcliente = ".$idcliente;
+function modificarClienteImagenFrentePorId($idusuario, $fotofrente) {
+   $sql = "update dbclientes c
+            inner join dbusuarios u on c.idcliente = u.refclientes
+            set c.fotofrente = '".$fotofrente."' where u.idusuario = ".$idusuario;
+   $res = $this->query($sql,0);
+   return $res;
+}
+
+function modificarClienteImagenDorsalPorId($idusuario, $fotodorsal) {
+   $sql = "update dbclientes c
+            inner join dbusuarios u on c.idcliente = u.refclientes
+            set c.fotodorsal = '".$fotodorsal."' where u.idusuario = ".$idusuario;
+   $res = $this->query($sql,0);
+   return $res;
+}
+
+function modificarClientePorUsuario($idusuario,$ciudad,$fechanacimiento,$domicilio,$codigopostal,$municipio,$iban,$nroseguro,$codigoreferencia) {
+   $sql = "update dbclientes c
+   inner join dbusuarios u on c.idcliente = u.refclientes
+   set
+   ciudad = '".$ciudad."',
+   fechanacimiento = '".$fechanacimiento."',
+   domicilio = '".$domicilio."',
+   codigopostal = '".$codigopostal."',
+   municipio = '".$municipio."',
+   iban = '".$iban."',
+   nroseguro = '".$nroseguro."',
+   codigoreferencia = '".$codigoreferencia."'
+   where u.idusuario =".$idusuario;
    $res = $this->query($sql,0);
    return $res;
 }
@@ -1121,7 +1278,8 @@ return $res;
 
 
 function traerClientesPorId($id) {
-$sql = "select idcliente,reftipodocumentos,apellido,nombre,nrodocumento,telefono,celular,email,aceptaterminos,subscripcion,(case when activo = 1 then 'Si' else 'No' end) as activo from dbclientes where idcliente =".$id;
+$sql = "select idcliente,reftipodocumentos,apellido,nombre,nrodocumento,telefono,celular,email,aceptaterminos,subscripcion,(case when activo = 1 then 'Si' else 'No' end) as activo, ciudad, fechanacimiento, domicilio, codigopostal,
+municipio,iban,nroseguro,fotofrente, fotodorsal, codigoreferencia from dbclientes where idcliente =".$id;
 $res = $this->query($sql,0);
 return $res;
 }

@@ -16,6 +16,10 @@ $cadResultado = '';
 if (mysql_num_rows($resActivacion) > 0) {
 	$idusuario = mysql_result($resActivacion,0,'refusuarios');
 
+	$resUsuario = $serviciosUsuario->traerUsuarioId($idusuario);
+
+	$nombrecompleto = mysql_result($resUsuario,0,'nombrecompleto');
+
 	//pongo al usuario $activo
 	//$resUsuario = $serviciosUsuario->activarUsuario($idusuario);
 
@@ -79,6 +83,10 @@ if (mysql_num_rows($resActivacion) > 0) {
             <div class="body demo-masked-input">
                <form id="sign_in" method="POST">
 					 	<?php if ($cadResultado == '') { ?>
+						<div align="center">
+							<h3><?php echo $nombrecompleto; ?></h3>
+						</div>
+
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="material-icons">location_on</i>
@@ -135,12 +143,21 @@ if (mysql_num_rows($resActivacion) > 0) {
 
 						<div class="input-group">
 							<span class="input-group-addon">
+								<i class="material-icons">card_travel</i>
+							</span>
+							<div class="form-line">
+								<input type="text" class="form-control" name="nroseguro" id="nroseguro" placeholder="Nro. de Seguro"/>
+							</div>
+						</div>
+
+						<div class="input-group">
+							<span class="input-group-addon">
 								<i class="material-icons">unarchive</i>
 							</span>
 							<div class="form-line">
 								<div class="row">
 									<div class="custom-file" id="customFile">
-										<input type="file" name="fotofrente" class="custom-file-input" id="exampleInputFile" aria-describedby="fileHelp">
+										<input type="file" name="fotofrente" class="custom-file-input" id="fotofrente" aria-describedby="fileHelp" required>
 										<label class="custom-file-label" for="exampleInputFile">
 											Seleccionar Archivo (tamaño maximo del archivo 4 MB)
 										</label>
@@ -157,7 +174,7 @@ if (mysql_num_rows($resActivacion) > 0) {
 							<div class="form-line">
 								<div class="row">
 									<div class="custom-file" id="customFile">
-										<input type="file" name="fotodorsal" class="custom-file-input" id="exampleInputFile" aria-describedby="fileHelp">
+										<input type="file" name="fotodorsal" class="custom-file-input" id="fotodorsal" aria-describedby="fileHelp" required>
 										<label class="custom-file-label" for="exampleInputFile">
 											Seleccionar Archivo (tamaño maximo del archivo 4 MB)
 										</label>
@@ -198,6 +215,9 @@ if (mysql_num_rows($resActivacion) > 0) {
                      </div>
                   </div>
 						<?php } ?>
+						<input type="hidden" name="idusuario" id="idusuario" value="<?php echo $idusuario; ?>" />
+						<input type="hidden" name="accion" id="accion" value="activarUsuario" />
+						<input type="hidden" name="activacion" id="activacion" value="<?php echo mysql_result($resActivacion,0,0); ?>" />
                </form>
             </div>
         </div>
@@ -234,9 +254,67 @@ if (mysql_num_rows($resActivacion) > 0) {
 
 	  			$demoMaskedInput.find('#fechanacimiento').inputmask('yyyy-mm-dd', { placeholder: '____-__-__' });
 
-				$demoMaskedInput.find('#iban').inputmask('aa99 9999 9999 9999 9999 99', {
-    placeholder: '____ ____ ____ ____ ____ __'
-  });
+				$demoMaskedInput.find('#iban').inputmask('aa99 9999 9999 9999 9999 99', { placeholder: '____ ____ ____ ____ ____ __'});
+
+				$('body').keyup(function(e) {
+                if(e.keyCode == 13) {
+                    $("#login").click();
+                }
+            });
+
+
+            $("#sign_in").submit(function(e){
+
+                e.preventDefault();
+                if ($('#sign_in')[0].checkValidity()) {
+						 var formData = new FormData($("#sign_in")[0]);
+
+                   $.ajax({
+								data: formData,
+								//necesario para subir archivos via ajax
+								cache: false,
+								contentType: false,
+								processData: false,
+                       url:   'ajax/ajax.php',
+                       type:  'post',
+                       beforeSend: function () {
+                               $("#load").html('<img src="imagenes/load13.gif" width="50" height="50" />');
+										 $('#login').hide();
+                       },
+                       success:  function (response) {
+
+                               if (isNaN(response)) {
+
+                                   swal({
+                                       title: "Respuesta",
+                                       text: "Se genero un error",
+                                       type: "error",
+                                       timer: 2000,
+                                       showConfirmButton: false
+                                   });
+											  $('#login').show();
+
+                               } else {
+                                   swal({
+                                       title: "Respuesta",
+                                       text: "Su usuario fue activado con Exito.",
+                                       type: "success",
+                                       timer: 1500,
+                                       showConfirmButton: false
+                                   });
+
+											  $('#login').hide();
+
+                                   //url = "dashboard/";
+                                   //$(location).attr('href',url);
+                               }
+
+                       }
+                   });
+                }
+
+
+            });
 
 
         });/* fin del document ready */

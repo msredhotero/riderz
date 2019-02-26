@@ -1117,7 +1117,7 @@ class Servicios {
 			if ($tabla == 'dbusuarios') {
 				$ocultar = array("password");
 			} else {
-				$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi","idusuario");
+				$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi","idusuario","imagen");
 			}
 
 		}
@@ -1781,7 +1781,8 @@ class Servicios {
 				$sqlMod = "select idcliente,reftipodocumentos,apellido,nombre,nrodocumento,telefono,celular,email,
 				(case when aceptaterminos = 1 then 'Si' else 'No' end) as aceptaterminos,
 				(case when subscripcion = 1 then 'Si' else 'No' end) as subscripcion,
-				(case when activo = 1 then 'Si' else 'No' end) as activo
+				(case when activo = 1 then 'Si' else 'No' end) as activo, ciudad, fechanacimiento, domicilio, codigopostal,
+				municipio,iban,nroseguro,fotofrente, fotodorsal, codigoreferencia
 									from ".$tabla." where ".$lblid." = ".$id;
 				$resMod = $this->query($sqlMod,0);
 				break;
@@ -1838,7 +1839,7 @@ class Servicios {
 		$sql	=	"show columns from ".$tabla;
 		$res 	=	$this->query($sql,0);
 
-		$ocultar = array("activo");
+		$ocultar = array("activo", 'fotodorsal','fotofrente','codigoreferencia');
 
 		$camposEscondido = "";
 		$lblObligatorio = '';

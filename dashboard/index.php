@@ -48,31 +48,67 @@ $insertar = "";
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
 
+if ($_SESSION['idroll_sahilices'] == 1) {
+	$singular = "Factura";
 
-$resTrimestres = $serviciosReferencias->traerMeses();
-$resTrimestreActual = $serviciosReferencias->traerMesesPorMes(date('m'));
+	$plural = "Facturas";
 
-$cadTrimestre 	= $serviciosFunciones->devolverSelectBox($resTrimestres,array(1),'');
+	$eliminar = "eliminarFacturas";
 
-$resAniosFacturados = $serviciosReferencias->traerAniosFacturadosPorCliente($_SESSION['idcliente']);
-$cadAnios 	= $serviciosFunciones->devolverSelectBox($resAniosFacturados,array(0),'');
+	$insertar = "insertarFacturas";
 
-//($campos,$idestado='', $idtipofactura='', $idcliente='', $idmes='', $anio='', $fecha='',$limit='')
-$campos = 'f.concepto, f.total, f.fechaingreso, est.estado';
-$idtipofactura = 1;
-$idcliente = $_SESSION['idcliente'];
-$limit = 'limit 10';
-$resIngresos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado='', $idtipofactura, $idcliente, $idmes='', $anio='', $fecha='',$limit);
+	$modificar = "modificarFacturas";
 
-//die(var_dump($resIngresos));
+	/////////////////////// Opciones para la creacion del formulario  /////////////////////
+	$tabla 			= "dbfacturas";
 
-$campos = 'f.concepto, f.total, f.fechaingreso, est.estado';
-$idtipofactura = 2;
-$idcliente = $_SESSION['idcliente'];
-$limit = 'limit 10';
-$resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado='', $idtipofactura, $idcliente, $idmes='', $anio='', $fecha='',$limit);
+	$lblCambio	 	= array('refclientes','refmeses','refestados','reftipofacturas','iva','irff','fechaingreso','fechasubido','total','anio');
+	$lblreemplazo	= array('Cliente','Trimestre','Estado','Tipo Factura','IVA','IRPF','Fecha Ingreso','Fecha Subido','Importe Total','Año');
 
 
+	$resVar1 = $serviciosReferencias->traerMeses();
+	$cadRef1 	= $serviciosFunciones->devolverSelectBox($resVar1,array(1),'');
+
+	$resVar2 = $serviciosReferencias->traerTipofacturas();
+	$cadRef2 	= $serviciosFunciones->devolverSelectBox($resVar2,array(1),'');
+
+	$resVar3 = $serviciosReferencias->traerClientes();
+	$cadRef3 	= $serviciosFunciones->devolverSelectBox($resVar3,array(1),'');
+
+	$resVar4 = $serviciosReferencias->traerEstadosPorId(1);
+	$cadRef4 	= $serviciosFunciones->devolverSelectBox($resVar4,array(1),'');
+	//die(var_dump(mysql_result($resVar4,0,0)));
+
+	$refdescripcion = array(0 => $cadRef1, 1 => $cadRef2, 2 => $cadRef3, 3 => $cadRef4);
+	$refCampo 	=  array('refmeses','reftipofacturas','refclientes','refestados');
+
+	$frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
+	//////////////////////////////////////////////  FIN de los opciones //////////////////////////
+} else {
+	$resTrimestres = $serviciosReferencias->traerMeses();
+	$resTrimestreActual = $serviciosReferencias->traerMesesPorMes(date('m'));
+
+	$cadTrimestre 	= $serviciosFunciones->devolverSelectBox($resTrimestres,array(1),'');
+
+	$resAniosFacturados = $serviciosReferencias->traerAniosFacturadosPorCliente($_SESSION['idcliente']);
+	$cadAnios 	= $serviciosFunciones->devolverSelectBox($resAniosFacturados,array(0),'');
+
+	//($campos,$idestado='', $idtipofactura='', $idcliente='', $idmes='', $anio='', $fecha='',$limit='')
+	$campos = 'f.concepto, f.total, f.fechaingreso, est.estado';
+	$idtipofactura = 1;
+	$idcliente = $_SESSION['idcliente'];
+	$limit = 'limit 10';
+	$resIngresos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado='', $idtipofactura, $idcliente, $idmes='', $anio='', $fecha='',$limit);
+
+	//die(var_dump($resIngresos));
+
+	$campos = 'f.concepto, f.total, f.fechaingreso, est.estado';
+	$idtipofactura = 2;
+	$idcliente = $_SESSION['idcliente'];
+	$limit = 'limit 10';
+	$resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado='', $idtipofactura, $idcliente, $idmes='', $anio='', $fecha='',$limit);
+
+}
 
 ///////////////////////////              fin                   ////////////////////////
 
@@ -167,14 +203,72 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 		<div class="container-fluid">
 			<!-- Widgets -->
 			<div class="row clearfix">
+				<?php if ($_SESSION['idroll_sahilices'] == 1) { ?>
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="card ">
+							<div class="header bg-riderz">
+								<h2 style="color:#fff">
+									<?php echo strtoupper($plural); ?>
+								</h2>
+								<ul class="header-dropdown m-r--5">
+									<li class="dropdown">
+										<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+											<i class="material-icons">more_vert</i>
+										</a>
+										<ul class="dropdown-menu pull-right">
+
+										</ul>
+									</li>
+								</ul>
+							</div>
+							<div class="body table-responsive">
+								<form class="form" id="formFacturas">
+								<div class="row" style="padding: 5px 20px;">
+
+									<table id="example" class="display table " style="width:100%">
+										<thead>
+											<tr>
+												<th>Tipo</th>
+												<th>Estado</th>
+												<th>Concepto</th>
+												<th>Importe Base</th>
+												<th>IVA</th>
+												<th>IRPF</th>
+												<th>Importe Total</th>
+												<th>Fecha</th>
+												<th>Subido el</th>
+												<th>Cliente</th>
+												<th>Acciones</th>
+											</tr>
+										</thead>
+										<tfoot>
+											<tr>
+												<th>Tipo</th>
+												<th>Estado</th>
+												<th>Concepto</th>
+												<th>Importe Base</th>
+												<th>IVA</th>
+												<th>IRPF</th>
+												<th>Importe Total</th>
+												<th>Fecha</th>
+												<th>Subido el</th>
+												<th>Cliente</th>
+												<th>Acciones</th>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<?php } else { ?>
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-						<?php if ($_SESSION['idroll_sahilices'] == 1) { ?>
-
-						<?php } else { ?>
 
 
-						<?php } ?>
+
+
 					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 						<div class="info-box bg-green hover-expand-effect">
 							<div class="icon">
@@ -285,12 +379,37 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 
 				</div>
 
-
+			<?php } ?>
 			</div>
 		</div>
 
 
     </section>
+
+
+	 <!-- MODIFICAR -->
+		 <form class="formulario formMod" role="form" id="sign_in">
+			 <div class="modal fade" id="lgmModificar" tabindex="-1" role="dialog">
+				  <div class="modal-dialog modal-lg" role="document">
+						<div class="modal-content">
+							 <div class="modal-header">
+								  <h4 class="modal-title" id="largeModalLabel">MODIFICAR <?php echo strtoupper($singular); ?></h4>
+							 </div>
+							 <div class="modal-body">
+								 <div class="row frmAjaxModificar">
+
+								 </div>
+
+							 </div>
+							 <div class="modal-footer">
+								  <button type="button" class="btn btn-warning waves-effect modificar">MODIFICAR</button>
+								  <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
+							 </div>
+						</div>
+				  </div>
+			 </div>
+			 <input type="hidden" id="accion" name="accion" value="modificarFacturas"/>
+		 </form>
 
 
     <?php echo $baseHTML->cargarArchivosJS('../'); ?>
@@ -303,6 +422,8 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 
 	<script>
 		$(document).ready(function(){
+
+			<?php if ($_SESSION['idroll_sahilices'] == 2) { ?>
 			function traerTotales(tipo, anio, trimestre, contenedor) {
 				$.ajax({
 					url: '../ajax/ajax.php',
@@ -346,6 +467,141 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 				traerTotales(1, $('#anio').val(), $(this).val(), 'lblTotalIngresos');
 				traerTotales(2, $('#anio').val(), $(this).val(), 'lblTotalGastos');
 			});
+			<?php } else { ?>
+				var table = $('#example').DataTable({
+					"bProcessing": true,
+					"bServerSide": true,
+					"sAjaxSource": "../json/jstablasajax.php?tabla=facturastodas&idcliente=0",
+					"language": {
+						"emptyTable":     "No hay datos cargados",
+						"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
+						"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
+						"infoFiltered":   "(filtrados del total de _MAX_ filas)",
+						"infoPostFix":    "",
+						"thousands":      ",",
+						"lengthMenu":     "Mostrar _MENU_ filas",
+						"loadingRecords": "Cargando...",
+						"processing":     "Procesando...",
+						"search":         "Buscar:",
+						"zeroRecords":    "No se encontraron resultados",
+						"paginate": {
+							"first":      "Primero",
+							"last":       "Ultimo",
+							"next":       "Siguiente",
+							"previous":   "Anterior"
+						},
+						"aria": {
+							"sortAscending":  ": activate to sort column ascending",
+							"sortDescending": ": activate to sort column descending"
+						}
+					}
+				});
+
+				function frmAjaxModificar(id) {
+					$.ajax({
+						url: '../ajax/ajax.php',
+						type: 'POST',
+						// Form data
+						//datos del formulario
+						data: {accion: 'frmAjaxModificar',tabla: '<?php echo $tabla; ?>', id: id},
+						//mientras enviamos el archivo
+						beforeSend: function(){
+							$('.frmAjaxModificar').html('');
+						},
+						//una vez finalizado correctamente
+						success: function(data){
+
+							if (data != '') {
+								$('.frmAjaxModificar').html(data);
+							} else {
+								swal("Error!", data, "warning");
+
+								$("#load").html('');
+							}
+						},
+						//si ha ocurrido un error
+						error: function(){
+							$(".alert").html('<strong>Error!</strong> Actualice la pagina');
+							$("#load").html('');
+						}
+					});
+
+				}
+
+				$("#example").on("click",'.btnModificar', function(){
+					idTable =  $(this).attr("id");
+					frmAjaxModificar(idTable);
+					$('#lgmModificar').modal();
+				});//fin del boton modificar
+
+				$('.maximizar').click(function() {
+					if ($('.icomarcos').text() == 'web') {
+						$('#marcos').show();
+						$('.content').css('marginLeft', '315px');
+						$('.icomarcos').html('aspect_ratio');
+					} else {
+						$('#marcos').hide();
+						$('.content').css('marginLeft', '15px');
+						$('.icomarcos').html('web');
+					}
+
+				});
+
+				$('.modificar').click(function(){
+
+					//información del formulario
+					var formData = new FormData($(".formulario")[0]);
+					var message = "";
+					//hacemos la petición ajax
+					$.ajax({
+						url: '../ajax/ajax.php',
+						type: 'POST',
+						// Form data
+						//datos del formulario
+						data: formData,
+						//necesario para subir archivos via ajax
+						cache: false,
+						contentType: false,
+						processData: false,
+						//mientras enviamos el archivo
+						beforeSend: function(){
+
+						},
+						//una vez finalizado correctamente
+						success: function(data){
+
+							if (data == '') {
+								swal({
+										title: "Respuesta",
+										text: "Registro Modificado con exito!!",
+										type: "success",
+										timer: 1500,
+										showConfirmButton: false
+								});
+
+								$('#lgmModificar').modal('hide');
+								table.ajax.reload();
+							} else {
+								swal({
+										title: "Respuesta",
+										text: data,
+										type: "error",
+										timer: 2500,
+										showConfirmButton: false
+								});
+
+
+							}
+						},
+						//si ha ocurrido un error
+						error: function(){
+							$(".alert").html('<strong>Error!</strong> Actualice la pagina');
+							$("#load").html('');
+						}
+					});
+				});
+
+			<?php } ?>
 
 		});
 	</script>

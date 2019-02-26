@@ -129,11 +129,54 @@ case 'traerArchivosPorCliente':
       traerTotalImpuestosPorClienteAnioTrimestre($serviciosReferencias);
    break;
 
+   case 'activarUsuario':
+      activarUsuario($serviciosUsuarios, $serviciosReferencias);
+   break;
+
 
 /* Fin */
 
 }
 /* Fin */
+
+function activarUsuario($serviciosUsuarios, $serviciosReferencias) {
+   $idusuario = $_POST['idusuario'];
+   $activacion = $_POST['activacion'];
+
+   $ciudad = $_POST['ciudad'];
+   $fechanacimiento = $_POST['fechanacimiento'];
+   $domicilio = $_POST['domicilio'];
+   $codigopostal = $_POST['codigopostal'];
+   $municipio = $_POST['municipio'];
+   $iban = $_POST['iban'];
+   $nroseguro = $_POST['nroseguro'];
+   $fotofrente = '';
+   $fotodorsal = '';
+   $codigoreferencia = $_POST['codigoreferencia'];
+
+   //pongo al usuario $activo
+	$resUsuario = $serviciosUsuarios->activarUsuario($idusuario);
+
+   // concreto la activacion
+   $resConcretar = $serviciosUsuarios->eliminarActivacionusuarios($activacion);
+
+   $resModUsuario = $serviciosReferencias->modificarClientePorUsuario($idusuario,$ciudad,$fechanacimiento,$domicilio,$codigopostal,$municipio,$iban,$nroseguro,$codigoreferencia);
+
+   if ($resModUsuario == true) {
+      if ($_FILES['fotofrente']['tmp_name'] != '') {
+         $resFrente = $serviciosReferencias->subirFoto('fotofrente', $idusuario,1);
+      }
+
+      if ($_FILES['fotodorsal']['tmp_name'] != '') {
+         $resDorsal = $serviciosReferencias->subirFoto('fotodorsal', $idusuario,2);
+      }
+      echo '';
+   } else {
+      echo 'Hubo un error al modificar datos';
+   }
+
+
+}
 
 function traerTotalImpuestosPorClienteAnioTrimestre($serviciosReferencias) {
    $id = $_POST['id'];
@@ -491,6 +534,31 @@ function frmAjaxModificar($serviciosFunciones, $serviciosReferencias, $servicios
 
          $refdescripcion = array(0 => $cadRef, 1=>$cadRef2);
          $refCampo 	=  array("refroles","refclientes");
+         break;
+      case 'dbfacturas':
+         $resultado = $serviciosReferencias->traerFacturasPorId($id);
+
+         $modificar = "modificarFacturas";
+         $idTabla = "idfactura";
+
+         $lblCambio	 	= array('refclientes','refmeses','refestados','reftipofacturas','iva','irff','fechaingreso','fechasubido','total','anio');
+         $lblreemplazo	= array('Cliente','Trimestre','Estado','Tipo Factura','IVA','IRPF','Fecha Ingreso','Fecha Subido','Importe Total','Año');
+
+         $resVar1 = $serviciosReferencias->traerMeses();
+         $cadRef1 	= $serviciosFunciones->devolverSelectBoxActivo($resVar1,array(1),'',mysql_result($resultado,0,'refmeses'));
+
+         $resVar2 = $serviciosReferencias->traerTipofacturas();
+         $cadRef2 	= $serviciosFunciones->devolverSelectBoxActivo($resVar2,array(1),'',mysql_result($resultado,0,'reftipofacturas'));
+
+         $resVar3 = $serviciosReferencias->traerClientesPorId(mysql_result($resultado,0,'refclientes'));
+         $cadRef3 	= $serviciosFunciones->devolverSelectBox($resVar3,array(2,3),' ');
+
+         $resVar4 = $serviciosReferencias->traerEstados();
+         $cadRef4 	= $serviciosFunciones->devolverSelectBoxActivo($resVar4,array(1),'',mysql_result($resultado,0,'refestados'));
+         //die(var_dump(mysql_result($resVar4,0,0)));
+
+         $refdescripcion = array(0 => $cadRef1, 1 => $cadRef2, 2 => $cadRef3, 3 => $cadRef4);
+         $refCampo 	=  array('refmeses','reftipofacturas','refclientes','refestados');
          break;
 
 

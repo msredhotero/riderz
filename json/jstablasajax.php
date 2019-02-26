@@ -14,6 +14,7 @@ $draw = $_GET['sEcho'];
 $start = $_GET['iDisplayStart'];
 $length = $_GET['iDisplayLength'];
 $busqueda = $_GET['sSearch'];
+
 $idcliente = $_GET['idcliente'];
 
 $referencia1 = 0;
@@ -46,6 +47,17 @@ switch ($tabla) {
 		$indiceID = 0;
 		$empieza = 1;
 		$termina = 9;
+
+		break;
+	case 'facturastodas':
+		$resAjax = $serviciosReferencias->traerFacturasajax($length, $start, $busqueda);
+		$res = $serviciosReferencias->traerFacturas();
+		$label = array('btnDescargar','btnModificar');
+		$class = array('bg-green','bg-orange');
+		$icon = array('file_download','edit');
+		$indiceID = 0;
+		$empieza = 1;
+		$termina = 10;
 
 		break;
 
