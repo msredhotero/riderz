@@ -193,7 +193,7 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="card ">
 						<div class="header bg-riderz">
-							<h2>
+							<h2 style="color:#fff;">
 								<?php echo strtoupper($singular); ?>: <?php echo strtoupper(mysql_result($resultado,0,'apellido')); ?> <?php echo strtoupper(mysql_result($resultado,0,'nombre')); ?>
 							</h2>
 							<ul class="header-dropdown m-r--5">
@@ -238,7 +238,7 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="card ">
 						<div class="header bg-riderz">
-							<h2>
+							<h2 style="color:#fff;">
 								<?php echo strtoupper($singular); ?>: <?php echo strtoupper(mysql_result($resultado,0,'apellido')); ?> <?php echo strtoupper(mysql_result($resultado,0,'nombre')); ?>
 							</h2>
 							<ul class="header-dropdown m-r--5">
@@ -462,8 +462,7 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 						});
 						$('#lgmEliminar').modal('toggle');
 						tablePlanta.ajax.reload();
-						tableSector.ajax.reload();
-						tableContacto.ajax.reload();
+
 					} else {
 						swal({
 								title: "Respuesta",
@@ -531,7 +530,7 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 									timer: 1500,
 									showConfirmButton: false
 							});
-							table.ajax.reload();
+							tablePlanta.ajax.reload();
 
 						} else {
 							swal({
@@ -559,6 +558,14 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 			$('#ideliminar').val(idTable);
 			$('#lgmEliminar').modal();
 		});//fin del boton eliminar
+
+		$("#example").on("click",'.btnDescargar', function(){
+			usersid =  $(this).attr("id");
+
+			url = "descargaradmin.php?token=" + usersid;
+			$(location).attr('href',url);
+
+		});//fin del boton modificar
 
 
 		$('.modificar').click(function(){

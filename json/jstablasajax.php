@@ -1,5 +1,6 @@
 <?php
 
+session_start();
 
 include ('../includes/funciones.php');
 include ('../includes/funcionesReferencias.php');
@@ -16,6 +17,7 @@ $length = $_GET['iDisplayLength'];
 $busqueda = $_GET['sSearch'];
 
 $idcliente = 0;
+
 if (isset($_GET['idcliente'])) {
 	$idcliente = $_GET['idcliente'];
 } else {
@@ -55,6 +57,28 @@ switch ($tabla) {
 		$termina = 9;
 
 		break;
+	case 'facturasingresos':
+		$resAjax = $serviciosReferencias->traerFacturasPorClienteTipoajax($idcliente,1,$length, $start, $busqueda);
+		$res = $serviciosReferencias->traerFacturasPorClienteTipo($idcliente,1);
+		$label = array('btnDescargar');
+		$class = array('bg-green');
+		$icon = array('file_download');
+		$indiceID = 0;
+		$empieza = 1;
+		$termina = 3;
+
+		break;
+	case 'facturasgastos':
+		$resAjax = $serviciosReferencias->traerFacturasPorClienteTipoajax($idcliente,2,$length, $start, $busqueda);
+		$res = $serviciosReferencias->traerFacturasPorClienteTipo($idcliente,2);
+		$label = array('btnDescargar');
+		$class = array('bg-green');
+		$icon = array('file_download');
+		$indiceID = 0;
+		$empieza = 1;
+		$termina = 3;
+
+		break;
 	case 'facturastodas':
 		$resAjax = $serviciosReferencias->traerFacturasajax($length, $start, $busqueda);
 		$res = $serviciosReferencias->traerFacturas();
@@ -86,12 +110,19 @@ switch ($tabla) {
 		$indiceID = 0;
 		$empieza = 1;
 		$termina = 5;
+		break;
 	case 'archivos':
 		$resAjax = $serviciosReferencias->traerArchivosPorClienteajax($idcliente,$length, $start, $busqueda);
 		$res = $serviciosReferencias->traerArchivosPorCliente($idcliente);
-		$label = array('btnEliminar');
-		$class = array('bg-red');
-		$icon = array('delete');
+		if ($_SESSION['idroll_sahilices'] == 1) {
+			$label = array('btnDescargar','btnEliminar');
+			$class = array('bg-green','bg-red');
+			$icon = array('file_download','delete');
+		} else {
+			$label = array('btnDescargar');
+			$class = array('bg-green');
+			$icon = array('file_download');
+		}
 		$indiceID = 0;
 		$empieza = 1;
 		$termina = 5;

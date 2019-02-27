@@ -399,8 +399,8 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 		$('#precio1').number( true, 2, '.', '' );
 		$('#precio2').number( true, 2, '.', '' );
-		$('#precio3').number( true, 2, '.', '' );
-		$('#precio4').number( true, 2, '.', '' );
+		$('#total').number( true, 2, '.', '' );
+		$('#irff').number( true, 2, '.', '' );
 		$('#iva').number( true, 2, '.', '' );
 
 		var $demoMaskedInput = $('.demo-masked-input');

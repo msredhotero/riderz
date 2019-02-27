@@ -616,6 +616,92 @@ function traerFacturasPorTipo($idtipofactura) {
    return $res;
 }
 
+function traerFacturasPorClienteTipo($idcliente,$tipo) {
+   $sql = "SELECT
+            f.idfactura,
+            tip.tipofactura,
+            est.estado,
+            f.concepto,
+            f.total,
+            f.iva,
+            f.irff,
+            f.total + f.iva - f.irff as importetotal,
+            f.fechaingreso,
+            f.fechasubido,
+            CONCAT(c.apellido, ' ', c.nombre) AS cliente,
+            m.meses,
+            f.anio,
+            f.imagen,
+            f.refclientes,
+            f.reftipofacturas,
+            f.refestados,
+            f.refmeses
+      FROM
+          dbfacturas f
+              INNER JOIN
+          tbtipofacturas tip ON tip.idtipofactura = f.reftipofacturas
+              INNER JOIN
+          tbestados est ON est.idestado = f.refestados
+              INNER JOIN
+          tbmeses m ON m.idmes = f.refmeses
+              INNER JOIN
+          dbclientes c ON c.idcliente = f.refclientes
+      where c.idcliente = ".$idcliente." and f.refestados = 2 and f.reftipofacturas = ".$tipo."
+      ORDER BY f.anio DESC , m.idmes DESC";
+   $res = $this->query($sql,0);
+   return $res;
+}
+
+
+function traerFacturasPorClienteTipoajax($idcliente,$tipo,$length, $start, $busqueda) {
+
+   $where = '';
+
+		$busqueda = str_replace("'","",$busqueda);
+		if ($busqueda != '') {
+			$where = "and tip.tipofactura like '%".$busqueda."%' or est.estado like '%".$busqueda."%' or f.concepto like '%".$busqueda."%' or f.fechaingreso like '%".$busqueda."%' or f.fechasubido like '%".$busqueda."%'";
+		}
+
+
+   $sql = "SELECT
+          ar.token,
+          f.concepto,
+          f.total + f.iva - f.irff as importetotal,
+          f.fechasubido,
+          tip.tipofactura,
+          (case when est.idestado = 1 then '<h4><span class=''label bg-blue''>Iniciado</span></h4>'
+               when est.idestado = 2 then '<h4><span class=''label bg-green''>Aceptado</span></h4>'
+               when est.idestado = 3 then '<h4><span class=''label bg-red''>Rechazado</span></h4>' end) as estado,
+         f.total,
+         f.iva,
+         f.irff,
+         f.fechaingreso,
+          CONCAT(c.apellido, ' ', c.nombre) AS cliente,
+          m.meses,
+          f.anio,
+          f.imagen,
+          f.refclientes,
+          f.reftipofacturas,
+          f.refestados,
+          f.refmeses
+      FROM
+          dbfacturas f
+              INNER JOIN
+          tbtipofacturas tip ON tip.idtipofactura = f.reftipofacturas
+              INNER JOIN
+          tbestados est ON est.idestado = f.refestados
+              INNER JOIN
+          tbmeses m ON m.idmes = f.refmeses
+              INNER JOIN
+          dbclientes c ON c.idcliente = f.refclientes
+              INNER JOIN
+         dbarchivos ar ON ar.refclientes = f.idfactura and ar.reftipoarchivos = 1
+      where c.idcliente = ".$idcliente." and f.refestados = 2 and f.reftipofacturas = ".$tipo." ".$where."
+      ORDER BY f.anio DESC , m.idmes DESC";
+   $res = $this->query($sql,0);
+   return $res;
+}
+
 function traerFacturasPorCliente($idcliente) {
    $sql = "SELECT
             f.idfactura,

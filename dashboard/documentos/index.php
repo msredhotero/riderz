@@ -40,9 +40,9 @@ $breadCumbs = '<a class="navbar-brand" href="../index.php">Dashboard</a>';
 
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
-$singular = "";
+$singular = "Mis Documentos";
 
-$plural = "";
+$plural = "Mis Documentos";
 
 $eliminar = "";
 
@@ -175,61 +175,112 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 			<div class="row clearfix">
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-						<div class="alert bg-orange">
-							<h4>Impuestos Trimestre: <?php echo mysql_result($resTrimestreActual,0,'meses'); ?> del <?php echo date('Y'); ?></h4>
+						<div class="card ">
+							<div class="header bg-riderz">
+								<h2 style="color:#fff">
+									<?php echo strtoupper($singular); ?>
+								</h2>
+								<ul class="header-dropdown m-r--5">
+									<li class="dropdown">
+										<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+											<i class="material-icons">more_vert</i>
+										</a>
+										<ul class="dropdown-menu pull-right">
+
+										</ul>
+									</li>
+								</ul>
+							</div>
+							<div class="body table-responsive">
+								<form class="form" id="formCountry">
+									<!-- Nav tabs -->
+									<ul class="nav nav-tabs tab-nav-right" role="tablist">
+										<li role="presentation" class="active"><a href="#ingresos" data-toggle="tab">INGRESOS</a></li>
+										<li role="presentation"><a href="#gastos" data-toggle="tab">GASTOS</a></li>
+										<li role="presentation"><a href="#archivos" data-toggle="tab">ARCHIVOS</a></li>
+									</ul>
+
+									<!-- Tab panes -->
+									<div class="tab-content">
+										<div role="tabpanel" class="tab-pane fade in active" id="ingresos">
+											<b>Facturas de Ingresos Subidas (solo aceptadas)</b>
+											<table id="example1" class="display table " style="width:100%">
+												<thead>
+													<tr>
+														<th>Concepto</th>
+														<th>Importe Total</th>
+														<th>Subido el</th>
+														<th>Acciones</th>
+													</tr>
+												</thead>
+												<tfoot>
+													<tr>
+														<th>Concepto</th>
+														<th>Importe Total</th>
+														<th>Subido el</th>
+														<th>Acciones</th>
+													</tr>
+												</tfoot>
+											</table>
+
+										</div>
+										<div role="tabpanel" class="tab-pane fade" id="gastos">
+											<b>Facturas de Gastos Subidas (solo aceptadas)</b>
+											<table id="example2" class="display table " style="width:100%">
+												<thead>
+													<tr>
+														<th>Concepto</th>
+														<th>Importe Total</th>
+														<th>Subido el</th>
+														<th>Acciones</th>
+													</tr>
+												</thead>
+												<tfoot>
+													<tr>
+														<th>Concepto</th>
+														<th>Importe Total</th>
+														<th>Subido el</th>
+														<th>Acciones</th>
+													</tr>
+												</tfoot>
+											</table>
+										</div>
+										<div role="tabpanel" class="tab-pane fade" id="archivos">
+											<b>Archivos Subidos por el Administrador</b>
+											<table id="example" class="display table " style="width:100%">
+												<thead>
+													<tr>
+														<th>Categoria</th>
+														<th>Año</th>
+														<th>Mes</th>
+														<th>Token</th>
+														<th>Obs.</th>
+														<th>Acciones</th>
+													</tr>
+												</thead>
+												<tfoot>
+													<tr>
+														<th>Categoria</th>
+														<th>Año</th>
+														<th>Mes</th>
+														<th>Token</th>
+														<th>Obs.</th>
+														<th>Acciones</th>
+													</tr>
+												</tfoot>
+											</table>
+										</div>
+
+									</div>
+								</form>
+								</div>
+							</div>
 						</div>
+
 					</div>
 
 				</div>
-				<hr>
-				<div class="row">
-					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-						<select class="form-control show-tick" name="trimestre" id="trimestre">
-							<?php echo $cadTrimestre; ?>
-						</select>
-					</div>
-					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-						<select class="form-control show-tick" name="anio" id="anio">
-							<?php echo $cadAnios; ?>
-						</select>
-					</div>
-				</div>
-				<hr>
-				<div class="row">
-					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-						<?php if ($_SESSION['idroll_sahilices'] == 1) { ?>
 
-						<?php } else { ?>
-
-
-						<?php } ?>
-					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-						<div class="info-box bg-green hover-expand-effect">
-							<div class="icon">
-								<i class="material-icons">trending_up</i>
-							</div>
-							<div class="content">
-								<div class="text">IRPF</div>
-								<div class="number">$ <span class="lblTotalIRPF"></span></div>
-							</div>
-						</div>
-					</div>
-
-
-					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-						<div class="info-box bg-orange hover-expand-effect">
-							<div class="icon">
-								<i class="material-icons">restore_page</i>
-							</div>
-							<div class="content">
-								<div class="text">IVA</div>
-								<div class="number">$ <span class="lblTotalIVA"></span></div>
-							</div>
-						</div>
-					</div>
-
-					</div>
-				</div>
 			</div>
 		</div>
 
@@ -247,49 +298,118 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 
 	<script>
 		$(document).ready(function(){
-			function traerTotales(tipo, anio, trimestre, contenedor) {
-				$.ajax({
-					url: '../../ajax/ajax.php',
-					type: 'POST',
-					// Form data
-					//datos del formulario
-					data: {
-						accion: 'traerTotalImpuestosPorClienteAnioTrimestre',
-						id: <?php echo $idcliente; ?>,
-						tipo: tipo,
-						anio: anio,
-						trimestre: trimestre
-					},
-					//mientras enviamos el archivo
-					beforeSend: function(){
-						$('.' + contenedor).html('');
-					},
-					//una vez finalizado correctamente
-					success: function(data){
 
-						$('.' + contenedor).html(data);
-
+			var table1 = $('#example1').DataTable({
+				"bProcessing": true,
+				"bServerSide": true,
+				"sAjaxSource": "../../json/jstablasajax.php?tabla=facturasingresos&idcliente=<?php echo $_SESSION['idcliente']; ?>",
+				"language": {
+					"emptyTable":     "No hay datos cargados",
+					"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
+					"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
+					"infoFiltered":   "(filtrados del total de _MAX_ filas)",
+					"infoPostFix":    "",
+					"thousands":      ",",
+					"lengthMenu":     "Mostrar _MENU_ filas",
+					"loadingRecords": "Cargando...",
+					"processing":     "Procesando...",
+					"search":         "Buscar:",
+					"zeroRecords":    "No se encontraron resultados",
+					"paginate": {
+						"first":      "Primero",
+						"last":       "Ultimo",
+						"next":       "Siguiente",
+						"previous":   "Anterior"
 					},
-					//si ha ocurrido un error
-					error: function(){
-						$(".alert").html('<strong>Error!</strong> Actualice la pagina');
-						$("#load").html('');
+					"aria": {
+						"sortAscending":  ": activate to sort column ascending",
+						"sortDescending": ": activate to sort column descending"
 					}
-				});
-			}
-
-			traerTotales(1, $('#anio').val(), $('#trimestre').val(), 'lblTotalIRPF');
-			traerTotales(2, $('#anio').val(), $('#trimestre').val(), 'lblTotalIVA');
-
-			$('#anio').change(function() {
-				traerTotales(1, $(this).val(), $('#trimestre').val(), 'lblTotalIRPF');
-				traerTotales(2, $(this).val(), $('#trimestre').val(), 'lblTotalIVA');
+				}
 			});
 
-			$('#trimestre').change(function() {
-				traerTotales(1, $('#anio').val(), $(this).val(), 'lblTotalIRPF');
-				traerTotales(2, $('#anio').val(), $(this).val(), 'lblTotalIVA');
+
+			var table2 = $('#example2').DataTable({
+				"bProcessing": true,
+				"bServerSide": true,
+				"sAjaxSource": "../../json/jstablasajax.php?tabla=facturasgastos&idcliente=<?php echo $_SESSION['idcliente']; ?>",
+				"language": {
+					"emptyTable":     "No hay datos cargados",
+					"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
+					"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
+					"infoFiltered":   "(filtrados del total de _MAX_ filas)",
+					"infoPostFix":    "",
+					"thousands":      ",",
+					"lengthMenu":     "Mostrar _MENU_ filas",
+					"loadingRecords": "Cargando...",
+					"processing":     "Procesando...",
+					"search":         "Buscar:",
+					"zeroRecords":    "No se encontraron resultados",
+					"paginate": {
+						"first":      "Primero",
+						"last":       "Ultimo",
+						"next":       "Siguiente",
+						"previous":   "Anterior"
+					},
+					"aria": {
+						"sortAscending":  ": activate to sort column ascending",
+						"sortDescending": ": activate to sort column descending"
+					}
+				}
 			});
+
+			var tablePlanta = $('#example').DataTable({
+				"bProcessing": true,
+				"bServerSide": true,
+				"sAjaxSource": "../../json/jstablasajax.php?tabla=archivos&idcliente=<?php echo $_SESSION['idcliente']; ?>",
+				"language": {
+					"emptyTable":     "No hay datos cargados",
+					"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
+					"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
+					"infoFiltered":   "(filtrados del total de _MAX_ filas)",
+					"infoPostFix":    "",
+					"thousands":      ",",
+					"lengthMenu":     "Mostrar _MENU_ filas",
+					"loadingRecords": "Cargando...",
+					"processing":     "Procesando...",
+					"search":         "Buscar:",
+					"zeroRecords":    "No se encontraron resultados",
+					"paginate": {
+						"first":      "Primero",
+						"last":       "Ultimo",
+						"next":       "Siguiente",
+						"previous":   "Anterior"
+					},
+					"aria": {
+						"sortAscending":  ": activate to sort column ascending",
+						"sortDescending": ": activate to sort column descending"
+					}
+				}
+			});
+
+			$("#example").on("click",'.btnDescargar', function(){
+				usersid =  $(this).attr("id");
+
+				url = "descargaradmin.php?token=" + usersid;
+				$(location).attr('href',url);
+
+			});//fin del boton modificar
+
+			$("#example1").on("click",'.btnDescargar', function(){
+				usersid =  $(this).attr("id");
+
+				url = "descargar.php?token=" + usersid;
+				$(location).attr('href',url);
+
+			});//fin del boton modificar
+
+			$("#example2").on("click",'.btnDescargar', function(){
+				usersid =  $(this).attr("id");
+
+				url = "descargar.php?token=" + usersid;
+				$(location).attr('href',url);
+
+			});//fin del boton modificar
 
 		});
 	</script>
