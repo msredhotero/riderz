@@ -379,7 +379,7 @@ function registrarSocio($email, $password,$apellido, $nombre,$refcliente) {
    $cuerpo .= '<h2>¡Bienvenido a RIDERZ!</h2>';
 
 
-   $cuerpo .= '<p>Usa el siguente <a href="http://www.saupureinconsulting.com.ar/aifzn/activacion/index.php?token='.$token.'" target="_blank">enlace</a> para confirmar tu cuenta.</p>';
+   $cuerpo .= '<p>Usa el siguente <a href="http://www.saupureinconsulting.com.ar/riderz/activacion.php?token='.$token.'" target="_blank">enlace</a> para confirmar tu cuenta.</p>';
 
 
 	$sql = "INSERT INTO dbusuarios
