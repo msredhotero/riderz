@@ -26,9 +26,18 @@ if (!isset($_SESSION['usua_sahilices']))
 		$res = $serviciosReferencias->traerArchivosPorToken($_GET['token']);
 
 		if (mysql_num_rows($res)>0) {
+			$zipName = 'descarga.zip';
 		    $file = '../../archivos/'.mysql_result($res, 0,'refclientes').'/'.mysql_result($res, 0,'idarchivo').'/'.'descarga.zip';
 		    //die(var_dump($file));
-		    header('Content-type: application/zip');
+			header("Pragma: public");
+			header("Expires: 0");
+			header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+			header("Cache-Control: public");
+			header("Content-Description: File Transfer");
+			header("Content-type: application/octet-stream");
+			header("Content-Disposition: attachment; filename=\"".$zipName."\"");
+			header("Content-Transfer-Encoding: binary");
+		    //header('Content-type: application/zip');
 		    header('Content-length: ' . filesize($file));
 		    readfile($file);
 		    //$cadError = 'Su descarga fue exitosa';
