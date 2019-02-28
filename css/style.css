@@ -7790,7 +7790,7 @@ fieldset[disabled] .form-control {
   -o-background-size: cover;
   background-size: cover;
   padding-left: 0;
-  max-width: 40%;
+  max-width: 460px;
   margin: 5% auto;
   overflow-x: hidden; }
 
