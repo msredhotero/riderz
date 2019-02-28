@@ -55,8 +55,8 @@ $modificar = "modificarUsuario";
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
 $tabla 			= "dbusuarios";
 
-$lblCambio	 	= array('nombrecompleto','refclientes');
-$lblreemplazo	= array('Nombre Completo','Cliente');
+$lblCambio	 	= array('nombrecompleto','refclientes','refroles');
+$lblreemplazo	= array('Nombre Completo','Cliente','Perfil');
 
 
 $refClientes = $serviciosReferencias->traerClientesTodos();

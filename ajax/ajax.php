@@ -546,19 +546,18 @@ function frmAjaxModificar($serviciosFunciones, $serviciosReferencias, $servicios
          $modificar = "modificarUsuario";
          $idTabla = "idusuario";
 
-         $lblCambio	 	= array('nombrecompleto','refclientes');
-         $lblreemplazo	= array('Nombre Completo','Cliente');
+         $lblCambio	 	= array('nombrecompleto','refclientes','refroles');
+         $lblreemplazo	= array('Nombre Completo','Cliente','Perfil');
 
          $refClientes = $serviciosReferencias->traerClientesPorId(mysql_result($resultado,0,'refclientes'));
          $cadRef2 = $serviciosFunciones->devolverSelectBox($refClientes,array(2,3),' ');
 
-         if ($_SESSION['idroll_sahilices'] != 1) {
-         	$resRoles 	= $serviciosUsuarios->traerRolesSimple();
-         } else {
-         	$resRoles 	= $serviciosUsuarios->traerRoles();
-         }
 
-         $cadRef = $serviciosFunciones->devolverSelectBox($resRoles,array(1),'');
+
+         $resRoles 	= $serviciosUsuarios->traerRoles();
+
+
+         $cadRef = $serviciosFunciones->devolverSelectBoxActivo($resRoles,array(1),'',mysql_result($resultado,0,'refroles'));
 
          $refdescripcion = array(0 => $cadRef, 1=>$cadRef2);
          $refCampo 	=  array("refroles","refclientes");

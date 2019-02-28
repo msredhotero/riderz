@@ -241,6 +241,7 @@
                        type:  'post',
                        beforeSend: function () {
                                $("#load").html('<img src="imagenes/load13.gif" width="50" height="50" />');
+                               $('#login').hide();
                        },
                        success:  function (response) {
 
@@ -253,6 +254,7 @@
                                        timer: 3000,
                                        showConfirmButton: false
                                    });
+                                   $('#login').hide();
 
                                } else {
                                    swal({
@@ -262,6 +264,7 @@
                                        timer: 2000,
                                        showConfirmButton: false
                                    });
+                                   $('#login').show();
 
                                }
 
