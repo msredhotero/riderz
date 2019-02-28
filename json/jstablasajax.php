@@ -104,9 +104,9 @@ switch ($tabla) {
 	case 'usuarios':
 		$resAjax = $serviciosUsuarios->traerUsuariosajax($length, $start, $busqueda);
 		$res = $serviciosUsuarios->traerUsuarios();
-		$label = array('btnModificar','btnEliminar');
-		$class = array('bg-amber','bg-red');
-		$icon = array('create','delete');
+		$label = array('btnModificar','btnEliminar','btnEnviar');
+		$class = array('bg-amber','bg-red','bg-blue-grey');
+		$icon = array('create','delete','vpn_key');
 		$indiceID = 0;
 		$empieza = 1;
 		$termina = 5;

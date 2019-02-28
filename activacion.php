@@ -14,11 +14,21 @@ $resActivacion = $serviciosUsuario->traerActivacionusuariosPorTokenFechas($ui);
 $cadResultado = '';
 
 if (mysql_num_rows($resActivacion) > 0) {
+
+
 	$idusuario = mysql_result($resActivacion,0,'refusuarios');
 
 	$resUsuario = $serviciosUsuario->traerUsuarioId($idusuario);
 
-	$nombrecompleto = mysql_result($resUsuario,0,'nombrecompleto');
+	// verifico que el usuario no este activo ya
+	if (mysql_result($resUsuario,0,'activo') == 'Si') {
+		$cadResultado = 'Usted ya fue dado de alta y esta activo.';
+	} else {
+		$nombrecompleto = mysql_result($resUsuario,0,'nombrecompleto');
+		$cadResultado = '';
+	}
+
+
 
 	//pongo al usuario $activo
 	//$resUsuario = $serviciosUsuario->activarUsuario($idusuario);
@@ -26,7 +36,7 @@ if (mysql_num_rows($resActivacion) > 0) {
 	// concreto la activacion
 	//$resConcretar = $serviciosUsuario->eliminarActivacionusuarios(mysql_result($resActivacion,0,0));
 
-	$cadResultado = '';
+
 } else {
 
 	$resToken = $serviciosUsuario->traerActivacionusuariosPorToken($ui);

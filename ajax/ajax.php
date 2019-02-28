@@ -135,12 +135,31 @@ case 'traerArchivosPorCliente':
    case 'activarUsuario':
       activarUsuario($serviciosUsuarios, $serviciosReferencias);
    break;
+   case 'reenviarActivacion':
+      reenviarActivacion($serviciosUsuarios);
+   break;
 
 
 /* Fin */
 
 }
 /* Fin */
+
+function reenviarActivacion($serviciosUsuarios) {
+   $id = $_POST['idusuario'];
+
+   $resUsuario = $serviciosUsuarios->traerUsuarioId($id);
+
+   if (mysql_result($resUsuario,0,'activo') == 'Si') {
+      $ar = array('error'=>true, 'mensaje'=>'El usuario ya esta activo');
+   } else {
+      $resEnvio = $serviciosUsuarios->reenviarActivacion($id,mysql_result($resUsuario,0,'email'));
+      $ar = array('error'=>false, 'mensaje'=>'El email con la activacion fue generado correctamente');
+   }
+
+   header('Content-type: application/json');
+   echo json_encode($ar);
+}
 
 function activarUsuario($serviciosUsuarios, $serviciosReferencias) {
    $idusuario = $_POST['idusuario'];
@@ -524,7 +543,7 @@ function frmAjaxModificar($serviciosFunciones, $serviciosReferencias, $servicios
       case 'dbusuarios':
          $resultado = $serviciosReferencias->traerUsuariosPorId($id);
 
-         $modificar = "modificarUsuarios";
+         $modificar = "modificarUsuario";
          $idTabla = "idusuario";
 
          $lblCambio	 	= array('nombrecompleto','refclientes');
@@ -878,7 +897,15 @@ function modificarUsuario($serviciosUsuarios) {
 	$email				=	$_POST['email'];
 	$nombre				=	$_POST['nombrecompleto'];
 
-	echo $serviciosUsuarios->modificarUsuario($id,$usuario,$password,$refroll,$email,$nombre);
+   if (isset($_POST['activo'])) {
+      $activo = 1;
+   } else {
+      $activo = 0;
+   }
+
+
+
+	echo $serviciosUsuarios->modificarUsuario($id,$usuario,$password,$refroll,$email,$nombre,$activo);
 }
 
 

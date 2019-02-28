@@ -266,7 +266,11 @@ function traerTodosUsuarios() {
 }
 
 function traerUsuarioId($id) {
-	$sql = "select idusuario,usuario,refroles,nombrecompleto,email,password from dbusuarios where idusuario = ".$id;
+	$sql = "select
+            idusuario,usuario,refroles,
+            nombrecompleto,email,password,
+            (case when activo = 1 then 'Si' else 'No' end) as activo
+         from dbusuarios where idusuario = ".$id;
 	$res = $this->query($sql,0);
 	if ($res == false) {
 		return 'Error al traer datos';
@@ -346,14 +350,15 @@ function insertarUsuario($usuario,$password,$refroles,$email,$nombrecompleto) {
 }
 
 
-function modificarUsuario($id,$usuario,$password,$refroles,$email,$nombrecompleto) {
+function modificarUsuario($id,$usuario,$password,$refroles,$email,$nombrecompleto,$activo) {
 	$sql = "UPDATE dbusuarios
 			SET
-				usuario = '".utf8_decode($usuario)."',
-				password = '".utf8_decode($password)."',
-				email = '".utf8_decode($email)."',
+				usuario = '".($usuario)."',
+				password = '".($password)."',
+				email = '".($email)."',
 				refroles = ".$refroles.",
-				nombrecompleto = '".utf8_decode($nombrecompleto)."'
+				nombrecompleto = '".($nombrecompleto)."',
+            activo = ".$activo."
 			WHERE idusuario = ".$id;
 	$res = $this->query($sql,0);
 	if ($res == false) {
@@ -363,6 +368,27 @@ function modificarUsuario($id,$usuario,$password,$refroles,$email,$nombrecomplet
 	}
 }
 
+function reenviarActivacion($idusuario,$email) {
+   $token = $this->GUID();
+	$cuerpo = '';
+
+	$fecha = date_create(date('Y').'-'.date('m').'-'.date('d'));
+	date_add($fecha, date_interval_create_from_date_string('5 days'));
+	$fechaprogramada =  date_format($fecha, 'Y-m-d');
+
+   $cuerpo .= '<img src="https://saupureinconsulting.com.ar/riderz/imagenes/1PNGlogosRIDERZ.png" alt="RIDERZ" width="190">';
+
+   $cuerpo .= '<h2>¡Bienvenido a RIDERZ!</h2>';
+
+
+   $cuerpo .= '<p>Usa el siguente <a href="http://www.saupureinconsulting.com.ar/riderz/activacion.php?token='.$token.'" target="_blank">enlace</a> para confirmar tu cuenta.</p>';
+
+   $resToken = $this->insertarActivacionusuarios($idusuario,$token,'','');
+
+   $resEmail = $this->enviarEmail($email,'Alta de Usuario',utf8_decode($cuerpo));
+
+   return '';
+}
 
 
 function registrarSocio($email, $password,$apellido, $nombre,$refcliente) {

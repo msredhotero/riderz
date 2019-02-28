@@ -47,7 +47,7 @@ $eliminar = "eliminarUsuarios";
 
 $insertar = "insertarUsuarios";
 
-$modificar = "modificarUsuarios";
+$modificar = "modificarUsuario";
 
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
@@ -59,7 +59,7 @@ $lblCambio	 	= array('nombrecompleto','refclientes');
 $lblreemplazo	= array('Nombre Completo','Cliente');
 
 
-$refClientes = $serviciosReferencias->traerClientes();
+$refClientes = $serviciosReferencias->traerClientesTodos();
 $cadRef = $serviciosFunciones->devolverSelectBox($refClientes,array(2,3,4),' ');
 
 
@@ -439,6 +439,59 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 			});
 
 		}
+
+		function reenviarActivacion(id) {
+			$.ajax({
+				url: '../../ajax/ajax.php',
+				type: 'POST',
+				// Form data
+				//datos del formulario
+				data: {accion: 'reenviarActivacion', idusuario: id},
+				//mientras enviamos el archivo
+				beforeSend: function(){
+
+				},
+				//una vez finalizado correctamente
+				success: function(data){
+
+					if (data.error == false) {
+						swal({
+								title: "Respuesta",
+								text: data.mensaje,
+								type: "success",
+								timer: 1500,
+								showConfirmButton: false
+						});
+
+					} else {
+						swal({
+								title: "Respuesta",
+								text: data.mensaje,
+								type: "error",
+								timer: 2000,
+								showConfirmButton: false
+						});
+
+					}
+				},
+				//si ha ocurrido un error
+				error: function(){
+					swal({
+							title: "Respuesta",
+							text: 'Actualice la pagina',
+							type: "error",
+							timer: 2000,
+							showConfirmButton: false
+					});
+
+				}
+			});
+		}
+
+		$("#example").on("click",'.btnEnviar', function(){
+			idTable =  $(this).attr("id");
+			reenviarActivacion(idTable);
+		});//fin del boton eliminar
 
 		$("#example").on("click",'.btnEliminar', function(){
 			idTable =  $(this).attr("id");

@@ -1430,6 +1430,38 @@ $res = $this->query($sql,0);
 return $res;
 }
 
+
+function traerClientesTodos() {
+$sql = "select
+c.idcliente,
+td.tipodocumento,
+c.apellido,
+c.nombre,
+c.nrodocumento,
+c.telefono,
+c.celular,
+c.email,
+c.aceptaterminos,
+c.subscripcion,
+(case when c.activo = 1 then 'Si' else 'No' end) as activo,
+c.ciudad,
+c.fechanacimiento,
+c.domicilio,
+c.codigopostal,
+c.municipio,
+c.iban,
+c.nroseguro,
+c.fotofrente,
+c.fotodorsal,
+c.codigoreferencia
+from dbclientes c
+inner join tbtipodocumentos td
+on td.idtipodocumento = c.reftipodocumentos
+order by c.apellido, c.nombre";
+$res = $this->query($sql,0);
+return $res;
+}
+
 /* Fin */
 /* PARA Clientes */
 
