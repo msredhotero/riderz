@@ -339,7 +339,7 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 					formData.append("idcliente", '<?php echo $id; ?>');
 			});
 			this.on('success', function( file, resp ){
-				traerImagen();
+				traerImagen(1,'imgfrente img');
 				swal("Correcto!", resp.replace("1", ""), "success");
 
 			});
@@ -361,7 +361,7 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 					formData.append("idcliente", '<?php echo $id; ?>');
 			});
 			this.on('success', function( file, resp ){
-				traerImagen();
+				traerImagen(2,'imgdorsal img');
 				swal("Correcto!", resp.replace("1", ""), "success");
 
 			});
