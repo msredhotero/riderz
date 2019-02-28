@@ -93,9 +93,9 @@ switch ($tabla) {
 	case 'clientes':
 		$resAjax = $serviciosReferencias->traerClientesajax($length, $start, $busqueda);
 		$res = $serviciosReferencias->traerClientes();
-		$label = array('btnVer','btnModificar','btnEliminar');
-		$class = array('bg-riderz','bg-amber','bg-red');
-		$icon = array('backup','create','delete');
+		$label = array('btnVer','btnModificar','btnEliminar','btnFoto');
+		$class = array('bg-riderz','bg-amber','bg-red','bg-green');
+		$icon = array('backup','create','delete','assignment_ind');
 		$indiceID = 0;
 		$empieza = 1;
 		$termina = 10;

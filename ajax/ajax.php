@@ -138,12 +138,50 @@ case 'traerArchivosPorCliente':
    case 'reenviarActivacion':
       reenviarActivacion($serviciosUsuarios);
    break;
+   case 'traerImgenCliente':
+      traerImgenCliente($serviciosReferencias);
+   break;
 
 
 /* Fin */
 
 }
 /* Fin */
+
+function traerImgenCliente($serviciosReferencias) {
+   $id = $_POST['idcliente'];
+   $tipo = $_POST['tipo'];
+
+   $resResultado = $serviciosReferencias->traerClientesPorId($id);
+
+   $resUsuario = $serviciosReferencias->traerUsuarioPorIdCliente($id);
+
+   $carpeta = mysql_result($resUsuario,0,0);
+
+   $imagen = '../../imagenes/sin_img.jpg';
+
+   if ($tipo == 1) {
+      if (mysql_result($resResultado,0,'fotofrente') == '') {
+         $imagen = '../../imagenes/sin_img.jpg';
+      } else {
+         $imagen = '../../data/'.$carpeta.'/1/'.mysql_result($resResultado,0,'fotofrente');
+      }
+
+
+   } else {
+      if (mysql_result($resResultado,0,'fotodorsal') == '') {
+         $imagen = '../../imagenes/sin_img.jpg';
+      } else {
+         $imagen = '../../data/'.$carpeta.'/2/'.mysql_result($resResultado,0,'fotodorsal');
+      }
+
+   }
+
+   $resV = array('imagen' => $imagen);
+
+   header('Content-type: application/json');
+	echo json_encode($resV);
+}
 
 function reenviarActivacion($serviciosUsuarios) {
    $id = $_POST['idusuario'];

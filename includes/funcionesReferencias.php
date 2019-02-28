@@ -1294,6 +1294,13 @@ function modificarClientePorCliente($id,$apellido,$nombre,$telefono,$celular) {
    return $res;
 }
 
+function modificarClienteImagenFrentePorIdCliente($idcliente, $fotofrente, $campo) {
+   $sql = "update dbclientes c
+            set c.".$campo." = '".$fotofrente."' where c.idcliente = ".$idcliente;
+   $res = $this->query($sql,0);
+   return $res;
+}
+
 function modificarClienteImagenFrentePorId($idusuario, $fotofrente) {
    $sql = "update dbclientes c
             inner join dbusuarios u on c.idcliente = u.refclientes
@@ -1306,6 +1313,17 @@ function modificarClienteImagenDorsalPorId($idusuario, $fotodorsal) {
    $sql = "update dbclientes c
             inner join dbusuarios u on c.idcliente = u.refclientes
             set c.fotodorsal = '".$fotodorsal."' where u.idusuario = ".$idusuario;
+   $res = $this->query($sql,0);
+   return $res;
+}
+
+function traerUsuarioPorIdCliente($idcliente) {
+   $sql = "select
+               u.idusuario
+            from dbusuarios u
+            inner join dbclientes c on c.idcliente = u.refclientes
+            where c.idcliente = ".$idcliente;
+
    $res = $this->query($sql,0);
    return $res;
 }
