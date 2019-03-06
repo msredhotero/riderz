@@ -35,7 +35,7 @@ $configuracion = $serviciosReferencias->traerConfiguracion();
 
 $tituloWeb = mysql_result($configuracion,0,'sistema');
 
-$breadCumbs = '<a class="navbar-brand" href="../index.php">Dashboard</a>';
+$breadCumbs = '';
 
 
 

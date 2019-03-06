@@ -26,20 +26,23 @@ if (!isset($_SESSION['usua_sahilices']))
 		$res = $serviciosReferencias->traerArchivosPorToken($_GET['token']);
 
 		if (mysql_num_rows($res)>0) {
-			$zipName = 'descarga.zip';
-		    $file = '../../archivos/'.mysql_result($res, 0,'refclientes').'/'.mysql_result($res, 0,'idarchivo').'/'.'descarga.zip';
+			//$zipName = 'descarga.zip';
+		    $file = '../../archivos/'.mysql_result($res, 0,'refclientes').'/'.mysql_result($res, 0,'idarchivo').'/'.mysql_result($res, 0,'imagen');
 		    //die(var_dump($file));
+/*
 			header("Pragma: public");
 			header("Expires: 0");
 			header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 			header("Cache-Control: public");
 			header("Content-Description: File Transfer");
-			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=\"".$zipName."\"");
+			header("Content-type: ".mysql_result($res, 0,'type'));
+			//header("Content-Disposition: attachment; filename=\"".$zipName."\"");
 			header("Content-Transfer-Encoding: binary");
 		    //header('Content-type: application/zip');
 		    header('Content-length: ' . filesize($file));
 		    readfile($file);
+			 */
+			 header('Location: '.$file);
 		    //$cadError = 'Su descarga fue exitosa';
 		} else {
 			$cadError = 'No existe el archivo o fue borrado';

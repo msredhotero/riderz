@@ -164,6 +164,29 @@
         </div>
     </div>
 
+    <div class="modal fade" id="lgmNuevo" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-riderz">
+                    <h4 class="modal-title" id="largeModalLabel">RIDERZ REGISTRO</h4>
+                </div>
+                <div class="modal-body">
+                   <div class="">
+                      <div class="row">
+                        <h4>Te hemos enviado un correo de activación.</h4>
+                      </div>
+
+                   </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-riderz waves-effect"><a href="index.html" style="color:white; text-decoration:none;">Iniciar sesión</a></button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Jquery Core Js -->
     <script src="plugins/jquery/jquery.min.js"></script>
 
@@ -220,6 +243,8 @@
             }
 
 
+
+
             $("#sign_in").submit(function(e){
 
                e.preventDefault();
@@ -247,13 +272,7 @@
 
                                if ((response == '')) {
 
-                                   swal({
-                                       title: "Respuesta",
-                                       text: "El usuario fue creado correctamente, le enviamos un email a su casilla de correo para ACTIVAR la cuenta",
-                                       type: "success",
-                                       timer: 3000,
-                                       showConfirmButton: false
-                                   });
+                                 $('#lgmNuevo').modal();
                                    $('#login').hide();
 
                                } else {

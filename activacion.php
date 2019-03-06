@@ -79,6 +79,9 @@ if (mysql_num_rows($resActivacion) > 0) {
     <!-- Sweetalert Css -->
     <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 
+	 <!-- Bootstrap Material Datetime Picker Css -->
+    <link href="plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+
     <!-- Custom Css -->
     <link href="css/style.css" rel="stylesheet">
 </head>
@@ -111,7 +114,7 @@ if (mysql_num_rows($resActivacion) > 0) {
 								<i class="material-icons">date_range</i>
 							</span>
 							<div class="form-line">
-								<input type="text" class="form-control" name="fechanacimiento" id="fechanacimiento" placeholder="Fecha Nacimiento (Ejemplo: 1985-05-20)" required/>
+								<input type="text" class="datepicker form-control" name="fechanacimiento" id="fechanacimiento" placeholder="Fecha Nacimiento" required/>
 							</div>
 						</div>
 
@@ -156,7 +159,7 @@ if (mysql_num_rows($resActivacion) > 0) {
 								<i class="material-icons">card_travel</i>
 							</span>
 							<div class="form-line">
-								<input type="text" class="form-control" name="nroseguro" id="nroseguro" placeholder="Nro. de Seguro"/>
+								<input type="text" class="form-control" name="nroseguro" id="nroseguro" placeholder="N Seguridad Social"/>
 							</div>
 						</div>
 
@@ -169,7 +172,7 @@ if (mysql_num_rows($resActivacion) > 0) {
 									<div class="custom-file" id="customFile">
 										<input type="file" name="fotofrente" class="custom-file-input" id="fotofrente" aria-describedby="fileHelp" required>
 										<label class="custom-file-label" for="exampleInputFile">
-											Seleccionar Archivo (tamaño maximo del archivo 4 MB)
+											Foto de documento de identidad por delante (tamaño maximo del archivo 4 MB)
 										</label>
 									</div>
 								</div>
@@ -186,7 +189,7 @@ if (mysql_num_rows($resActivacion) > 0) {
 									<div class="custom-file" id="customFile">
 										<input type="file" name="fotodorsal" class="custom-file-input" id="fotodorsal" aria-describedby="fileHelp" required>
 										<label class="custom-file-label" for="exampleInputFile">
-											Seleccionar Archivo (tamaño maximo del archivo 4 MB)
+											Foto de documento de identidad por detrás (tamaño maximo del archivo 4 MB)
 										</label>
 									</div>
 								</div>
@@ -233,6 +236,29 @@ if (mysql_num_rows($resActivacion) > 0) {
         </div>
     </div>
 
+	 <div class="modal fade" id="lgmNuevo" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-riderz">
+                    <h4 class="modal-title" id="largeModalLabel">RIDERZ ACTIVACION</h4>
+                </div>
+                <div class="modal-body">
+                   <div class="">
+                      <div class="row">
+                        <h4>Su usuario fue activado con Exito.</h4>
+                      </div>
+
+                   </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-riderz waves-effect"><a href="index.html" style="color:white; text-decoration:none;">Iniciar sesión</a></button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Jquery Core Js -->
     <script src="plugins/jquery/jquery.min.js"></script>
 
@@ -256,13 +282,15 @@ if (mysql_num_rows($resActivacion) > 0) {
 
 	 <script src="plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
 
+	 <script src="plugins/momentjs/moment.js"></script>
+
+	 <script src="plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+
 
     <script type="text/javascript">
 
         $(document).ready(function(){
 			  var $demoMaskedInput = $('.demo-masked-input');
-
-	  			$demoMaskedInput.find('#fechanacimiento').inputmask('yyyy-mm-dd', { placeholder: '____-__-__' });
 
 				$demoMaskedInput.find('#iban').inputmask('aa99 9999 9999 9999 9999 99', { placeholder: '____ ____ ____ ____ ____ __'});
 
@@ -271,6 +299,13 @@ if (mysql_num_rows($resActivacion) > 0) {
                     $("#login").click();
                 }
             });
+
+				$('.datepicker').bootstrapMaterialDatePicker({
+					format: 'YYYY-MM-DD',
+					clearButton: true,
+					weekStart: 1,
+					time: false
+				});
 
 
             $("#sign_in").submit(function(e){
@@ -305,13 +340,7 @@ if (mysql_num_rows($resActivacion) > 0) {
 											  $('#login').show();
 
                                } else {
-                                   swal({
-                                       title: "Respuesta",
-                                       text: "Su usuario fue activado con Exito.",
-                                       type: "success",
-                                       timer: 1500,
-                                       showConfirmButton: false
-                                   });
+                                   $('#lgmNuevo').modal();
 
 											  $('#login').hide();
 

@@ -35,7 +35,7 @@ $configuracion = $serviciosReferencias->traerConfiguracion();
 
 $tituloWeb = mysql_result($configuracion,0,'sistema');
 
-$breadCumbs = '<a class="navbar-brand" href="../index.php">Dashboard</a>';
+$breadCumbs = '';
 
 
 
@@ -175,8 +175,13 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 			<div class="row clearfix">
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-						<div class="alert bg-orange">
+						<div class="alert bg-riderz">
 							<h4>Impuestos Trimestre: <?php echo mysql_result($resTrimestreActual,0,'meses'); ?> del <?php echo date('Y'); ?></h4>
+						</div>
+					</div>
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="alert bg-orange">
+							<h4>Estos valores son aproximados. Te notificaremos de manera correcta cuantos impuestos tienes que pagar en el periodo impositivo.</h4>
 						</div>
 					</div>
 
@@ -210,7 +215,7 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 							</div>
 							<div class="content">
 								<div class="text">IRPF</div>
-								<div class="number">$ <span class="lblTotalIRPF"></span></div>
+								<div class="number">€ <span class="lblTotalIRPF"></span></div>
 							</div>
 						</div>
 					</div>
@@ -223,7 +228,7 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 							</div>
 							<div class="content">
 								<div class="text">IVA</div>
-								<div class="number">$ <span class="lblTotalIVA"></span></div>
+								<div class="number">€ <span class="lblTotalIVA"></span></div>
 							</div>
 						</div>
 					</div>

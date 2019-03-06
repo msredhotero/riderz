@@ -26,11 +26,14 @@ if (!isset($_SESSION['usua_sahilices']))
 		$res = $serviciosReferencias->traerArchivosPorToken($_GET['token']);
 
 		if (mysql_num_rows($res)>0) {
-		    $file = '../../archivos/'.mysql_result($res, 0,'refclientes').'/'.mysql_result($res, 0,'idarchivo').'/'.'descarga.zip';
+		    $file = '../../archivos/'.mysql_result($res, 0,'refclientes').'/'.mysql_result($res, 0,'idarchivo').'/'.mysql_result($res, 0,'imagen');
 		    //die(var_dump($file));
+			 /*
 		    header('Content-type: application/zip');
 		    header('Content-length: ' . filesize($file));
 		    readfile($file);
+			 */
+			 header('Location: '.$file);
 		    //$cadError = 'Su descarga fue exitosa';
 		} else {
 			$cadError = 'No existe el archivo o fue borrado';

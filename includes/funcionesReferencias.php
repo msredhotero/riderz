@@ -37,31 +37,71 @@ class ServiciosReferencias {
       return 0;
    }
 
+   function existeAnioTrimestreFacturasPorCliente($idcliente,$anio,$trimestre) {
+      $sql = 'select f.* from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 1 and f.refmeses = '.$trimestre;
+
+      $res = $this->query($sql,0);
+
+      if (mysql_num_rows($res) > 0) {
+         return 1;
+      }
+
+      return 0;
+   }
+
    function traerTotalImpuestosPorClienteAnioTrimestre($idcliente, $tipo, $anio, $trimestre) {
       // tipo 1 irpf
       // tipo 2 iva
+      $acumulador = 0;
+      $inicio = $trimestre;
+
       if ($tipo == 1) {
-         $sql = 'select sum(r.total) * 0.2 from (
-            select sum(f.total) as total from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 1
-            union all
-            select -1*sum(f.total) as total from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 2
-            ) r';
+         for ($i=$trimestre;$i>=1;$i--) {
+            $sql = 'select sum(r.total) * 0.2 from (
+               select sum(f.total) as total from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 1 and f.refmeses <= '.$i.'
+               union all
+               select -1*sum(f.total) as total from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 2 and f.refmeses <= '.$i.'
+               ) r';
+
+
+               if ($this->existeAnioTrimestreFacturasPorCliente($idcliente,$anio,$i) == 0) {
+                  $inicio -= 1;
+               }
+
+
+               $res = $this->query($sql,0);
+               if (mysql_num_rows($res) > 0) {
+                  if ($i == $inicio) {
+                     //if ($this->existeAnioTrimestreFacturasPorCliente($idcliente,$anio,$trimestre) == 1) {
+                        $acumulador += mysql_result($res,0,0);
+                     //}
+                  } else {
+                     if ($this->existeAnioTrimestreFacturasPorCliente($idcliente,$anio,$i) == 1) {
+                        //die(var_dump($acumulador));
+                        $acumulador -= mysql_result($res,0,0);
+                     }
+                  }
+               }
+
+
+         }
       } else {
          $sql = 'select sum(r.total) from (
             select sum(f.iva) as total from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 1 and f.refmeses = '.$trimestre.'
             union all
             select -1*sum(f.iva) as total from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 2 and f.refmeses = '.$trimestre.'
             ) r';
+
+            $res = $this->query($sql,0);
+
+
+            if (mysql_num_rows($res) > 0) {
+               $acumulador += mysql_result($res,0,0);
+            }
       }
 
 
-      $res = $this->query($sql,0);
-
-      if (mysql_num_rows($res) > 0) {
-         return mysql_result($res,0,0);
-      }
-
-      return 0;
+      return $acumulador;
    }
 
 
@@ -762,6 +802,7 @@ function traerFacturasPorClienteajax($idcliente,$length, $start, $busqueda) {
           f.total + f.iva - f.irff as importetotal,
           f.fechaingreso,
           f.fechasubido,
+          concat('../../archivos/',f.idfactura,'/',f.imagen) as archivo,
           CONCAT(c.apellido, ' ', c.nombre) AS cliente,
           m.meses,
           f.anio,

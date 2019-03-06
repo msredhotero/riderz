@@ -36,7 +36,7 @@ $configuracion = $serviciosReferencias->traerConfiguracion();
 
 $tituloWeb = mysql_result($configuracion,0,'sistema');
 
-$breadCumbs = '<a class="navbar-brand" href="../index.php">Dashboard</a>';
+$breadCumbs = '';
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
 $singular = "Factura";
@@ -256,9 +256,14 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 	       <div class="modal-dialog modal-lg" role="document">
 	           <div class="modal-content">
 	               <div class="modal-header">
-	                   <h4 class="modal-title" id="largeModalLabel">CREAR <?php echo strtoupper($singular); ?> <span id="tipo"></span></h4>
+	                   <h4 class="modal-title" id="largeModalLabel">CREAR <span id="tipo"></span></h4>
 	               </div>
 	               <div class="modal-body demo-masked-input">
+							<div class="row">
+								<div class="alert bg-riderz">
+									<p>No es necesario que rellenes los datos de la factura. Si no lo haces nuestros expertos lo harán por ti.</p>
+								</div>
+							</div>
 							<div class="row">
 							<?php echo $frmUnidadNegocios; ?>
 							</div>
@@ -377,7 +382,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 		$('.btnNuevoGasto').click(function() {
 			$('#lgmNuevo').modal();
 			$('#reftipofacturas').val(2);
-			$('#tipo').html('EGRESO');
+			$('#tipo').html('GASTO');
 		});
 
 		$('#fechasubido').val('<?php echo date('Y-m-d'); ?>');
@@ -387,7 +392,8 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 			usersid =  $(this).attr("id");
 
 			url = "descargar.php?token=" + usersid;
-			$(location).attr('href',url);
+			//$(location).attr('href',url);
+			window.open(url ,'_blank');
 
 		});//fin del boton modificar
 

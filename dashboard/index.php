@@ -29,7 +29,7 @@ $configuracion = $serviciosReferencias->traerConfiguracion();
 
 $tituloWeb = mysql_result($configuracion,0,'sistema');
 
-$breadCumbs = '<a class="navbar-brand" href="../index.php">Dashboard</a>';
+$breadCumbs = '';
 
 
 
@@ -276,7 +276,7 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 							</div>
 							<div class="content">
 								<div class="text">INGRESOS</div>
-								<div class="number">$ <span class="lblTotalIngresos"></span></div>
+								<div class="number">€ <span class="lblTotalIngresos"></span></div>
 							</div>
 						</div>
 					</div>
@@ -289,7 +289,7 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 							</div>
 							<div class="content">
 								<div class="text">GASTOS</div>
-								<div class="number">$ <span class="lblTotalGastos"></span></div>
+								<div class="number">€ <span class="lblTotalGastos"></span></div>
 							</div>
 						</div>
 					</div>
@@ -313,9 +313,9 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 				<div class="row">
 					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                   <div class="card">
-                        <div class="header bg-pink">
-                           <h2>
-                              <?php echo mysql_result($resTrimestreActual,0,'meses'); ?> del <?php echo date('Y'); ?> <small>Últimas Facturas de Ingresos</small>
+                        <div class="header bg-riderz">
+                           <h2 style="color:white;">
+                              <?php echo mysql_result($resTrimestreActual,0,'meses'); ?> del <?php echo date('Y'); ?> <small style="color:white;">Últimas Facturas de Ingresos</small>
                            </h2>
 
                         </div>
@@ -346,9 +346,9 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 
 					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                   <div class="card">
-                        <div class="header bg-pink">
-                           <h2>
-                              <?php echo mysql_result($resTrimestreActual,0,'meses'); ?> del <?php echo date('Y'); ?> <small>Últimas Facturas de Gastos</small>
+                        <div class="header bg-riderz">
+                           <h2 style="color:white;">
+                              <?php echo mysql_result($resTrimestreActual,0,'meses'); ?> del <?php echo date('Y'); ?> <small style="color:white;">Últimas Facturas de Gastos</small>
                            </h2>
 
                         </div>

@@ -452,7 +452,7 @@ class Servicios {
 							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display:'.$lblOculta.'">
 								<label for="'.$label.'" class="control-label" style="text-align:left">'.ucwords($label).'</label>
 								<div class="input-group">
-                           <span class="input-group-addon">$</span>
+                           <span class="input-group-addon">€</span>
                            <div class="form-line">
                               <input type="text" class="form-control" id="'.strtolower($row[0]).'" name="'.strtolower($row[0]).'" value="" '.$lblObligatorio.'>
                            </div>
@@ -469,7 +469,7 @@ class Servicios {
 							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display:'.$lblOculta.'">
 								<label for="'.$label.'" class="control-label" style="text-align:left">'.ucwords($label).'</label>
 								<div class="input-group">
-                           <span class="input-group-addon">$</span>
+                           <span class="input-group-addon">€</span>
                            <div class="form-line">
                               <input type="text" class="form-control" id="'.strtolower($row[0]).'" name="'.strtolower($row[0]).'" value="" '.$lblObligatorio.'>
                            </div>
@@ -802,7 +802,7 @@ class Servicios {
 							<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 								<label for="'.$label.'" class="control-label" style="text-align:left">'.ucwords($label).'</label>
 								<div class="input-group col-md-12">
-									<span class="input-group-addon">$</span>
+									<span class="input-group-addon">€</span>
 									<input type="text" class="form-control" id="'.strtolower($row[0]).'" name="'.strtolower($row[0]).'" value="0" required>
 									<span class="input-group-addon">.00</span>
 								</div>
@@ -1191,7 +1191,7 @@ class Servicios {
 						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display:'.$lblOculta.'">
 							<label for="'.$label.'" class="control-label" style="text-align:left">'.ucwords($label).'</label>
 							<div class="input-group">
-                        <span class="input-group-addon">$</span>
+                        <span class="input-group-addon">€</span>
                         <div class="form-line">
                            <input type="text" class="form-control" id="'.strtolower($row[0]).'" name="'.strtolower($row[0]).'" value="'.mysql_result($resMod,0,$row[0]).'" '.$lblObligatorio.'>
                         </div>
@@ -1460,7 +1460,7 @@ class Servicios {
 						<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 							<label for="'.$label.'" class="control-label" style="text-align:left">'.ucwords($label).'</label>
 							<div class="input-group col-md-12">
-								<span class="input-group-addon">$</span>
+								<span class="input-group-addon">€</span>
 								<input type="text" class="form-control" id="'.strtolower($row[0]).'" name="'.strtolower($row[0]).'" value="'.mysql_result($resMod,0,$row[0]).'" required>
 								<span class="input-group-addon">.00</span>
 							</div>
@@ -1675,7 +1675,7 @@ class Servicios {
 						<div class="form-group col-md-6">
 							<label for="'.$row[0].'" class="control-label" style="text-align:left">'.ucwords($row[0]).'</label>
 							<div class="input-group col-md-12">
-								<span class="input-group-addon">$</span>
+								<span class="input-group-addon">€</span>
 								<input type="text" class="form-control" id="'.$row[0].'" name="'.$row[0].'" value="'.mysql_result($resTipoVenta,0,$row[0]).'" required>
 								<span class="input-group-addon">.00</span>
 							</div>
@@ -1909,7 +1909,7 @@ class Servicios {
 						<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 							<label for="'.$label.'" class="control-label" style="text-align:left">'.ucwords($label).'</label>
 							<div class="input-group col-md-12">
-								<span class="input-group-addon">$</span>
+								<span class="input-group-addon">€</span>
 								<input type="text" class="form-control" id="'.strtolower($row[0]).'" name="'.strtolower($row[0]).'" value="'.mysql_result($resMod,0,$row[0]).'" required>
 								<span class="input-group-addon">.00</span>
 							</div>
