@@ -193,13 +193,9 @@ function traerRolesSimple() {
 
 
 function traerUsuario($email) {
-	$sql = "select idusuario,usuario,refroll,nombrecompleto,email,password from se_usuarios where email = '".$email."'";
+	$sql = "select idusuario,usuario,nombrecompleto,email,password from dbusuarios where email = '".$email."'";
 	$res = $this->query($sql,0);
-	if ($res == false) {
-		return 'Error al traer datos';
-	} else {
-		return $res;
-	}
+	return $res;
 }
 
 function traerUsuarios() {

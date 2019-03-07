@@ -41,7 +41,10 @@
         <div class="card">
             <div class="body">
                 <form id="sign_in" method="POST">
-                    <div class="msg">Login</div>
+                    <div class="msg">Recuperar Password</div>
+                    <div class="input-group">
+                       <h4>Ingrese su email para que le enviemos su password</h4>
+                    </div>
                     <div class="input-group">
                         <span class="input-group-addon">
                             <i class="material-icons">person</i>
@@ -52,33 +55,41 @@
                         </div>
 
                     </div>
-                    <div class="input-group">
-                        <span class="input-group-addon">
-                            <i class="material-icons">lock</i>
-                        </span>
-                        <div class="form-line passInput">
-                            <input type="password" class="form-control" name="pass" id="pass" placeholder="Password" required>
 
-                        </div>
-
-                    </div>
                     <div class="row js-sweetalert">
                         <div class="col-xs-8 p-t-5">
 
                         </div>
                         <div class="col-xs-4">
-                            <button class="btn btn-block bg-riderz waves-effect" data-type="" type="submit" id="login">ENTRAR</button>
+                            <button class="btn btn-block bg-riderz waves-effect" data-type="" type="submit" id="login">ENVIAR</button>
                         </div>
                     </div>
-                    <div class="row m-t-15 m-b--20">
-                        <div class="col-xs-5">
-                            <a href="registro.html">Regístrate</a>
-                        </div>
-                        <div class="col-xs-7 align-right">
-                            <a href="recuperar.html">He olvidado mi contraseña</a>
-                        </div>
-                    </div>
+
                 </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="lgmNuevo" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-riderz">
+                    <h4 class="modal-title" id="largeModalLabel">RIDERZ RECUPERAR PASSWORD</h4>
+                </div>
+                <div class="modal-body">
+                   <div class="">
+                      <div class="row">
+                        <h4>Le enviamos un email a su casilla de correo.</h4>
+                      </div>
+
+                   </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-riderz waves-effect"><a href="index.html" style="color:white; text-decoration:none;">Iniciar sesión</a></button>
+
+                </div>
             </div>
         </div>
     </div>
@@ -124,8 +135,7 @@
 
                    $.ajax({
                        data:  {email:		$("#email").val(),
-                               pass:		$("#pass").val(),
-                               accion:		'login'},
+                               accion:		'recuperar'},
                        url:   'ajax/ajax.php',
                        type:  'post',
                        beforeSend: function () {
@@ -133,27 +143,20 @@
                        },
                        success:  function (response) {
 
-                               if (isNaN(response)) {
+                               if (response != '') {
 
                                    swal({
                                        title: "Respuesta",
-                                       text: "Usuario o Password Incorrectos",
+                                       text: response,
                                        type: "error",
                                        timer: 2000,
                                        showConfirmButton: false
                                    });
 
                                } else {
-                                   swal({
-                                       title: "Respuesta",
-                                       text: "Acceso Correcto",
-                                       type: "success",
-                                       timer: 1500,
-                                       showConfirmButton: false
-                                   });
+                                  $('#lgmNuevo').modal();
 
-                                   url = "dashboard/";
-                                   $(location).attr('href',url);
+                                  $('#login').hide();
                                }
 
                        }
