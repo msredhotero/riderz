@@ -145,11 +145,37 @@ case 'traerArchivosPorCliente':
       traerImgenCliente($serviciosReferencias);
    break;
 
+   case 'traerUltimasFacturas':
+      traerUltimasFacturas($serviciosReferencias);
+   break;
+
 
 /* Fin */
 
 }
 /* Fin */
+
+function traerUltimasFacturas($serviciosReferencias) {
+   session_start();
+
+   $trimestre     = $_POST['trimestre'];
+   $anio          = $_POST['anio'];
+   $idtipofactura = $_POST['tipo'];
+
+   $campos = 'f.concepto, f.total, f.fechaingreso, est.estado';
+
+	$idcliente = $_SESSION['idcliente'];
+	$limit = 'limit 10';
+	$res = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado='', $idtipofactura, $idcliente, $trimestre, $anio, $fecha='',$limit);
+
+   $cad = '';
+
+   while ($row = mysql_fetch_array($res)) {
+      $cad .= '<tr><td>'.$row['concepto'].'</td><td>'.$row['total'].'</td><td>'.$row['fechaingreso'].'</td><td>'.$row['estado'].'</td></tr>';
+   }
+
+   echo $cad;
+}
 
 function recuperar($serviciosUsuarios) {
    $email = $_POST['email'];

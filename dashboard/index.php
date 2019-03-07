@@ -92,7 +92,7 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 
 	$resAniosFacturados = $serviciosReferencias->traerAniosFacturadosPorCliente($_SESSION['idcliente']);
 	$cadAnios 	= $serviciosFunciones->devolverSelectBox($resAniosFacturados,array(0),'');
-
+   //$cadAnios 	= '<option value="2019">2019</option><option value="2018">2018</option>';
 	//($campos,$idestado='', $idtipofactura='', $idcliente='', $idmes='', $anio='', $fecha='',$limit='')
 	$campos = 'f.concepto, f.total, f.fechaingreso, est.estado';
 	$idtipofactura = 1;
@@ -315,7 +315,7 @@ if ($_SESSION['idroll_sahilices'] == 1) {
                   <div class="card">
                         <div class="header bg-riderz">
                            <h2 style="color:white;">
-                              <?php echo mysql_result($resTrimestreActual,0,'meses'); ?> del <?php echo date('Y'); ?> <small style="color:white;">Últimas Facturas de Ingresos</small>
+                              <span class="lblTrimestre"></span> del <span class="lblAnio"></span> <small style="color:white;">Últimas Facturas de Ingresos</small>
                            </h2>
 
                         </div>
@@ -329,15 +329,8 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 												<th>Estado</th>
 											</tr>
 										</thead>
-										<tbody>
-										<?php while ($row = mysql_fetch_array($resIngresos)) { ?>
-											<tr>
-												<th><?php echo $row['concepto']; ?></th>
-												<th><?php echo $row['total']; ?></th>
-												<th><?php echo $row['fechaingreso']; ?></th>
-												<th><?php echo $row['estado']; ?></th>
-											</tr>
-										<?php } ?>
+										<tbody id="lstIngresos">
+
 										</tbody>
 									</table>
                         </div>
@@ -348,7 +341,7 @@ if ($_SESSION['idroll_sahilices'] == 1) {
                   <div class="card">
                         <div class="header bg-riderz">
                            <h2 style="color:white;">
-                              <?php echo mysql_result($resTrimestreActual,0,'meses'); ?> del <?php echo date('Y'); ?> <small style="color:white;">Últimas Facturas de Gastos</small>
+                              <span class="lblTrimestre"></span> del <span class="lblAnio"></span>  <small style="color:white;">Últimas Facturas de Gastos</small>
                            </h2>
 
                         </div>
@@ -362,15 +355,8 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 												<th>Estado</th>
 											</tr>
 										</thead>
-										<tbody>
-										<?php while ($row2 = mysql_fetch_array($resGastos)) { ?>
-											<tr>
-												<th><?php echo $row2['concepto']; ?></th>
-												<th><?php echo $row2['total']; ?></th>
-												<th><?php echo $row2['fechaingreso']; ?></th>
-												<th><?php echo $row2['estado']; ?></th>
-											</tr>
-										<?php } ?>
+										<tbody id="lstGastos">
+
 										</tbody>
 									</table>
                         </div>
@@ -424,6 +410,9 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 		$(document).ready(function(){
 
 			<?php if ($_SESSION['idroll_sahilices'] == 3) { ?>
+			$('.lblTrimestre').html($('#trimestre option:selected').text());
+			$('.lblAnio').html($('#anio').val());
+
 			function traerTotales(tipo, anio, trimestre, contenedor) {
 				$.ajax({
 					url: '../ajax/ajax.php',
@@ -455,17 +444,63 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 				});
 			}
 
+
+			function traerUltimasFacturas(tipo, anio, trimestre, contenedor) {
+				$.ajax({
+					url: '../ajax/ajax.php',
+					type: 'POST',
+					// Form data
+					//datos del formulario
+					data: {
+						accion: 'traerUltimasFacturas',
+						tipo: tipo,
+						anio: anio,
+						trimestre: trimestre
+					},
+					//mientras enviamos el archivo
+					beforeSend: function(){
+						$('.' + contenedor).html('');
+					},
+					//una vez finalizado correctamente
+					success: function(data){
+
+						$('#' + contenedor).html(data);
+
+					},
+					//si ha ocurrido un error
+					error: function(){
+						$(".alert").html('<strong>Error!</strong> Actualice la pagina');
+						$("#load").html('');
+					}
+				});
+			}
+
 			traerTotales(1, $('#anio').val(), $('#trimestre').val(), 'lblTotalIngresos');
 			traerTotales(2, $('#anio').val(), $('#trimestre').val(), 'lblTotalGastos');
+
+			traerUltimasFacturas(1, $('#anio').val(), $('#trimestre').val(), 'lstIngresos');
+			traerUltimasFacturas(2, $('#anio').val(), $('#trimestre').val(), 'lstGastos');
 
 			$('#anio').change(function() {
 				traerTotales(1, $(this).val(), $('#trimestre').val(), 'lblTotalIngresos');
 				traerTotales(2, $(this).val(), $('#trimestre').val(), 'lblTotalGastos');
+
+				traerUltimasFacturas(1, $(this).val(), $('#trimestre').val(), 'lstIngresos');
+				traerUltimasFacturas(2, $(this).val(), $('#trimestre').val(), 'lstGastos');
+
+				$('.lblTrimestre').html($('#trimestre option:selected').text());
+				$('.lblAnio').html($('#anio').val());
 			});
 
 			$('#trimestre').change(function() {
 				traerTotales(1, $('#anio').val(), $(this).val(), 'lblTotalIngresos');
 				traerTotales(2, $('#anio').val(), $(this).val(), 'lblTotalGastos');
+
+				traerUltimasFacturas(1, $('#anio').val(), $(this).val(), 'lstIngresos');
+				traerUltimasFacturas(2, $('#anio').val(), $(this).val(), 'lstGastos');
+
+				$('.lblTrimestre').html($('#trimestre option:selected').text());
+				$('.lblAnio').html($('#anio').val());
 			});
 			<?php } else { ?>
 				var table = $('#example').DataTable({
