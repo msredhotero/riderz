@@ -875,7 +875,8 @@ function traerFacturasajax($length, $start, $busqueda) {
               INNER JOIN
          dbarchivos ar ON ar.refclientes = f.idfactura and ar.reftipoarchivos = 1
       ".$where."
-      ORDER BY f.anio DESC , m.idmes DESC";
+      ORDER BY f.anio DESC , m.idmes DESC
+      limit ".$start.",".$length;
    $res = $this->query($sql,0);
    return $res;
 }
