@@ -781,7 +781,7 @@ function insertarClientes($serviciosReferencias, $serviciosValidador, $servicios
       				activo,
       				refclientes)
       			VALUES
-      				('',
+      				(null,
       				'".$apellido.' '.$nombre."',
       				'".$pass."',
       				3,

@@ -5,7 +5,7 @@
  * @ABM consultas sobre las tablas de usuarios y usarios-clientes
  */
 
-date_default_timezone_set('America/Buenos_Aires');
+date_default_timezone_set('Europe/Madrid');
 
 class ServiciosUsuarios {
 
@@ -327,7 +327,7 @@ function insertarUsuario($usuario,$password,$refroles,$email,$nombrecompleto) {
 				email,
 				nombrecompleto)
 			VALUES
-				('',
+				(null,
 				'".($usuario)."',
 				'".($password)."',
 				".$refroles.",
@@ -372,12 +372,12 @@ function reenviarActivacion($idusuario,$email) {
 	date_add($fecha, date_interval_create_from_date_string('5 days'));
 	$fechaprogramada =  date_format($fecha, 'Y-m-d');
 
-   $cuerpo .= '<img src="https://saupureinconsulting.com.ar/riderz/imagenes/1PNGlogosRIDERZ.png" alt="RIDERZ" width="190">';
+   $cuerpo .= '<img src="http://www.areariderz.es/imagenes/1PNGlogosRIDERZ.png" alt="RIDERZ" width="190">';
 
    $cuerpo .= '<h2>¡Bienvenido a RIDERZ!</h2>';
 
 
-   $cuerpo .= '<p>Usa el siguente <a href="http://www.saupureinconsulting.com.ar/riderz/activacion.php?token='.$token.'" target="_blank">enlace</a> para confirmar tu cuenta.</p>';
+   $cuerpo .= '<p>Usa el siguente <a href="http://www.areariderz.es/activacion.php?token='.$token.'" target="_blank">enlace</a> para confirmar tu cuenta.</p>';
 
    $resToken = $this->insertarActivacionusuarios($idusuario,$token,'','');
 
@@ -396,12 +396,12 @@ function registrarSocio($email, $password,$apellido, $nombre,$refcliente) {
 	date_add($fecha, date_interval_create_from_date_string('5 days'));
 	$fechaprogramada =  date_format($fecha, 'Y-m-d');
 
-   $cuerpo .= '<img src="https://saupureinconsulting.com.ar/riderz/imagenes/1PNGlogosRIDERZ.png" alt="RIDERZ" width="190">';
+   $cuerpo .= '<img src="http://areariderz.es/imagenes/1PNGlogosRIDERZ.png" alt="RIDERZ" width="190">';
 
    $cuerpo .= '<h2>¡Bienvenido a RIDERZ!</h2>';
 
 
-   $cuerpo .= '<p>Usa el siguente <a href="http://www.saupureinconsulting.com.ar/riderz/activacion.php?token='.$token.'" target="_blank">enlace</a> para confirmar tu cuenta.</p>';
+   $cuerpo .= '<p>Usa el siguente <a href="http://areariderz.es/activacion.php?token='.$token.'" target="_blank">enlace</a> para confirmar tu cuenta.</p>';
 
 
 	$sql = "INSERT INTO dbusuarios
@@ -414,7 +414,7 @@ function registrarSocio($email, $password,$apellido, $nombre,$refcliente) {
 				activo,
 				refclientes)
 			VALUES
-				('',
+				(null,
 				'".$apellido.' '.$nombre."',
 				'".$password."',
 				3,
@@ -441,7 +441,7 @@ function registrarSocio($email, $password,$apellido, $nombre,$refcliente) {
 
 function insertarActivacionusuarios($refusuarios,$token,$vigenciadesde,$vigenciahasta) {
 $sql = "insert into dbactivacionusuarios(idactivacionusuario,refusuarios,token,vigenciadesde,vigenciahasta)
-values ('',".$refusuarios.",'".($token)."',now(),ADDDATE(now(), INTERVAL 2 DAY))";
+values (null,".$refusuarios.",'".($token)."',now(),ADDDATE(now(), INTERVAL 2 DAY))";
 $res = $this->query($sql,1);
 return $res;
 }

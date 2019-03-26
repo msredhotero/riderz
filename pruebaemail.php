@@ -1,5 +1,14 @@
 <?php
 
+//para el envío en formato HTML
+//$headers = "MIME-Version: 1.0\r\n";
+
+// Cabecera que especifica que es un HMTL
+$cabeceras  = 'MIME-Version: 1.0' . "\r\n";
+$cabeceras .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+
+mail ('msredhotero@gmail.com',' Asunto del mensaje', 'Cuerpo del mensaje', $cabeceras, '-msredhotero@gmail.com');
+/*
 $cuerpo = '<img src="https://saupureinconsulting.com.ar/riderz/imagenes/1PNGlogosRIDERZ.png" alt="RIDERZ" width="190">';
 
 $cuerpo .= '<h2>¡Bienvenido a RIDERZ!</h2>';
@@ -10,7 +19,7 @@ $cuerpo .= '<p>Usa el siguente enlace para confirmar tu cuenta.</p>';
 
 $asunto = 'prueba';
 
-$destinatario = 'msredhotero@msn.com';
+$destinatario = 'msredhotero@gmail.com';
 # Defina el número de e-mails que desea enviar por periodo. Si es 0, el proceso por lotes
 # se deshabilita y los mensajes son enviados tan rápido como sea posible.
 define("MAILQUEUE_BATCH_SIZE",0);
@@ -29,9 +38,9 @@ $headers .= "From: RIDERZ <info@riderzapp.es>\r\n";
 $headers .= "Return-path: ".$destinatario."\r\n";
 
 //direcciones que recibirán copia oculta
-$headers .= "Bcc: msredhotero@msn.com\r\n";
+$headers .= "Bcc: msredhotero@gmail.com\r\n";
 
-mail($destinatario,$asunto,$cuerpo,$headers);
-
+mail($destinatario,$asunto,$cuerpo,$headers,'msredhotero@gmail.com');
+*/
 
  ?>

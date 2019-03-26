@@ -5,7 +5,7 @@
  * @ABM consultas sobre las tablas de usuarios y usarios-clientes
  */
 
-date_default_timezone_set('America/Buenos_Aires');
+date_default_timezone_set('Europe/Madrid');
 
 class ServiciosReferencias {
 
@@ -208,7 +208,7 @@ function crearDirectorioPrincipal($dir) {
 	function obtenerNuevoId($tabla) {
         //u235498999_aif
         $sql = "SELECT AUTO_INCREMENT FROM information_schema.TABLES
-                WHERE TABLE_SCHEMA = 'u235498999_rider'
+                WHERE TABLE_SCHEMA = '6435338_riderz'
                 AND TABLE_NAME = '".$tabla."'";
         $res = $this->query($sql,0);
         return mysql_result($res, 0,0);
@@ -528,7 +528,7 @@ function validarNIE($nie, $niecompleto) {
 
 function insertarFacturas($refclientes,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen) {
 $sql = "insert into dbfacturas(idfactura,refclientes,reftipofacturas,refestados,refmeses,anio,concepto,total,iva,irff,fechaingreso,fechasubido,imagen)
-values ('',".$refclientes.",".$reftipofacturas.",".$refestados.",".$refmeses.",".$anio.",'".($concepto)."',".($total == '' ? 'null' : $total).",".($iva == '' ? 'null' : $iva).",".($irff == '' ? 'null' : $irff).",'".$fechaingreso."','".$fechasubido."','".$imagen."')";
+values (null,".$refclientes.",".$reftipofacturas.",".$refestados.",".$refmeses.",".$anio.",'".($concepto)."',".($total == '' ? 'null' : $total).",".($iva == '' ? 'null' : $iva).",".($irff == '' ? 'null' : $irff).",'".$fechaingreso."','".$fechasubido."','".$imagen."')";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -940,7 +940,7 @@ return $res;
 
 function insertarEstados($estado,$color,$icono) {
 $sql = "insert into tbestados(idestado,estado,color,icono)
-values ('','".($estado)."','".($color)."','".($icono)."')";
+values (null,'".($estado)."','".($color)."','".($icono)."')";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -989,7 +989,7 @@ return $res;
 
 function insertarMeses($meses,$desde,$hasta) {
 $sql = "insert into tbmeses(idmes,meses,desde,hasta)
-values ('','".($meses)."',".$desde.",".$hasta.")";
+values (null,'".($meses)."',".$desde.",".$hasta.")";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -1053,7 +1053,7 @@ return $res;
 
 function insertarTipofacturas($tipofactura) {
 $sql = "insert into tbtipofacturas(idtipofactura,tipofactura)
-values ('','".($tipofactura)."')";
+values (null,'".($tipofactura)."')";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -1100,7 +1100,7 @@ return $res;
 /* PARA Archivos */
 function insertarArchivos($refclientes,$token,$imagen,$type,$observacion,$refcategorias,$anio,$mes,$reftipoarchivos) {
 $sql = "insert into dbarchivos(idarchivo,refclientes,token,imagen,type,observacion, refcategorias, anio, mes, reftipoarchivos)
-values ('',".$refclientes.",'".($token)."','".($imagen)."','".($type)."','".($observacion)."',".$refcategorias.",".$anio.",".$mes.",".$reftipoarchivos.")";
+values (null,".$refclientes.",'".($token)."','".($imagen)."','".($type)."','".($observacion)."',".$refcategorias.",".$anio.",".$mes.",".$reftipoarchivos.")";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -1302,7 +1302,7 @@ function existeCliente($nrodocumento, $modifica = 0, $id = 0) {
 
 function insertarClientes($reftipodocumentos,$apellido,$nombre,$nrodocumento,$telefono,$celular,$email,$aceptaterminos,$subscripcion,$activo) {
 $sql = "insert into dbclientes(idcliente,reftipodocumentos,apellido,nombre,nrodocumento,telefono,celular,email,aceptaterminos,subscripcion, activo)
-values ('',".$reftipodocumentos.",'".($apellido)."','".($nombre)."','".($nrodocumento)."','".($telefono)."','".($celular)."','".($email)."',".$aceptaterminos.",".$subscripcion.",".$activo.")";
+values (null,".$reftipodocumentos.",'".($apellido)."','".($nombre)."','".($nrodocumento)."','".($telefono)."','".($celular)."','".($email)."',".$aceptaterminos.",".$subscripcion.",".$activo.")";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -1531,7 +1531,7 @@ return $res;
 
 function insertarTipodocumentos($tipodocumento) {
 $sql = "insert into tbtipodocumentos(idtipodocumento,tipodocumento)
-values ('','".($tipodocumento)."')";
+values (null,'".($tipodocumento)."')";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -1579,7 +1579,7 @@ return $res;
 
 function insertarImages($refproyecto,$refuser,$imagen,$type,$principal) {
 $sql = "insert into images(idfoto,refproyecto,refuser,imagen,type,principal)
-values ('',".$refproyecto.",".$refuser.",'".($imagen)."','".($type)."',".$principal.")";
+values (null,".$refproyecto.",".$refuser.",'".($imagen)."','".($type)."',".$principal.")";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -1647,7 +1647,7 @@ return $res;
 
 function insertarUsuarios($usuario,$password,$refroles,$email,$nombrecompleto,$activo,$refclientes) {
 $sql = "insert into dbusuarios(idusuario,usuario,password,refroles,email,nombrecompleto,activo,refclientes)
-values ('','".($usuario)."','".($password)."',".$refroles.",'".($email)."','".($nombrecompleto)."',".$activo.",".$refclientes.")";
+values (null,'".($usuario)."','".($password)."',".$refroles.",'".($email)."','".($nombrecompleto)."',".$activo.",".$refclientes.")";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -1703,7 +1703,7 @@ return $res;
 
 function insertarPredio_menu($url,$icono,$nombre,$Orden,$hover,$permiso) {
 $sql = "insert into predio_menu(idmenu,url,icono,nombre,Orden,hover,permiso)
-values ('','".($url)."','".($icono)."','".($nombre)."',".$Orden.",'".($hover)."','".($permiso)."')";
+values (null,'".($url)."','".($icono)."','".($nombre)."',".$Orden.",'".($hover)."','".($permiso)."')";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -1757,7 +1757,7 @@ return $res;
 
 function insertarRoles($descripcion,$activo) {
 $sql = "insert into tbroles(idrol,descripcion,activo)
-values ('','".($descripcion)."',".$activo.")";
+values (null,'".($descripcion)."',".$activo.")";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -1807,7 +1807,7 @@ return $res;
 
 function insertarCategorias($categoria) {
 $sql = "insert into tbcategorias(idcategoria,categoria)
-values ('','".($categoria)."')";
+values (null,'".($categoria)."')";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -1876,7 +1876,7 @@ return $res;
 
 function insertarConfiguracion($razonsocial,$empresa,$sistema,$direccion,$telefono,$email) {
 $sql = "insert into tbconfiguracion(idconfiguracion,razonsocial,empresa,sistema,direccion,telefono,email)
-values ('','".($razonsocial)."','".($empresa)."','".($sistema)."','".($direccion)."','".($telefono)."','".($email)."')";
+values (null,'".($razonsocial)."','".($empresa)."','".($sistema)."','".($direccion)."','".($telefono)."','".($email)."')";
 $res = $this->query($sql,1);
 return $res;
 }

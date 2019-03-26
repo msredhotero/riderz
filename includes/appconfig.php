@@ -1,6 +1,6 @@
 <?php
 
-date_default_timezone_set('America/Buenos_Aires');
+date_default_timezone_set('Europe/Madrid');
 
 class appconfig {
 
@@ -12,10 +12,10 @@ function conexion() {
 		$password = "";
 */
 
-		$hostname = "localhost";
-		$database = "u235498999_rider";
-		$username = "u235498999_rider";
-		$password = "rhcp7575RD";
+		$hostname = "PMYSQL105.dns-servicio.com:3306";
+		$database = "6435338_riderz";
+		$username = "alexriderz";
+		$password = "_alexriderz123*";
 		//u235498999_kike usuario
 
 
