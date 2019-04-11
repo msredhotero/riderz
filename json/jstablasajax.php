@@ -46,6 +46,17 @@ function armarAcciones($id,$label='',$class,$icon) {
 }
 
 switch ($tabla) {
+	case 'subidas':
+		$resAjax = $serviciosReferencias->traerSubidasPorClienteajax($idcliente,$length, $start, $busqueda);
+		$res = $serviciosReferencias->traerSubidasPorCliente($idcliente);
+		$label = array('btnDescargar');
+		$class = array('bg-green');
+		$icon = array('file_download');
+		$indiceID = 0;
+		$empieza = 1;
+		$termina = 2;
+
+		break;
 	case 'facturas':
 		$resAjax = $serviciosReferencias->traerFacturasPorClienteajax($idcliente,$length, $start, $busqueda);
 		$res = $serviciosReferencias->traerFacturasPorCliente($idcliente);

@@ -105,7 +105,8 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 	<!-- Additional CSS Themes file - not required-->
 	<link rel="stylesheet" href="../../css/easy-autocomplete.themes.min.css">
 
-
+	<!-- Dropzone Css -->
+    <link href="../../plugins/dropzone/dropzone.css" rel="stylesheet">
 
 	 <!-- Morris Chart Css-->
     <link href="../../plugins/morrisjs/morris.css" rel="stylesheet" />
@@ -198,6 +199,7 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 										<li role="presentation" class="active"><a href="#ingresos" data-toggle="tab">INGRESOS</a></li>
 										<li role="presentation"><a href="#gastos" data-toggle="tab">GASTOS</a></li>
 										<li role="presentation"><a href="#archivos" data-toggle="tab">ARCHIVOS</a></li>
+										<li role="presentation"><a href="#subidas" data-toggle="tab">SUBIDAS</a></li>
 									</ul>
 
 									<!-- Tab panes -->
@@ -271,6 +273,26 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 											</table>
 										</div>
 
+										<div role="tabpanel" class="tab-pane fade" id="subidas">
+											<b>Archivos Subidos al Administrador</b>
+											<table id="example3" class="display table " style="width:100%">
+												<thead>
+													<tr>
+														<th>Archivo</th>
+														<th>Fecha</th>
+														<th>Acciones</th>
+													</tr>
+												</thead>
+												<tfoot>
+													<tr>
+														<th>Archivo</th>
+														<th>Fecha</th>
+														<th>Acciones</th>
+													</tr>
+												</tfoot>
+											</table>
+										</div>
+
 									</div>
 								</form>
 								</div>
@@ -279,6 +301,38 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 
 					</div>
 
+				</div>
+
+				<div class="row clearfix subirImagen">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="card">
+							<div class="header">
+								<h2>
+									SUBIR ARCHIVOS A SU ASESOR
+								</h2>
+
+							</div>
+							<div class="body">
+
+								<form action="subir.php" id="frmFileUpload" class="dropzone" method="post" enctype="multipart/form-data">
+									<div class="dz-message">
+										<div class="drag-icon-cph">
+											<i class="material-icons">touch_app</i>
+										</div>
+										<h3>Arrastre y suelte una imagen aqui o haga click y busque una imagen en su ordenador.</h3>
+
+									</div>
+									<div class="fallback">
+
+										<input name="file" type="file" id="archivos" />
+										<input type="hidden" id="idjugador" name="idjugador" value="<?php echo $_SESSION['idcliente']; ?>" />
+
+
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
 				</div>
 
 			</div>
@@ -294,10 +348,49 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 
 	 <script src="../../DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
 
+	 <!-- Dropzone Plugin Js -->
+	 <script src="../../plugins/dropzone/dropzone.js"></script>
+
 
 
 	<script>
-		$(document).ready(function(){
+
+	$(document).ready(function(){
+
+	Dropzone.prototype.defaultOptions.dictFileTooBig = "Este archivo es muy grande ({{filesize}}MiB). Peso Maximo: {{maxFilesize}}MiB.";
+
+	Dropzone.options.frmFileUpload = {
+		maxFilesize: 30,
+		acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg,.pdf,.doc,.docx",
+		accept: function(file, done) {
+			done();
+		},
+		init: function() {
+			this.on("sending", function(file, xhr, formData){
+					formData.append("idcliente", '<?php echo $_SESSION['idcliente']; ?>');
+			});
+			this.on('success', function( file, resp ){
+
+				swal("Correcto!", resp.replace("1", ""), "success");
+				table3.ajax.reload();
+
+			});
+
+			this.on('error', function( file, resp ){
+				swal("Error!", resp.replace("1", ""), "warning");
+			});
+		}
+	};
+
+	var myDropzone = new Dropzone("#archivos", {
+		params: {
+			 idcliente: <?php echo $_SESSION['idcliente']; ?>
+		},
+		url: 'subir.php'
+	});
+
+
+
 
 			var table1 = $('#example1').DataTable({
 				"bProcessing": true,
@@ -362,6 +455,36 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 				"bProcessing": true,
 				"bServerSide": true,
 				"sAjaxSource": "../../json/jstablasajax.php?tabla=archivos&idcliente=<?php echo $_SESSION['idcliente']; ?>",
+				"language": {
+					"emptyTable":     "No hay datos cargados",
+					"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
+					"infoEmpty":      "Mostrar 0 hasta 0 del total de 0 filas",
+					"infoFiltered":   "(filtrados del total de _MAX_ filas)",
+					"infoPostFix":    "",
+					"thousands":      ",",
+					"lengthMenu":     "Mostrar _MENU_ filas",
+					"loadingRecords": "Cargando...",
+					"processing":     "Procesando...",
+					"search":         "Buscar:",
+					"zeroRecords":    "No se encontraron resultados",
+					"paginate": {
+						"first":      "Primero",
+						"last":       "Ultimo",
+						"next":       "Siguiente",
+						"previous":   "Anterior"
+					},
+					"aria": {
+						"sortAscending":  ": activate to sort column ascending",
+						"sortDescending": ": activate to sort column descending"
+					}
+				}
+			});
+
+
+			var table3 = $('#example3').DataTable({
+				"bProcessing": true,
+				"bServerSide": true,
+				"sAjaxSource": "../../json/jstablasajax.php?tabla=subidas&idcliente=<?php echo $_SESSION['idcliente']; ?>",
 				"language": {
 					"emptyTable":     "No hay datos cargados",
 					"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",

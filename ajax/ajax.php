@@ -149,11 +149,76 @@ case 'traerArchivosPorCliente':
       traerUltimasFacturas($serviciosReferencias);
    break;
 
+   case 'insertarSubidas':
+      insertarSubidas($serviciosReferencias);
+   break;
+   case 'modificarSubidas':
+      modificarSubidas($serviciosReferencias);
+   break;
+   case 'eliminarSubidas':
+      eliminarSubidas($serviciosReferencias);
+   break;
+   case 'traerSubidas':
+      traerSubidas($serviciosReferencias);
+   break;
+   case 'traerSubidasPorId':
+      traerSubidasPorId($serviciosReferencias);
+   break;
+
 
 /* Fin */
 
 }
 /* Fin */
+
+function insertarSubidas($serviciosReferencias) {
+   $refclientes = $_POST['refclientes'];
+   $archivo = $_POST['archivo'];
+   $type = $_POST['type'];
+
+   $res = $serviciosReferencias->insertarSubidas($refclientes,$archivo,$type);
+
+   if ((integer)$res > 0) {
+      echo '';
+   } else {
+      echo 'Huvo un error al insertar datos';
+   }
+}
+
+function modificarSubidas($serviciosReferencias) {
+   $id = $_POST['id'];
+   $refclientes = $_POST['refclientes'];
+   $archivo = $_POST['archivo'];
+   $type = $_POST['type'];
+
+   $res = $serviciosReferencias->modificarSubidas($id,$refclientes,$archivo,$type); 
+
+   if ($res == true) {
+      echo '';
+   } else {
+      echo 'Huvo un error al modificar datos';
+   }
+}
+
+function eliminarSubidas($serviciosReferencias) {
+   $id = $_POST['id'];
+   $res = $serviciosReferencias->eliminarSubidas($id);
+   echo $res;
+}
+
+function traerSubidas($serviciosReferencias) {
+   $res = $serviciosReferencias->traerSubidas();
+   $ar = array();
+
+   while ($row = mysql_fetch_array($res)) {
+      array_push($ar, $row);
+   }
+
+   $resV['datos'] = $ar;
+
+   header('Content-type: application/json');
+   echo json_encode($resV);
+}
 
 function traerUltimasFacturas($serviciosReferencias) {
    session_start();

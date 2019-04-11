@@ -9,6 +9,97 @@ date_default_timezone_set('Europe/Madrid');
 
 class ServiciosReferencias {
 
+   /* PARA Subidas */
+
+   function insertarSubidas($refclientes,$archivo,$type) {
+      $sql = "insert into dbsubidas(idsubida,refclientes,archivo,type)
+      values ('',".$refclientes.",'".($archivo)."','".($type)."')";
+
+      $res = $this->query($sql,1);
+      return $res;
+   }
+
+
+   function modificarSubidas($id,$refclientes,$archivo,$type,$fecha) {
+      $sql = "update dbsubidas
+      set
+      refclientes = ".$refclientes.",archivo = '".($archivo)."',type = '".($type)."',fecha = ".$fecha."
+      where idsubida =".$id;
+
+      $res = $this->query($sql,0);
+      return $res;
+   }
+
+
+   function eliminarSubidas($id) {
+      $sql = "delete from dbsubidas where idsubida =".$id;
+      $res = $this->query($sql,0);
+      return $res;
+   }
+
+
+   function traerSubidas() {
+      $sql = "select
+      s.idsubida,
+      s.refclientes,
+      s.archivo,
+      s.type,
+      s.fecha
+      from dbsubidas s
+      order by 1";
+
+      $res = $this->query($sql,0);
+      return $res;
+   }
+
+   function traerSubidasPorCliente($idcliente) {
+      $sql = "select
+      s.idsubida,
+      s.refclientes,
+      s.archivo,
+      s.type,
+      s.fecha
+      from dbsubidas s
+      where s.refclientes = ".$idcliente."
+      order by 1";
+
+      $res = $this->query($sql,0);
+      return $res;
+   }
+
+   function traerSubidasPorClienteajax($idcliente,$length, $start, $busqueda) {
+
+      $where = '';
+
+   		$busqueda = str_replace("'","",$busqueda);
+   		if ($busqueda != '') {
+   			$where = "and s.archivo like '%".$busqueda."%' or s.fecha like '%".$busqueda."%'";
+   		}
+
+      $sql = "SELECT
+               s.idsubida,
+               s.archivo,
+               s.fecha,
+               s.refclientes,
+               s.type
+            from dbsubidas s
+         where s.refclientes = ".$idcliente." ".$where."
+         ORDER BY s.fecha DESC";
+      $res = $this->query($sql,0);
+      return $res;
+   }
+
+
+   function traerSubidasPorId($id) {
+      $sql = "select idsubida,refclientes,archivo,type,fecha from dbsubidas where idsubida =".$id;
+
+      $res = $this->query($sql,0);
+      return $res;
+   }
+
+   /* Fin */
+   /* /* Fin de la Tabla: dbsubidas*/
+
    function traerAniosFacturadosPorCliente($id) {
       $sql = "select f.anio from dbfacturas f where f.refclientes = ".$id." group by f.anio";
 
