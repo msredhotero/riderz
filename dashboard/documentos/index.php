@@ -532,6 +532,16 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 				url = "descargar.php?token=" + usersid;
 				$(location).attr('href',url);
 
+
+			});//fin del boton modificar
+
+			$("#example3").on("click",'.btnDescargarSubidas', function(){
+				usersid =  $(this).attr("id");
+
+				url = "descargarsubidas.php?token=" + usersid;
+			
+				window.open(url ,'_blank');
+
 			});//fin del boton modificar
 
 		});

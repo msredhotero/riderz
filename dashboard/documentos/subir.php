@@ -62,7 +62,7 @@ if (!isset($_SESSION['usua_sahilices']))
 	 $imagen_subida = $dir_destino.$name;
 
 	 // desarrollo
-	 $nuevo_noentrar = '../../../../'.$servidorCarpeta.'/'.'index.php';
+	 $nuevo_noentrar = $dir_destino.'index.php';
 
 	 // produccion
 	 // $nuevo_noentrar = 'https://www.saupureinconsulting.com.ar/aifzn/data/'.$_SESSION['idclub_aif'].'/'.'index.php';
@@ -75,13 +75,15 @@ if (!isset($_SESSION['usua_sahilices']))
 
 
 	if (move_uploaded_file($templocation, $imagen_subida)) {
-      
+		copy($noentrar, $nuevo_noentrar);
       $pos = strpos( strtolower($type), 'application');
 	   if ($pos === false) {
    		$image = new \Gumlet\ImageResize($imagen_subida);
    		$image->scale(50);
    		$image->save($imagen_subida);
       }
+
+
 
 		echo "Archivo guardado correctamente";
 	} else {

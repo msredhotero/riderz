@@ -181,7 +181,7 @@ function insertarSubidas($serviciosReferencias) {
    if ((integer)$res > 0) {
       echo '';
    } else {
-      echo 'Huvo un error al insertar datos';
+      echo 'Hubo un error al insertar datos';
    }
 }
 
@@ -191,19 +191,25 @@ function modificarSubidas($serviciosReferencias) {
    $archivo = $_POST['archivo'];
    $type = $_POST['type'];
 
-   $res = $serviciosReferencias->modificarSubidas($id,$refclientes,$archivo,$type); 
+   $res = $serviciosReferencias->modificarSubidas($id,$refclientes,$archivo,$type);
 
    if ($res == true) {
       echo '';
    } else {
-      echo 'Huvo un error al modificar datos';
+      echo 'Hubo un error al modificar datos';
    }
 }
 
 function eliminarSubidas($serviciosReferencias) {
    $id = $_POST['id'];
-   $res = $serviciosReferencias->eliminarSubidas($id);
-   echo $res;
+   $refclientes = $_POST['refclientes'];
+
+   $res = $serviciosReferencias->eliminarSubidas($id,$refclientes);
+   if ($res == true) {
+      echo '';
+   } else {
+      echo 'Hubo un error al modificar datos';
+   }
 }
 
 function traerSubidas($serviciosReferencias) {

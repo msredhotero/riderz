@@ -49,9 +49,15 @@ switch ($tabla) {
 	case 'subidas':
 		$resAjax = $serviciosReferencias->traerSubidasPorClienteajax($idcliente,$length, $start, $busqueda);
 		$res = $serviciosReferencias->traerSubidasPorCliente($idcliente);
-		$label = array('btnDescargar');
-		$class = array('bg-green');
-		$icon = array('file_download');
+		if ($_SESSION['idroll_sahilices'] == 1) {
+			$label = array('btnDescargarSubidas','btnEliminar');
+			$class = array('bg-green','bg-red');
+			$icon = array('file_download','delete');
+		} else {
+			$label = array('btnDescargarSubidas');
+			$class = array('bg-green');
+			$icon = array('file_download');
+		}
 		$indiceID = 0;
 		$empieza = 1;
 		$termina = 2;
@@ -104,9 +110,9 @@ switch ($tabla) {
 	case 'clientes':
 		$resAjax = $serviciosReferencias->traerClientesajax($length, $start, $busqueda);
 		$res = $serviciosReferencias->traerClientes();
-		$label = array('btnVer','btnModificar','btnEliminar','btnFoto');
-		$class = array('bg-riderz','bg-amber','bg-red','bg-green');
-		$icon = array('backup','create','delete','assignment_ind');
+		$label = array('btnVer','btnModificar','btnEliminar','btnFoto','btnSubidas');
+		$class = array('bg-riderz','bg-amber','bg-red','bg-green','bg-blue');
+		$icon = array('backup','create','delete','assignment_ind','cloud_download');
 		$indiceID = 0;
 		$empieza = 1;
 		$termina = 10;

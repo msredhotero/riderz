@@ -31,7 +31,16 @@ class ServiciosReferencias {
    }
 
 
-   function eliminarSubidas($id) {
+   function eliminarSubidas($id, $idcliente) {
+
+      $resSubida = $this->traerSubidasPorIdCliente($id, $idcliente);
+
+      $dir_destino = '../subidas/'.$id.'/';
+
+      $this->borrarDirecctorio($dir_destino);
+
+      //unlink($dir_destino);
+
       $sql = "delete from dbsubidas where idsubida =".$id;
       $res = $this->query($sql,0);
       return $res;
@@ -92,6 +101,13 @@ class ServiciosReferencias {
 
    function traerSubidasPorId($id) {
       $sql = "select idsubida,refclientes,archivo,type,fecha from dbsubidas where idsubida =".$id;
+
+      $res = $this->query($sql,0);
+      return $res;
+   }
+
+   function traerSubidasPorIdCliente($id, $idcliente) {
+      $sql = "select idsubida,refclientes,archivo,type,fecha from dbsubidas where idsubida =".$id." and refclientes = ".$idcliente;
 
       $res = $this->query($sql,0);
       return $res;
@@ -355,6 +371,8 @@ function crearDirectorioPrincipal($dir) {
 						$zip->addFile($dir_destino.$archivo, $archivo);
 
 						$zip->close();
+
+                  copy($noentrar, $nuevo_noentrar);
 
 						$this->insertarArchivos($carpeta,$token,str_replace(' ','',$archivo),$tipoarchivo, $observacion, $refcategorias, $anio, $mes,$reftipoarchivos);
 

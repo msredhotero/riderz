@@ -293,28 +293,64 @@ function existeUsuario($usuario, $id = 0) {
 
 function enviarEmail($destinatario,$asunto,$cuerpo) {
 
+   error_reporting( E_ALL & ~( E_NOTICE | E_STRICT | E_DEPRECATED ) ); //Aquí se genera un control de errores "NO BORRAR NI SUSTITUIR"
+   require_once "Mail.php"; //Aquí se llama a la función mail "NO BORRAR NI SUSTITUIR"
 
-	# Defina el número de e-mails que desea enviar por periodo. Si es 0, el proceso por lotes
+
+   $to = $destinatario; //Aquí definimos quien recibirá el formulario
+   $from = 'adminriderz@areariderz.es'; //Aquí definimos que cuenta mandará el correo, generalmente perteneciente al mismo dominio
+   $host = 'smtp.dominioabsoluto.net'; //Aquí definimos cual es el servidor de correo saliente desde el que se enviaran los correos
+   $username = 'adminriderz@areariderz.es'; //Aquí se define el usuario de la cuenta de correo
+   $password = '_Riderzapp123'; //Aquí se define la contraseña de la cuenta de correo que enviará el mensaje
+   $subject = $asunto; //Aquí se define el asunto del correo
+   $body = $cuerpo; //Aquí se define el cuerpo de correo
+
+   //A partir de aquí empleamos la función mail para enviar el formulario
+
+   $headers = array ('From' => $from,
+   'To' => $to,
+   'MIME-Version' => 1,
+   'Content-type' => 'text/html;charset=iso-8859-1',
+   'Subject' => $subject);
+
+   $smtp = Mail::factory('smtp',
+   array ('host' => $host,
+   'auth' => true,
+   'username' => $username,
+   'password' => $password));
+
+   $mail = $smtp->send($to, $headers, $body);
+
+   # Defina el número de e-mails que desea enviar por periodo. Si es 0, el proceso por lotes
 	# se deshabilita y los mensajes son enviados tan rápido como sea posible.
-	define("MAILQUEUE_BATCH_SIZE",0);
+	//define("MAILQUEUE_BATCH_SIZE",0);
 
 	//para el envío en formato HTML
 	//$headers = "MIME-Version: 1.0\r\n";
 
 	// Cabecera que especifica que es un HMTL
-	$headers  = 'MIME-Version: 1.0' . "\r\n";
-	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+	//$headers  = 'MIME-Version: 1.0' . "\r\n";
+	//$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 
 	//dirección del remitente
-	$headers .= "From: RIDERZ <info@riderzapp.es>\r\n";
+	//$headers .= "From: RIDERZ <info@riderzapp.es>\r\n";
 
 	//ruta del mensaje desde origen a destino
-	$headers .= "Return-path: ".$destinatario."\r\n";
+	//$headers .= "Return-path: ".$destinatario."\r\n";
 
 	//direcciones que recibirán copia oculta
-	$headers .= "Bcc: msredhotero@msn.com\r\n";
+	//$headers .= "Bcc: msredhotero@msn.com\r\n";
 
-	mail($destinatario,$asunto,$cuerpo,$headers);
+	//mail($destinatario,$asunto,$cuerpo,$headers);
+
+   if (PEAR::isError($mail)) {
+      return ("
+
+      " . $mail->getMessage() . "
+      ");
+   } else {
+      return "Mensaje enviado a ". $to ;
+   }
 }
 
 
@@ -430,7 +466,7 @@ function registrarSocio($email, $password,$apellido, $nombre,$refcliente) {
 	} else {
 		$this->insertarActivacionusuarios($res,$token,'','');
 
-		$this->enviarEmail($email,'Alta de Usuario',utf8_decode($cuerpo));
+		$retorno = $this->enviarEmail($email,'Alta de Usuario',utf8_decode($cuerpo));
 
 		return $res;
 	}

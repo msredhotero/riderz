@@ -489,6 +489,12 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 			$(location).attr('href',url);
 		});
 
+		$("#example").on("click",'.btnSubidas', function(){
+			idTable =  $(this).attr("id");
+			url = "subidas.php?id=" + idTable;
+			$(location).attr('href',url);
+		});
+
 
 
 

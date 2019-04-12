@@ -1,46 +1,38 @@
 <?php
 
-//para el envío en formato HTML
-//$headers = "MIME-Version: 1.0\r\n";
+   error_reporting( E_ALL & ~( E_NOTICE | E_STRICT | E_DEPRECATED ) ); //Aquí se genera un control de errores "NO BORRAR NI SUSTITUIR"
 
-// Cabecera que especifica que es un HMTL
-$cabeceras  = 'MIME-Version: 1.0' . "\r\n";
-$cabeceras .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+   require_once "Mail.php"; //Aquí se llama a la función mail "NO BORRAR NI SUSTITUIR"
 
-mail ('msredhotero@gmail.com',' Asunto del mensaje', 'Cuerpo del mensaje', $cabeceras, '-msredhotero@gmail.com');
-/*
-$cuerpo = '<img src="https://saupureinconsulting.com.ar/riderz/imagenes/1PNGlogosRIDERZ.png" alt="RIDERZ" width="190">';
+   $to = 'msredhotero@gmail.com'; //Aquí definimos quien recibirá el formulario
+   $from = 'adminriderz@areariderz.es'; //Aquí definimos que cuenta mandará el correo, generalmente perteneciente al mismo dominio
+   $host = '217.116.0.228'; //Aquí definimos cual es el servidor de correo saliente desde el que se enviaran los correos
+   $username = 'adminriderz@areariderz.es'; //Aqui se define el usuario de la cuenta de correo
+   $password = '_Riderzapp123'; //Aquí se define la contraseña de la cuenta d ecorreo que enviará el mensaje
+   $subject = 'Prueba'; //Aquí se define el asunto del correo
+   $body = 'Marcos prueba'; //Aquí se define el cuerpo de correo
 
-$cuerpo .= '<h2>¡Bienvenido a RIDERZ!</h2>';
+   //A partir de aquí empleamos la función mail para enviar el formulario
 
+   $headers = array ('From' => $from,
+   'To' => $to,
+   'Subject' => $subject);
+   $smtp = Mail::factory('smtp',
+   array ('host' => $host,
+   'auth' => true,
+   'username' => $username,
+   'password' => $password));
 
-$cuerpo .= '<p>Usa el siguente enlace para confirmar tu cuenta.</p>';
+   $mail = $smtp->send($to, $headers, $body);
 
+   //Una vez aquí habremos enviado el mensaje mediante el formulario
 
-$asunto = 'prueba';
+   //El siguiente codigo muestra en pantalla un mensaje indicando que el mensaje ha sido enviado y a que cuenta ES OPCIONAL. Lo incluimos para verificar que el formulario de prueba esta funcionando
 
-$destinatario = 'msredhotero@gmail.com';
-# Defina el número de e-mails que desea enviar por periodo. Si es 0, el proceso por lotes
-# se deshabilita y los mensajes son enviados tan rápido como sea posible.
-define("MAILQUEUE_BATCH_SIZE",0);
-
-//para el envío en formato HTML
-//$headers = "MIME-Version: 1.0\r\n";
-
-// Cabecera que especifica que es un HMTL
-$headers  = 'MIME-Version: 1.0' . "\r\n";
-$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-
-//dirección del remitente
-$headers .= "From: RIDERZ <info@riderzapp.es>\r\n";
-
-//ruta del mensaje desde origen a destino
-$headers .= "Return-path: ".$destinatario."\r\n";
-
-//direcciones que recibirán copia oculta
-$headers .= "Bcc: msredhotero@gmail.com\r\n";
-
-mail($destinatario,$asunto,$cuerpo,$headers,'msredhotero@gmail.com');
-*/
+   if (PEAR::isError($mail)) {
+      echo("".$mail->getMessage()."");
+   } else {
+      echo "Mensaje enviado desde POA a ". $to ;
+   }
 
  ?>
