@@ -1206,7 +1206,7 @@ class Servicios {
 
 							$campo = strtolower($row[0]);
 
-							$option = $refdescripcion[array_search($row[0], $refCampo)];
+							$option = utf8_decode($refdescripcion[array_search($row[0], $refCampo)]);
 
 							$form	=	$form.'
 
@@ -1323,7 +1323,7 @@ class Servicios {
 											<div class="form-group col-md-6" style="display:'.$lblOculta.'">
 												<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 												<div class="input-group col-md-12">
-													<textarea type="text" rows="10" cols="6" class="form-control" id="'.$campo.'" name="'.$campo.'" placeholder="Ingrese el '.$label.'..." required>'.utf8_encode(mysql_result($resMod,0,$row[0])).'</textarea>
+													<textarea type="text" rows="10" cols="6" class="form-control" id="'.$campo.'" name="'.$campo.'" placeholder="Ingrese el '.$label.'..." required>'.(mysql_result($resMod,0,$row[0])).'</textarea>
 												</div>
 
 											</div>

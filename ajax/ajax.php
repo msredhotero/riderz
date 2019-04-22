@@ -117,7 +117,7 @@ case 'traerArchivosPorCliente':
       insertarFacturas($serviciosReferencias);
    break;
    case 'modificarFacturas':
-      modificarFacturas($serviciosReferencias);
+      modificarFacturas($serviciosReferencias, $serviciosValidador);
    break;
    case 'eliminarFacturas':
       eliminarFacturas($serviciosReferencias);
@@ -440,7 +440,7 @@ function insertarFacturas($serviciosReferencias) {
 
 }
 
-function modificarFacturas($serviciosReferencias) {
+function modificarFacturas($serviciosReferencias, $serviciosValidador) {
    $id = $_POST['id'];
    $refclientes = $_POST['refclientes'];
    $reftipofacturas = $_POST['reftipofacturas'];
@@ -455,13 +455,30 @@ function modificarFacturas($serviciosReferencias) {
    $fechasubido = $_POST['fechasubido'];
    $imagen = $_POST['imagen'];
 
-   $res = $serviciosReferencias->modificarFacturas($id,$refclientes,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen);
+   $error = '';
 
-   if ($res == true) {
-      echo '';
-   } else {
-      echo 'Hubo un error al modificar datos';
+   if (!($serviciosValidador->validar_fecha_espanol($fechaingreso))) {
+      $error = 'Fecha Ingreso, Formato de fecha inválido
+      ';
    }
+
+   if (!($serviciosValidador->validar_fecha_espanol($fechasubido))) {
+      $error .= 'Fecha Subida, Formato de fecha inválido
+      ';
+   }
+
+   if ($error == '') {
+      $res = $serviciosReferencias->modificarFacturas($id,$refclientes,$reftipofacturas,$refestados,$refmeses,$anio,$concepto,$total,$iva,$irff,$fechaingreso,$fechasubido,$imagen);
+
+      if ($res == true) {
+         echo '';
+      } else {
+         echo 'Hubo un error al modificar datos';
+      }
+   } else {
+      echo $error;
+   }
+
 }
 
 function eliminarFacturas($serviciosReferencias) {

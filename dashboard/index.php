@@ -404,6 +404,9 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 
 	 <script src="../DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
 
+	 <!-- Bootstrap Material Datetime Picker Plugin Js -->
+	 <script src="../plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
+
 
 
 	<script>
@@ -548,6 +551,9 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 
 							if (data != '') {
 								$('.frmAjaxModificar').html(data);
+								$('#fechaingreso').inputmask('yyyy-mm-dd', { placeholder: '____-__-__' });
+								$('#fechasubido').inputmask('yyyy-mm-dd', { placeholder: '____-__-__' });
+
 							} else {
 								swal("Error!", data, "warning");
 
@@ -590,8 +596,10 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 
 				});//fin del boton modificar
 
-				$('.modificar').click(function(){
+				$('.modificar').click(function(e){
 
+					e.preventDefault();
+		         if ($('.formulario')[0].checkValidity()) {
 					//información del formulario
 					var formData = new FormData($(".formulario")[0]);
 					var message = "";
@@ -642,7 +650,7 @@ if ($_SESSION['idroll_sahilices'] == 1) {
 							$("#load").html('');
 						}
 					});
-
+				}
 
 				});
 

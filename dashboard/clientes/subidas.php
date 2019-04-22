@@ -330,6 +330,15 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 
 		$('#reftipoarchivos').val(2);
 
+      $("#example").on("click",'.btnDescargarSubidas', function(){
+         usersid =  $(this).attr("id");
+
+         url = "descargarsubidas.php?token=" + usersid;
+
+         window.open(url ,'_blank');
+
+      });//fin del boton modificar
+
 
 
 		function frmAjaxEliminar(id, accion) {
