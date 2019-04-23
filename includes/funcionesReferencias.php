@@ -322,7 +322,7 @@ function crearDirectorioPrincipal($dir) {
     }
 
 
-	function subirArchivo($file,$carpeta,$id,$token,$observacion, $refcategorias, $anio, $mes, $reftipoarchivos) {
+	function subirArchivo($file,$carpeta,$id,$token,$observacion, $refcategorias, $anio, $mes, $reftipoarchivos, $asunto) {
 
 
 		$dir_destino_padre = '../archivos/'.$carpeta.'/';
@@ -374,7 +374,7 @@ function crearDirectorioPrincipal($dir) {
 
                   copy($noentrar, $nuevo_noentrar);
 
-						$this->insertarArchivos($carpeta,$token,str_replace(' ','',$archivo),$tipoarchivo, $observacion, $refcategorias, $anio, $mes,$reftipoarchivos);
+						$this->insertarArchivos($carpeta,$token,str_replace(' ','',$archivo),$tipoarchivo, $observacion, $refcategorias, $anio, $mes,$reftipoarchivos,$asunto);
 
                   //$this->modificarClienteImagenPorId($carpeta,$archivo);
 
@@ -1207,9 +1207,9 @@ return $res;
 
 
 /* PARA Archivos */
-function insertarArchivos($refclientes,$token,$imagen,$type,$observacion,$refcategorias,$anio,$mes,$reftipoarchivos) {
-$sql = "insert into dbarchivos(idarchivo,refclientes,token,imagen,type,observacion, refcategorias, anio, mes, reftipoarchivos)
-values (null,".$refclientes.",'".($token)."','".($imagen)."','".($type)."','".($observacion)."',".$refcategorias.",".$anio.",".$mes.",".$reftipoarchivos.")";
+function insertarArchivos($refclientes,$token,$imagen,$type,$observacion,$refcategorias,$anio,$mes,$reftipoarchivos,$asunto) {
+$sql = "insert into dbarchivos(idarchivo,refclientes,token,imagen,type,observacion, refcategorias, anio, mes, reftipoarchivos, asunto)
+values (null,".$refclientes.",'".($token)."','".($imagen)."','".($type)."','".($observacion)."',".$refcategorias.",".$anio.",".$mes.",".$reftipoarchivos.",'".$asunto."')";
 $res = $this->query($sql,1);
 return $res;
 }
@@ -1345,16 +1345,17 @@ function traerArchivosPorClienteajax($idcliente,$length, $start, $busqueda) {
 
 	$busqueda = str_replace("'","",$busqueda);
 	if ($busqueda != '') {
-		$where = "where cat.categoria like '%".$busqueda."%' or a.anio like '%".$busqueda."%' or a.mes like '%".$busqueda."%'";
+		$where = "where a.asunto like '%".$busqueda."%' or a.observacion like '%".$busqueda."%' or a.mes like '%".$busqueda."%'";
 	}
 
 	$sql = "select
 a.idarchivo,
+a.asunto,
+a.observacion,
 cat.categoria,
 a.anio,
 a.mes,
 a.token,
-a.observacion,
 a.imagen,
 a.refclientes,
 a.fechacreacion,

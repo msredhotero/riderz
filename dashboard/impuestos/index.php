@@ -176,7 +176,7 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 						<div class="alert bg-riderz">
-							<h4>Impuestos Trimestre: <?php echo mysql_result($resTrimestreActual,0,'meses'); ?> del <?php echo date('Y'); ?></h4>
+							<h4>Impuestos Trimestre: <span class="lblTrimestre"></span> del <span class="lblAnio"></span> <small style="color:white;"></h4>
 						</div>
 					</div>
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -252,6 +252,9 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 
 	<script>
 		$(document).ready(function(){
+			$('.lblTrimestre').html($('#trimestre option:selected').text());
+			$('.lblAnio').html($('#anio').val());
+
 			function traerTotales(tipo, anio, trimestre, contenedor) {
 				$.ajax({
 					url: '../../ajax/ajax.php',
@@ -289,11 +292,17 @@ $resGastos = $serviciosReferencias->traerFacturasPorGeneral($campos,$idestado=''
 			$('#anio').change(function() {
 				traerTotales(1, $(this).val(), $('#trimestre').val(), 'lblTotalIRPF');
 				traerTotales(2, $(this).val(), $('#trimestre').val(), 'lblTotalIVA');
+
+				$('.lblTrimestre').html($('#trimestre option:selected').text());
+				$('.lblAnio').html($('#anio').val());
 			});
 
 			$('#trimestre').change(function() {
 				traerTotales(1, $('#anio').val(), $(this).val(), 'lblTotalIRPF');
 				traerTotales(2, $('#anio').val(), $(this).val(), 'lblTotalIVA');
+
+				$('.lblTrimestre').html($('#trimestre option:selected').text());
+				$('.lblAnio').html($('#anio').val());
 			});
 
 		});

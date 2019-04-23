@@ -386,7 +386,7 @@ class Servicios {
 				$ocultar = array("anio","refmeses","refclientes","reftipofacturas","refestados");
 				break;
 			case 'dbarchivos':
-				$ocultar = array("fechacreacion","type","reftipoarchivos");
+				$ocultar = array("fechacreacion","type","reftipoarchivos","token","anio","mes","refclientes","refcategorias");
 				break;
 
 			default:
@@ -1130,7 +1130,12 @@ class Servicios {
 			if ($tabla == 'dbusuarios') {
 				$ocultar = array("password");
 			} else {
-				$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi","idusuario","imagen");
+				if ($tabla == 'dbarchivos') {
+					$ocultar = array("token","anio","mes","refclientes","refcategorias","imagen");
+				} else {
+					$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi","idusuario","imagen");
+				}
+				
 			}
 
 		}

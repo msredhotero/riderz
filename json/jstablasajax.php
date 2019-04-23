@@ -142,7 +142,7 @@ switch ($tabla) {
 		}
 		$indiceID = 0;
 		$empieza = 1;
-		$termina = 5;
+		$termina = 2;
 
 		break;
 	case 'categorias':

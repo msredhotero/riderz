@@ -74,18 +74,7 @@ $cadRef = $serviciosFunciones->devolverSelectBox($refClientes,array(1,2,3),' ');
 $refCate = $serviciosReferencias->traerCategorias();
 $cadRef2 = $serviciosFunciones->devolverSelectBox($refCate,array(1),' ');
 
-$cadMes = '<option value="1">1</option>
-			<option value="2">2</option>
-			<option value="3">3</option>
-			<option value="4">4</option>
-			<option value="5">5</option>
-			<option value="6">6</option>
-			<option value="7">7</option>
-			<option value="8">8</option>
-			<option value="9">9</option>
-			<option value="10">10</option>
-			<option value="11">11</option>
-			<option value="12">12</option>';
+$cadMes = '<option value="'.date('m').'">'.date('m').'</option>';
 
 $cadAnio = '';
 for ($i=date('Y');$i>=1980;$i--) {
@@ -260,20 +249,14 @@ $resultado = $serviciosReferencias->traerClientesPorId($idcliente);
 									<table id="example" class="display table " style="width:100%">
 										<thead>
 											<tr>
-												<th>Categoria</th>
-												<th>Año</th>
-												<th>Mes</th>
-												<th>Token</th>
+												<th>Asunto</th>
 												<th>Obs.</th>
 												<th>Acciones</th>
 											</tr>
 										</thead>
 										<tfoot>
 											<tr>
-												<th>Categoria</th>
-												<th>Año</th>
-												<th>Mes</th>
-												<th>Token</th>
+												<th>Asunto</th>
 												<th>Obs.</th>
 												<th>Acciones</th>
 											</tr>

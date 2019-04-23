@@ -624,7 +624,7 @@ function traerArchivosPorCliente($serviciosReferencias) {
 function insertarArchivos($serviciosReferencias) {
 	$refclientes = $_POST['refclientes'];
 	$token = $_POST['token'];
-	//$imagen = $_POST['imagen'];
+	$asunto = $_POST['asunto'];
 	$observacion = $_POST['observacion'];
 
 	$refcategorias = $_POST['refcategorias'];
@@ -632,7 +632,7 @@ function insertarArchivos($serviciosReferencias) {
 	$mes = $_POST['mes'];
 
 	if ($_FILES['imagen']['tmp_name'] != '') {
-		$res = $serviciosReferencias->subirArchivo('imagen',$refclientes,$serviciosReferencias->obtenerNuevoId('dbarchivos'),$token,$observacion, $refcategorias, $anio, $mes, 2);
+		$res = $serviciosReferencias->subirArchivo('imagen',$refclientes,$serviciosReferencias->obtenerNuevoId('dbarchivos'),$token,$observacion, $refcategorias, $anio, $mes, 2,$asunto);
 
 		if ($res == '') {
 			echo '';
