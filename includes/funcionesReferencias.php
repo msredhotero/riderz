@@ -160,14 +160,17 @@ class ServiciosReferencias {
       // tipo 1 irpf
       // tipo 2 iva
       $acumulador = 0;
+      $acumuladorIRFP = 0;
       $inicio = $trimestre;
 
       if ($tipo == 1) {
-         for ($i=$trimestre;$i>=1;$i--) {
-            $sql = 'select sum(r.total) * 0.2 from (
-               select sum(f.total) as total from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 1 and f.refmeses <= '.$i.'
+         for ($i=$trimestre;$i>=$trimestre;$i--) {
+            $sql = 'select (SUM(r.total) * 0.2) , sum(r.irff) as irff from (
+               select sum(f.total) as total, 0 AS irff from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 1 and f.refmeses = '.$i.'
                union all
-               select -1*sum(f.total) as total from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 2 and f.refmeses <= '.$i.'
+               select -1*sum(f.total) as total, 0 AS irff from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 2 and f.refmeses = '.$i.'
+               union all
+               select 0 as total, f.irff AS irff from dbfacturas f where f.anio = '.$anio.' and  f.refclientes = '.$idcliente.' and f.refestados = 2 and f.reftipofacturas = 1 and f.refmeses = '.$i.'
                ) r';
 
 
@@ -180,12 +183,14 @@ class ServiciosReferencias {
                if (mysql_num_rows($res) > 0) {
                   if ($i == $inicio) {
                      //if ($this->existeAnioTrimestreFacturasPorCliente($idcliente,$anio,$trimestre) == 1) {
-                        $acumulador += mysql_result($res,0,0);
+                        $acumulador = mysql_result($res,0,0);
+                        $acumuladorIRFP = mysql_result($res,0,1);
                      //}
                   } else {
                      if ($this->existeAnioTrimestreFacturasPorCliente($idcliente,$anio,$i) == 1) {
                         //die(var_dump($acumulador));
-                        $acumulador -= mysql_result($res,0,0);
+                        $acumulador = mysql_result($res,0,0);
+                        $acumuladorIRFP = mysql_result($res,0,1);
                      }
                   }
                }
@@ -208,7 +213,7 @@ class ServiciosReferencias {
       }
 
 
-      return $acumulador;
+      return $acumulador - $acumuladorIRFP;
    }
 
 
